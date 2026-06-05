@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>设计师妈妈的服装实验室 · v3.1</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','Noto Sans SC','sans-serif']},colors:{brand:{50:'#eef4fa',100:'#d6e3f3',400:'#5b8fc4',500:'#3b72a6',600:'#2a5a8a',700:'#1a3a5c',800:'#122a45',900:'#0b1c30'},surface:{50:'#f8f9fb',100:'#f1f4f8',200:'#e4e8ef',300:'#cdd3dc',500:'#6b7280',600:'#4b5563',700:'#374151',800:'#1f2937',900:'#111827'}},boxShadow:{card:'0 1px 2px rgba(15,23,42,.04),0 1px 3px rgba(15,23,42,.06)',raised:'0 4px 6px -1px rgba(15,23,42,.04),0 2px 4px -2px rgba(15,23,42,.04)',float:'0 10px 25px -5px rgba(15,23,42,.06)'},animation:{in:'fadeIn .25s ease-out',up:'slideUp .3s ease-out',scale:'scaleIn .2s ease-out'},keyframes:{fadeIn:{'0%':{opacity:'0'},'100%':{opacity:'1'}},slideUp:{'0%':{opacity:'0',transform:'translateY(16px)'},'100%':{opacity:'1',transform:'translateY(0)'}},scaleIn:{'0%':{opacity:'0',transform:'scale(.95)'},'100%':{opacity:'1',transform:'scale(1)'}}}}}}</script>
+<style>
+*,:after,:before{box-sizing:border-box}body{font-feature-settings:'cv02','cv03','cv04','cv11';-webkit-font-smoothing:antialiased}
+.sidebar{background:linear-gradient(170deg,#0b1c30 0%,#122a45 40%,#1a3a5c 100%)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:12px;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .2s;color:rgba(255,255,255,.48);margin-bottom:2px}
+.nav-item:hover{color:rgba(255,255,255,.82);background:rgba(255,255,255,.06)}
+.nav-item.active{color:#fff;background:rgba(255,255,255,.12);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.nav-section{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.22);padding:16px 14px 6px}
+.input{width:100%;border:1px solid #e4e8ef;border-radius:12px;padding:10px 14px;font-size:13.5px;color:#1f2937;background:#fff;transition:all .2s;box-shadow:0 1px 2px rgba(15,23,42,.03);outline:none}
+.input:focus{border-color:#5b8fc4;box-shadow:0 0 0 3px rgba(26,58,92,.07),0 1px 2px rgba(15,23,42,.04)}
+.input:hover:not(:focus){border-color:#cdd3dc}
+textarea.input{resize:vertical;line-height:1.6}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600;font-size:13.5px;border-radius:12px;padding:10px 20px;transition:all .2s;cursor:pointer;border:none;white-space:nowrap}
+.btn:disabled{opacity:.45;pointer-events:none}
+.btn-primary{color:#fff;background:linear-gradient(135deg,#1a3a5c 0%,#2a5a8a 100%);box-shadow:0 2px 8px rgba(26,58,92,.22),0 1px 2px rgba(26,58,92,.12)}
+.btn-primary:hover:not(:disabled){box-shadow:0 4px 16px rgba(26,58,92,.32),0 2px 4px rgba(26,58,92,.18);transform:translateY(-1px)}
+.btn-primary:active:not(:disabled){transform:translateY(0)}
+.btn-ghost{color:#4b5563;background:transparent}.btn-ghost:hover{background:#f1f4f8}
+.btn-secondary{color:#374151;background:#f1f4f8;border:1px solid #e4e8ef}.btn-secondary:hover{background:#e4e8ef}
+.card{background:#fff;border-radius:20px;border:1px solid rgba(228,232,239,.7);padding:24px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.card-stat{background:#fff;border-radius:20px;border:1px solid rgba(228,232,239,.7);padding:20px 24px;box-shadow:0 1px 2px rgba(15,23,42,.04);transition:all .2s;cursor:pointer}
+.card-stat:hover{box-shadow:0 4px 12px rgba(15,23,42,.06);transform:translateY(-1px)}
+.tpl-card{border:2px solid #e4e8ef;border-radius:16px;padding:16px;cursor:pointer;transition:all .2s}
+.tpl-card:hover{border-color:#adc7e7;box-shadow:0 4px 12px rgba(15,23,42,.05);transform:translateY(-2px)}
+.tpl-card.selected{border-color:#2a5a8a;background:rgba(26,58,92,.03)}
+.tpl-card .ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;transition:transform .2s}
+.tpl-card:hover .ico{transform:scale(1.08)}
+.output-area{background:#f8f9fb;border:1px solid #e4e8ef;border-radius:16px;padding:20px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.65;color:#1f2937;white-space:pre-wrap;max-height:420px;overflow-y:auto}
+.drop-zone{border:2px dashed #cdd3dc;border-radius:20px;padding:40px;text-align:center;cursor:pointer;transition:all .2s}
+.drop-zone:hover{border-color:#5b8fc4;background:rgba(26,58,92,.02)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:600}
+.badge-green{background:#ecfdf5;color:#059669;border:1px solid #d1fae5}
+.badge-amber{background:#fffbeb;color:#d97706;border:1px solid #fde68a}
+.badge-gray{background:#f1f4f8;color:#6b7280;border:1px solid #e4e8ef}
+.toast{position:fixed;bottom:32px;right:32px;z-index:999;display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:16px;font-size:13.5px;font-weight:600;color:#fff;transition:all .3s;transform:translateY(100px);opacity:0;pointer-events:none;backdrop-filter:blur(12px)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:linear-gradient(135deg,#059669,#10b981)}
+.toast.err{background:linear-gradient(135deg,#dc2626,#ef4444)}
+.modal-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.35);backdrop-filter:blur(4px)}
+.modal-box{background:#fff;border-radius:24px;box-shadow:0 25px 50px -12px rgba(0,0,0,.2);max-width:520px;width:90%;max-height:85vh;overflow-y:auto;animation:scaleIn .2s ease-out}
+@keyframes scaleIn{0%{opacity:0;transform:scale(.95) translateY(8px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.pulse{position:relative}.pulse::after{content:'';position:absolute;inset:-3px;border-radius:50%;animation:pulseAnim 2s cubic-bezier(0,0,.2,1) infinite;background:currentColor;opacity:.3}@keyframes pulseAnim{0%{transform:scale(1);opacity:.4}100%{transform:scale(2.5);opacity:0}}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cdd3dc;border-radius:99px}
+.model-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;border:2px solid #e4e8ef;transition:all .2s;background:#fff;color:#6b7280}
+.model-chip:hover{border-color:#adc7e7;color:#1a3a5c}
+.model-chip.selected{border-color:#2a5a8a;background:rgba(26,58,92,.05);color:#1a3a5c}
+</style>
+</head>
+<body class="bg-surface-50 text-surface-800 antialiased">
+
+<div id="toast" class="toast"></div>
+
+<div class="flex h-screen overflow-hidden">
+
+<!-- SIDEBAR -->
+<aside class="sidebar w-60 shrink-0 flex flex-col h-full select-none">
+  <div class="px-5 py-5 border-b border-white/6 flex items-center gap-3">
+    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style="background:rgba(255,255,255,.1)">🧪</div>
+    <div><div class="text-white font-semibold text-sm leading-tight">设计师妈妈的</div><div class="text-white font-semibold text-sm leading-tight">服装实验室</div></div>
+  </div>
+  <nav class="flex-1 overflow-y-auto py-4">
+    <div class="nav-section">Agent Plan</div>
+    <div class="nav-item active" data-tab="copy" onclick="S('copy')"><i class="fa fa-edit w-4 text-center"></i>文案工作台</div>
+    <div class="nav-item" data-tab="image" onclick="S('image')"><i class="fa fa-image w-4 text-center"></i>图片生成</div>
+    <div class="nav-item" data-tab="video" onclick="S('video')"><i class="fa fa-video-camera w-4 text-center"></i>视频生成</div>
+    <div class="nav-item" data-tab="tts" onclick="S('tts')"><i class="fa fa-volume-up w-4 text-center"></i>语音合成</div>
+    <div class="nav-section">制作工具</div>
+    <div class="nav-item" data-tab="compose" onclick="S('compose')"><i class="fa fa-film w-4 text-center"></i>视频合成</div>
+    <div class="nav-item" data-tab="smart" onclick="S('smart')"><i class="fa fa-magic w-4 text-center"></i>智能处理</div>
+    <div class="nav-item" data-tab="template" onclick="S('template')"><i class="fa fa-paint-brush w-4 text-center"></i>封面模板</div>
+    <div class="nav-section">管理</div>
+    <div class="nav-item" data-tab="publish" onclick="S('publish')"><i class="fa fa-send w-4 text-center"></i>发布管理</div>
+  </nav>
+  <div class="px-4 py-4 border-t border-white/6 space-y-2">
+    <button onclick="showSettings()" class="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition" style="color:rgba(255,255,255,.45)" onmouseenter="this.style.color='rgba(255,255,255,.75)';this.style.background='rgba(255,255,255,.05)'" onmouseleave="this.style.color='rgba(255,255,255,.45)';this.style.background='transparent'">
+      <i class="fa fa-key w-4 text-center"></i><span>API 设置</span>
+    </button>
+    <div class="flex items-center gap-2.5 px-3">
+      <span class="pulse inline-block w-2 h-2 rounded-full bg-emerald-400" id="apiDot" style="color:#34d399"></span>
+      <span class="text-xs" style="color:rgba(255,255,255,.35)" id="apiLabel">待配置</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto">
+
+<!-- ═══════ TAB: 文案 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-5xl" id="tab-copy">
+  <div class="mb-6"><h2 class="text-2xl font-bold text-surface-900">文案工作台</h2><p class="text-surface-500 text-sm mt-1">AI 驱动的标题、文案、检测解读与选题发散</p></div>
+  <div class="flex flex-wrap items-center gap-2 mb-5">
+    <span class="text-xs font-semibold text-surface-400 uppercase tracking-wider mr-1">模型</span>
+    <span class="model-chip selected" data-model="auto" onclick="selModel('auto')">⚡ Auto 智能调度</span>
+    <span class="model-chip" data-model="doubao-seed-1-6-251015" onclick="selModel('doubao-seed-1-6-251015')">🌱 豆包 Seed</span>
+    <span class="model-chip" data-model="deepseek-v3-250324" onclick="selModel('deepseek-v3-250324')">🔍 DeepSeek</span>
+    <span class="model-chip" data-model="kimi-k2-0905-preview" onclick="selModel('kimi-k2-0905-preview')">🌙 Kimi</span>
+    <span class="model-chip" data-model="glm-4.7" onclick="selModel('glm-4.7')">🤖 GLM</span>
+  </div>
+  <div class="grid grid-cols-4 gap-3 mb-6">
+    <div class="tpl-card selected" data-tpl="title" onclick="selTpl('title')"><div class="ico bg-amber-50 text-amber-600">🎯</div><div class="font-semibold text-sm">标题生成</div><div class="text-xs text-surface-500">10 个爆款标题</div></div>
+    <div class="tpl-card" data-tpl="copy" onclick="selTpl('copy')"><div class="ico bg-violet-50 text-violet-600">📝</div><div class="font-semibold text-sm">文案框架</div><div class="text-xs text-surface-500">笔记文案框架</div></div>
+    <div class="tpl-card" data-tpl="detect" onclick="selTpl('detect')"><div class="ico bg-cyan-50 text-cyan-600">🔬</div><div class="font-semibold text-sm">检测解读</div><div class="text-xs text-surface-500">通俗化检测数据</div></div>
+    <div class="tpl-card" data-tpl="ideas" onclick="selTpl('ideas')"><div class="ico bg-rose-50 text-rose-600">💡</div><div class="font-semibold text-sm">选题发散</div><div class="text-xs text-surface-500">25 个选题方向</div></div>
+  </div>
+  <div class="card space-y-4">
+    <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">系统提示词</label><textarea id="sys" rows="3" class="input">你是小红书穿搭+检测博主的AI助手。博主是服装设计专业出身、前奢侈品销售、两个孩子的妈妈。账号特色是有家庭检测实验室，用显微镜等仪器检测衣服。回答风格：专业但不端着，用数据说话但不吓人。</textarea></div>
+    <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">需求 / 主题</label><textarea id="usr" rows="3" class="input" placeholder="例如：今天的主题是「显微镜下对比 5 件白T恤的面料纤维」，帮我生成 10 个标题..."></textarea></div>
+    <div class="flex items-center gap-3"><button id="copyBtn" onclick="genCopy()" class="btn-primary"><i class="fa fa-magic"></i>生成内容</button><button onclick="document.getElementById('sys').value='';document.getElementById('usr').value='';document.getElementById('copyRes').classList.add('hidden')" class="btn-ghost">清空</button><span class="text-xs text-surface-400 ml-auto">⌘+Enter</span></div>
+  </div>
+  <div id="copyRes" class="card mt-5 animate-up hidden"><div class="flex items-center justify-between mb-3"><h3 class="font-semibold flex items-center gap-2"><i class="fa fa-check-circle text-emerald-500"></i>生成结果</h3><div class="flex gap-1"><button onclick="navigator.clipboard.writeText(document.getElementById('copyOut').textContent);toast('已复制','ok')" class="btn-ghost text-xs px-3 py-1.5"><i class="fa fa-copy mr-1"></i>复制</button><button onclick="sendToPublish('copy')" class="btn-ghost text-xs px-3 py-1.5" style="color:#1a3a5c"><i class="fa fa-send mr-1"></i>发送到发布</button><button onclick="saveH('copy',document.getElementById('usr').value,document.getElementById('copyOut').textContent)" class="btn-ghost text-xs px-3 py-1.5"><i class="fa fa-bookmark mr-1"></i>保存</button></div></div><div class="output-area" id="copyOut"></div><p class="text-xs text-surface-400 mt-2" id="copyUsage"></p></div>
+</section>
+
+<!-- ═══════ TAB: 图片 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-5xl hidden" id="tab-image">
+  <div class="mb-6"><h2 class="text-2xl font-bold text-surface-900">图片生成</h2><p class="text-surface-500 text-sm mt-1">Seedream 文生图</p></div>
+  <div class="card space-y-4">
+    <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">描述 (Prompt)</label><textarea id="imgP" rows="3" class="input" placeholder="小红书封面图，母女穿搭，奶油色系，温柔氛围感，干净背景，文字留白区域在上方，高质感摄影风格"></textarea></div>
+    <div class="grid grid-cols-2 gap-4"><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">负面提示词</label><input id="imgNP" class="input" placeholder="不想出现的元素"></div><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">尺寸</label><select id="imgSz" class="input"><option value="1024x1024">1:1 正方形</option><option value="720x1280">9:16 竖版封面</option><option value="1280x720">16:9 横版</option></select></div></div>
+    <button onclick="genImg()" class="btn-primary"><i class="fa fa-magic"></i>生成图片</button>
+    <div id="imgRes" class="grid grid-cols-2 gap-3 mt-3 hidden"></div>
+  </div>
+</section>
+
+<!-- ═══════ TAB: 视频 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-5xl hidden" id="tab-video">
+  <div class="mb-6"><h2 class="text-2xl font-bold text-surface-900">视频生成</h2><p class="text-surface-500 text-sm mt-1">Seedance 图生视频</p></div>
+  <div class="card"><div class="grid grid-cols-2 gap-8"><div><label class="text-sm font-semibold text-surface-700 mb-3 block">上传穿搭图片</label><div class="drop-zone" onclick="document.getElementById('vidF').click()"><div class="text-3xl mb-2 opacity-25">📷</div><p class="text-sm font-medium text-surface-600">点击上传</p><p class="text-xs text-surface-400 mt-1">JPG/PNG, 建议 1024x1024</p><input type="file" id="vidF" accept="image/*" class="hidden" onchange="hVI()"></div><img id="vidP" class="mt-4 rounded-2xl hidden max-h-48 mx-auto shadow-card"></div><div class="space-y-4"><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">描述 (可选)</label><textarea id="vidT" rows="2" class="input" placeholder="留空使用默认描述"></textarea></div><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">时长</label><select id="vidD" class="input"><option value="3">3 秒</option><option value="5" selected>5 秒</option><option value="10">10 秒</option></select></div><button onclick="genVid()" class="btn-primary w-full"><i class="fa fa-play"></i>生成视频</button></div></div><div id="vidRes" class="mt-5 animate-up hidden"><h3 class="font-semibold mb-3 flex items-center gap-2"><i class="fa fa-check-circle text-emerald-500"></i>生成结果</h3><video controls class="rounded-2xl max-w-full max-h-80 shadow-card" id="vidPlayer"></video></div></div>
+</section>
+
+<!-- ═══════ TAB: 语音 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-5xl hidden" id="tab-tts">
+  <div class="mb-6"><h2 class="text-2xl font-bold text-surface-900">语音合成</h2><p class="text-surface-500 text-sm mt-1">AI 配音旁白</p></div>
+  <div class="card space-y-4">
+    <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">文本内容</label><textarea id="ttsT" rows="5" class="input" placeholder="输入要转语音的文案..."></textarea></div>
+    <div class="grid grid-cols-2 gap-4"><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">音色</label><select id="ttsV" class="input"><option value="zh_female_shuangkuaisisi_moon_bigtts">👩 女声·爽快</option><option value="zh_female_wanwan_moon_bigtts">👩 女声·温柔</option><option value="zh_male_qingqie_moon_bigtts">👨 男声·亲切</option><option value="zh_female_vv_moon_bigtts">👩 女声·活泼</option></select></div><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">语速</label><select id="ttsS" class="input"><option value="0.8">0.8x</option><option value="1.0" selected>1.0x</option><option value="1.2">1.2x</option></select></div></div>
+    <button onclick="genTTS()" class="btn-primary"><i class="fa fa-music"></i>合成语音</button>
+    <div id="ttsRes" class="mt-3 animate-up hidden"><h3 class="font-semibold mb-3 flex items-center gap-2"><i class="fa fa-check-circle text-emerald-500"></i>合成结果</h3><audio controls class="w-full" id="ttsPlayer"></audio><button onclick="dlTTS()" class="btn-secondary mt-3 text-sm"><i class="fa fa-download mr-1"></i>下载 MP3</button></div>
+  </div>
+</section>
+
+<!-- ═══════ TAB: 视频合成 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-5xl hidden" id="tab-compose">
+  <div class="mb-6"><h2 class="text-2xl font-bold text-surface-900">视频合成</h2><p class="text-surface-500 text-sm mt-1">图片 + 配音 + 字幕 + BGM → 成品视频</p></div>
+  <div class="flex gap-2 mb-5"><button class="px-4 py-2 rounded-xl text-sm font-semibold text-white" style="background:#1a3a5c" data-cm="full" onclick="swCM('full')">🎬 完整合成</button><button class="px-4 py-2 rounded-xl text-sm font-semibold bg-surface-100 text-surface-600" data-cm="sub" onclick="swCM('sub')">📝 字幕烧录</button></div>
+  <div id="cmFull" class="card space-y-5"><div class="grid grid-cols-2 gap-6"><div><label class="text-sm font-semibold text-surface-700 mb-3 block">上传图片（可多选）</label><div class="drop-zone !p-8" onclick="document.getElementById('cmImgs').click()"><div class="text-2xl mb-1 opacity-25">🖼️</div><p class="text-sm font-medium text-surface-600">点击选择</p><input type="file" id="cmImgs" accept="image/*" multiple class="hidden" onchange="hCI()"></div><div id="cmImgList" class="flex gap-2 flex-wrap mt-3"></div></div><div class="space-y-4"><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">配音音频</label><div class="flex gap-2"><input type="file" id="cmAudio" accept="audio/*" class="input flex-1 text-xs"><button onclick="S('tts')" class="btn-secondary text-xs px-3 py-2 whitespace-nowrap">用语音合成</button></div></div><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">标题 / 字幕文本</label><textarea id="cmTxt" rows="3" class="input" placeholder="视频标题&#10;字幕文本..."></textarea></div><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">背景音乐 (可选)</label><input type="file" id="cmBgm" accept="audio/*" class="input text-xs"></div><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">每张图片时长(秒)</label><input id="cmDur" type="number" value="4" min="2" max="10" class="input w-24"></div><button onclick="compVid()" class="btn-primary w-full"><i class="fa fa-film"></i>合成视频</button></div></div><div id="cmRes" class="mt-4 animate-up hidden"><h3 class="font-semibold mb-3 flex items-center gap-2"><i class="fa fa-check-circle text-emerald-500"></i>合成结果</h3><video controls class="rounded-2xl max-w-full max-h-80 shadow-card" id="cmPlayer"></video><button onclick="dlComp()" class="btn-secondary mt-3 text-sm"><i class="fa fa-download mr-1"></i>下载</button></div></div>
+  <div id="cmSub" class="card space-y-5 hidden"><div class="grid grid-cols-2 gap-6"><div><label class="text-sm font-semibold text-surface-700 mb-3 block">上传视频或音频</label><input type="file" id="subM" accept="video/*,audio/*" class="input text-xs"></div><div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">字幕文本 / 时长(秒)</label><textarea id="subT" rows="4" class="input mb-2" placeholder="输入完整字幕文本，自动按句子拆分..."></textarea><input id="subD" type="number" class="input w-24" value="30"></div></div><button onclick="burnSub()" class="btn-primary"><i class="fa fa-closed-captioning"></i>生成字幕并烧录</button><div id="subRes" class="mt-4 animate-up hidden"><div class="output-area text-xs mb-3" id="srtP"></div><video controls class="rounded-2xl max-w-full max-h-80 shadow-card" id="subPlayer"></video><button onclick="dlSub()" class="btn-secondary mt-3 text-sm"><i class="fa fa-download mr-1"></i>下载</button></div></div>
+</section>
+
+<!-- ═══════ TAB: 智能处理 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-5xl hidden" id="tab-smart">
+  <div class="mb-6"><h2 class="text-2xl font-bold text-surface-900">智能处理</h2><p class="text-surface-500 text-sm mt-1">ASR 语音转字幕 · 背景移除 · 画质增强</p></div>
+  <div class="grid grid-cols-2 gap-5">
+    <div class="card space-y-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-lg">🎤</div><div><h3 class="font-semibold">ASR 语音转字幕</h3><p class="text-xs text-surface-500">音频→SRT字幕</p></div></div><input type="file" id="asrF" accept="audio/*,video/*" class="input text-xs"><button onclick="runA()" class="btn-primary w-full text-sm"><i class="fa fa-closed-captioning"></i>开始识别</button><p class="text-xs text-surface-400" id="asrS"></p></div>
+    <div class="card space-y-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center text-lg">✂️</div><div><h3 class="font-semibold">背景移除</h3><p class="text-xs text-surface-500">智能抠图</p></div></div><input type="file" id="bgF" accept="image/*" class="input text-xs"><button onclick="runB()" class="btn-primary w-full text-sm"><i class="fa fa-scissors"></i>移除背景</button><p class="text-xs text-surface-400" id="bgS"></p></div>
+    <div class="card space-y-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-lg">✨</div><div><h3 class="font-semibold">画质增强</h3><p class="text-xs text-surface-500">低清→高清</p></div></div><input type="file" id="enF" accept="image/*" class="input text-xs"><button onclick="runE()" class="btn-primary w-full text-sm"><i class="fa fa-magic"></i>增强画质</button><p class="text-xs text-surface-400" id="enS"></p></div>
+  </div>
+</section>
+
+<!-- ═══════ TAB: 封面模板 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-6xl hidden" id="tab-template">
+  <div class="mb-6"><h2 class="text-2xl font-bold text-surface-900">封面模板</h2><p class="text-surface-500 text-sm mt-1">一键套用模板生成小红书封面</p></div>
+  <div class="grid grid-cols-4 gap-6">
+    <div class="space-y-2"><h3 class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-2">模板</h3>
+      <div class="tpl-card selected" data-ct="compare" onclick="selCT('compare')"><div class="ico bg-cyan-50 text-cyan-600">🔬</div><div class="font-semibold text-sm">检测对比</div><div class="text-xs text-surface-500">左右分屏+VS</div></div>
+      <div class="tpl-card" data-ct="outfit" onclick="selCT('outfit')"><div class="ico bg-pink-50 text-pink-600">👗</div><div class="font-semibold text-sm">母女穿搭</div><div class="text-xs text-surface-500">渐变遮罩+标题</div></div>
+      <div class="tpl-card" data-ct="fabric" onclick="selCT('fabric')"><div class="ico bg-amber-50 text-amber-600">📐</div><div class="font-semibold text-sm">面料科普</div><div class="text-xs text-surface-500">色条+卡片布局</div></div>
+      <div class="tpl-card" data-ct="luxury" onclick="selCT('luxury')"><div class="ico bg-violet-50 text-violet-600">👜</div><div class="font-semibold text-sm">柜姐揭秘</div><div class="text-xs text-surface-500">暗角+居中标题</div></div>
+      <div class="tpl-card" data-ct="brand" onclick="selCT('brand')"><div class="ico bg-emerald-50 text-emerald-600">🏷️</div><div class="font-semibold text-sm">品牌横评</div><div class="text-xs text-surface-500">四宫格+叠加</div></div>
+    </div>
+    <div class="col-span-3 card space-y-4"><div class="flex items-center justify-between"><h3 class="font-semibold">编辑封面</h3><div class="flex gap-2"><button onclick="previewC()" class="btn-ghost text-xs px-3 py-1.5"><i class="fa fa-eye mr-1"></i>预览</button><button onclick="dlC()" class="btn-primary text-xs px-3 py-1.5"><i class="fa fa-download mr-1"></i>下载 PNG</button></div></div><div class="flex gap-6"><div class="flex-1 space-y-3"><div><label class="text-xs font-semibold text-surface-600 mb-1 block">底图</label><input type="file" accept="image/*" onchange="ldCI(this)" class="input text-xs"></div><div><label class="text-xs font-semibold text-surface-600 mb-1 block">主标题</label><input id="cT" class="input text-sm" oninput="previewC()"></div><div><label class="text-xs font-semibold text-surface-600 mb-1 block">副标题</label><input id="cS" class="input text-sm" oninput="previewC()"></div><div class="grid grid-cols-2 gap-2"><div><label class="text-xs font-semibold text-surface-600 mb-1 block">标题色</label><input type="color" id="cC" value="#ffffff" class="w-full h-9 rounded-lg border-0 cursor-pointer" oninput="previewC()"></div><div><label class="text-xs font-semibold text-surface-600 mb-1 block">叠加色</label><input type="color" id="cO" value="#1a3a5c" class="w-full h-9 rounded-lg border-0 cursor-pointer" oninput="previewC()"></div></div></div><div class="w-56 shrink-0"><canvas id="cCanvas" width="720" height="1280" class="w-full rounded-xl shadow-card border" style="aspect-ratio:9/16"></canvas></div></div></div>
+  </div>
+</section>
+
+<!-- ═══════ TAB: 发布管理 ═══════ -->
+<section class="tab-panel p-6 lg:p-8 max-w-6xl hidden" id="tab-publish">
+  <div class="mb-6 flex items-center justify-between"><div><h2 class="text-2xl font-bold text-surface-900">发布管理</h2><p class="text-surface-500 text-sm mt-1">组装内容、保存草稿、回溯发布历史</p></div><div class="flex gap-2"><button onclick="newPost()" class="btn-primary"><i class="fa fa-plus mr-1"></i>新建帖子</button><button onclick="loadPosts()" class="btn-secondary"><i class="fa fa-refresh mr-1"></i>刷新</button></div></div>
+  <div class="grid grid-cols-3 gap-6">
+    <!-- Left: Post List -->
+    <div class="col-span-1 space-y-4">
+      <div class="flex gap-2"><input type="date" id="pubDate" class="input flex-1 text-xs" onchange="loadPosts()"><button onclick="quickToday()" class="btn-ghost text-xs px-3">今天</button></div>
+      <div class="card !p-3 max-h-[600px] overflow-y-auto"><div id="pubList" class="space-y-1"><div class="text-center py-8 text-surface-400 text-sm">加载中...</div></div></div>
+      <div class="card !p-3"><h4 class="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-2">本月发布日历</h4><div id="pubCal" class="grid grid-cols-7 gap-1 text-center text-xs"></div></div>
+    </div>
+    <!-- Right: Editor -->
+    <div class="col-span-2 card space-y-4" id="pubEditor">
+      <div class="flex items-center justify-between"><h3 class="font-semibold text-surface-800" id="pubEditorTitle">新建帖子</h3><div class="flex gap-2"><select id="pubStatus" class="input w-28 text-xs py-1.5"><option value="draft">📝 草稿</option><option value="published">✅ 已发布</option></select><button onclick="savePost()" class="btn-primary text-sm"><i class="fa fa-save mr-1"></i>保存</button></div></div>
+      <input id="pubId" type="hidden">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">标题 <span class="text-surface-400 font-normal">(小红书标题)</span></label><input id="pubTitle" class="input" placeholder="帖子标题..."></div>
+        <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">发布日期</label><input id="pubPDate" type="date" class="input"></div>
+      </div>
+      <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">文案</label><textarea id="pubCopy" rows="6" class="input" placeholder="帖子文案..."></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">封面图 URL</label><input id="pubCover" class="input" placeholder="https://... 或粘贴图片URL"><img id="pubCoverPreview" class="mt-2 rounded-xl max-h-32 hidden"></div>
+        <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">视频 URL</label><input id="pubVideo" class="input" placeholder="https://... 或粘贴视频URL"></div>
+      </div>
+      <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">图片 URL（一行一个）</label><textarea id="pubImages" rows="2" class="input" placeholder="https://...&#10;https://..."></textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">标签 (Hashtags) 用逗号分隔</label><input id="pubTags" class="input" placeholder="#母女穿搭, #面料科普, #早春穿搭"></div>
+        <div><label class="text-sm font-semibold text-surface-700 mb-1.5 block">备注</label><input id="pubNotes" class="input" placeholder="个人备注..."></div>
+      </div>
+      <div class="card !bg-surface-50 !border-surface-200 space-y-3 mt-4"><h4 class="text-sm font-semibold text-surface-700 flex items-center gap-2"><i class="fa fa-upload" style="color:#1a3a5c"></i>导出到小红书</h4><p class="text-xs text-surface-500">小红书没有公开API，需手动粘贴。以下按钮帮你一键准备好所有内容。</p><div class="flex flex-wrap gap-2"><button onclick="exportCopy()" class="btn-primary text-sm"><i class="fa fa-clipboard mr-1"></i>📋 一键复制全文</button><button onclick="exportCover()" class="btn-secondary text-sm"><i class="fa fa-download mr-1"></i>🖼️ 下载封面图</button><button onclick="exportImages()" class="btn-secondary text-sm"><i class="fa fa-file-image-o mr-1"></i>📦 复制所有图片URL</button></div><div class="text-xs text-surface-400 mt-1"><i class="fa fa-info-circle mr-1"></i>复制后打开小红书App/创作服务平台 → 粘贴发布</div></div>
+<div class="flex justify-between pt-2">
+        <button onclick="deletePost()" class="text-sm text-red-500 hover:text-red-700 transition"><i class="fa fa-trash mr-1"></i>删除此帖</button>
+        <button onclick="savePost()" class="btn-primary"><i class="fa fa-save mr-1"></i>保存</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal-overlay hidden" onclick="if(event.target===this)hideSettings()">
+  <div class="modal-box"><div class="p-5 border-b"><div class="flex items-center justify-between"><h2 class="text-lg font-bold flex items-center gap-2"><i class="fa fa-key" style="color:#1a3a5c"></i>API 设置</h2><button onclick="hideSettings()" class="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-surface-100 transition text-surface-400"><i class="fa fa-times"></i></button></div><p class="text-sm text-surface-500 mt-1">API Key 仅存储在浏览器本地，通过本机服务器代理转发</p></div>
+    <div class="p-5 space-y-4">
+      <div class="p-4 rounded-2xl bg-surface-50 border space-y-3">
+        <label class="flex items-center gap-2 text-sm font-semibold"><span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm" style="background:rgba(26,58,92,.08)">🚀</span> Agent Plan API Key <span class="badge badge-green text-[10px]">一个 Key 搞定全部</span></label>
+        <div class="flex gap-2"><input id="sPlan" type="password" class="input flex-1" placeholder="Agent Plan API Key"><button onclick="toggleV('sPlan')" class="btn-ghost px-3"><i class="fa fa-eye"></i></button></div>
+        <p class="text-xs text-surface-400">订阅 <a href="https://ai.volcengine.com/activity/agentplan" target="_blank" class="underline" style="color:#1a3a5c">ai.volcengine.com/activity/agentplan</a> · ¥40-1000/月</p>
+      </div>
+      <div class="p-4 rounded-2xl bg-surface-50 border space-y-3">
+        <label class="flex items-center gap-2 text-sm font-semibold"><span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm" style="background:rgba(26,58,92,.08)">🔊</span> TTS API Key <span class="text-xs text-surface-400">语音合成</span></label>
+        <input id="sTts" type="password" class="input" placeholder="火山引擎 TTS Key">
+      </div>
+      <div class="p-4 rounded-2xl bg-surface-50 border space-y-3">
+        <label class="flex items-center gap-2 text-sm font-semibold"><span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm" style="background:rgba(26,58,92,.08)">⚙️</span> 智能处理 AK/SK <span class="text-xs text-surface-400">ASR·抠图·增强</span></label>
+        <input id="sVAk" type="password" class="input mb-2" placeholder="Access Key"><input id="sVSk" type="password" class="input" placeholder="Secret Key">
+        <p class="text-xs text-surface-400">从 <a href="https://console.volcengine.com/iam" target="_blank" class="underline" style="color:#1a3a5c">火山引擎 IAM</a> 获取</p>
+      </div>
+    </div>
+    <div class="p-5 border-t bg-surface-50/50 rounded-b-3xl flex items-center justify-between"><span class="text-xs text-surface-400"><i class="fa fa-shield mr-1"></i>Key 存储于 localStorage，仅本机代理转发</span><div class="flex gap-2"><button onclick="hideSettings()" class="btn-secondary px-5 py-2">取消</button><button onclick="saveStg()" class="btn-primary px-5 py-2"><i class="fa fa-check mr-1"></i>保存</button></div></div>
+  </div>
+</div>
+
+<script>
+const API=window.location.origin;
+let hist=(()=>{try{return JSON.parse(localStorage.getItem('xhs_h'))||[]}catch{return[]}})();
+let curM='auto',curT='title',curCT='compare',covImg=null,cmBlob=null,subBlob=null;
+const TPLS={title:{sys:'你是小红书穿搭+检测博主的标题助手。请为内容生成10个标题。\n要求：8-20字；数字对比/悬念钩子/身份标签/痛点共鸣/反常识至少一种；让人1秒想点进去；保持真实真诚。\n博主：服装设计专业+前奢侈品销售+两孩子妈妈，有家庭检测实验室。',usr:'内容主题：[填入今天的穿搭/检测主题]'},copy:{sys:'你是小红书文案助手。请为内容主题生成文案框架。\n博主：服装设计专业+前奢侈品销售+两孩子妈妈。\n调性：专业不端着，用仪器数据说话不吓人，真诚不卖惨。\n结构：标题→开头戳痛点(1-2句)→中间3-4点(检测内容每点=结果+通俗解释+选购建议)→结尾引导评论→3-5标签。',usr:'内容主题：[填入]'},detect:{sys:'我是服装设计师，先生是质量工程师。我们做了服装检测，请用普通人能看懂的语言解释检测结果并给出选购建议。\n要求：通俗语言解释数据；具体可操作选购建议；像朋友聊天；3-4个要点。',usr:'检测内容：[填入]\n检测结果：[填入数据/观察]'},ideas:{sys:'你是穿搭类小红书账号选题顾问。请基于博主背景发散选题。\n博主：四川师范大学服装设计专业；前奢侈品销售；在苏州，有4岁女儿和8岁儿子；先生是质量工程师，家有检测实验室。\n请从5个栏目各发散5个选题，共25个。',usr:'请发散本周选题，重点关注：[填入]'}};
+
+document.addEventListener('DOMContentLoaded',()=>{
+  selTpl('title');chkSt();['sPlan','sTts','sVAk','sVSk'].forEach(id=>{const v=localStorage.getItem(id);if(v)document.getElementById(id).value=v});
+  document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){const t=document.querySelector('.tab-panel:not(.hidden)');if(t?.id==='tab-copy')genCopy();else if(t?.id==='tab-image')genImg();else if(t?.id==='tab-video')genVid();else if(t?.id==='tab-tts')genTTS()}});
+  setTimeout(previewC,500);
+});
+
+function S(tab){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.querySelector('[data-tab="'+tab+'"]')?.classList.add('active');document.querySelectorAll('.tab-panel').forEach(p=>{p.classList.add('hidden');p.classList.remove('animate-up')});const p=document.getElementById('tab-'+tab);if(p){p.classList.remove('hidden');p.classList.add('animate-up')}}
+function selModel(m){curM=m;document.querySelectorAll('.model-chip').forEach(c=>c.classList.remove('selected'));document.querySelector('[data-model="'+m+'"]')?.classList.add('selected')}
+function selTpl(n){curT=n;document.querySelectorAll('[data-tpl]').forEach(c=>c.classList.remove('selected'));document.querySelector('[data-tpl="'+n+'"]')?.classList.add('selected');const t=TPLS[n];if(t){document.getElementById('sys').value=t.sys;document.getElementById('usr').value=t.usr}}
+
+function H(){const h={};const m={sPlan:'x-plan-key',sTts:'x-tts-api-key',sVAk:'x-volc-access-key',sVSk:'x-volc-secret-key'};Object.entries(m).forEach(([id,k])=>{const v=document.getElementById(id)?.value?.trim()||localStorage.getItem(id)||'';if(v)h[k]=v});return h}
+async function chkSt(){try{const r=await fetch(API+'/api/status',{headers:H()});const s=await r.json();const ok=s.plan||s.tts||s.volc_smart;document.getElementById('apiDot').className='pulse inline-block w-2 h-2 rounded-full '+(ok?'bg-emerald-400':'bg-amber-400');document.getElementById('apiLabel').textContent=ok?'已配置':'待配置'}catch{}}
+function toast(m,t='ok'){const e=document.getElementById('toast');e.className='toast show '+t;e.innerHTML=(t==='ok'?'<i class="fa fa-check-circle"></i>':'<i class="fa fa-exclamation-circle"></i>')+m;e.onclick=function(){if(m.indexOf('发送到发布')>-1){const id=localStorage.getItem('xhs_draft_id');if(id){S('publish');editPost(id)}}};clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2800)}
+function ld(b,t='处理中...'){b.disabled=true;b.dataset.o=b.innerHTML;b.innerHTML='<i class="fa fa-spinner fa-spin"></i>'+t}
+function ul(b){if(b){b.disabled=false;b.innerHTML=b.dataset.o}}
+function saveH(t,i,o){hist.unshift({type:t,input:i.substring(0,200),output:typeof o==='string'?o.substring(0,500):o,time:new Date().toISOString()});if(hist.length>50)hist.length=50;localStorage.setItem('xhs_h',JSON.stringify(hist))}
+
+// Copy
+async function genCopy(){const sys=document.getElementById('sys').value.trim(),usr=document.getElementById('usr').value.trim();if(!usr)return toast('请输入需求','err');const btn=document.getElementById('copyBtn');ld(btn);try{const r=await fetch(API+'/api/plan/chat',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({system:sys,messages:[{role:'user',content:usr}],model:curM})});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('copyRes').classList.remove('hidden');document.getElementById('copyOut').textContent=d.text;document.getElementById('copyUsage').textContent='Tokens: '+(d.usage?.total_tokens||'?')+' · '+d.model;saveH('copy',usr,d.text);toast('生成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+
+// Image
+async function genImg(){const p=document.getElementById('imgP').value.trim();if(!p)return toast('请输入描述','err');const btn=document.querySelector('#tab-image .btn-primary');ld(btn);try{const[w,h]=document.getElementById('imgSz').value.split('x');const r=await fetch(API+'/api/plan/txt2img',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({prompt:p,negative_prompt:document.getElementById('imgNP').value,width:+w,height:+h})});const d=await r.json();if(d.error)throw new Error(d.error);const ct=document.getElementById('imgRes');ct.classList.remove('hidden');ct.classList.add('animate-up');ct.innerHTML=(d.images||[]).map(i=>'<div class="rounded-2xl overflow-hidden shadow-card border"><img src="'+(i.url||i.b64_json)+'" class="w-full h-auto"></div>').join('');saveH('image',p,(d.images?.length||0)+'张');if(d.images&&d.images[0]&&d.images[0].url){sendToPublish('image',d.images[0].url)}toast('已生成'+(d.images?.length||0)+'张')}catch(e){toast(e.message,'err')}ul(btn)}
+
+// Video
+function hVI(){const f=document.getElementById('vidF').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const p=document.getElementById('vidP');p.src=e.target.result;p.classList.remove('hidden')};r.readAsDataURL(f)}
+async function genVid(){const f=document.getElementById('vidF').files[0];if(!f&&!document.getElementById('vidP').src)return toast('请上传图片','err');const btn=document.querySelector('#tab-video .btn-primary');ld(btn);try{const fd=new FormData();if(f)fd.append('image',f);fd.append('prompt',document.getElementById('vidT').value);fd.append('duration',document.getElementById('vidD').value);const r=await fetch(API+'/api/plan/img2video',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('vidRes').classList.remove('hidden');document.getElementById('vidPlayer').src=d.video_url;saveH('video',document.getElementById('vidT').value||'图生视频',d.video_url);if(d.video_url){sendToPublish('video',d.video_url)}toast('视频生成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+
+// TTS
+async function genTTS(){const t=document.getElementById('ttsT').value.trim();if(!t)return toast('请输入文本','err');const btn=document.querySelector('#tab-tts .btn-primary');ld(btn);try{const r=await fetch(API+'/api/tts/generate',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({text:t,voice:document.getElementById('ttsV').value,speed:+document.getElementById('ttsS').value})});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('ttsRes').classList.remove('hidden');const p=document.getElementById('ttsPlayer');p.src='data:audio/mp3;base64,'+d.audio_base64;p.dataset.b64=d.audio_base64;saveH('tts',t.substring(0,80),'TTS完成');toast('合成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+function dlTTS(){const b=document.getElementById('ttsPlayer').dataset.b64;if(!b)return;const a=document.createElement('a');a.href='data:audio/mp3;base64,'+b;a.download='tts-'+Date.now()+'.mp3';a.click()}
+
+// Compose
+function swCM(m){document.querySelectorAll('[data-cm]').forEach(b=>{b.style.background=m===b.dataset.cm?'#1a3a5c':'#f1f4f8';b.style.color=m===b.dataset.cm?'#fff':'#4b5563'});document.getElementById('cmFull').classList.toggle('hidden',m!=='full');document.getElementById('cmSub').classList.toggle('hidden',m!=='sub')}
+function hCI(){const fs=document.getElementById('cmImgs').files;const l=document.getElementById('cmImgList');l.innerHTML='';Array.from(fs).forEach((f,i)=>{const rd=new FileReader();rd.onload=e=>{const d=document.createElement('div');d.className='relative w-16 h-16 rounded-xl overflow-hidden border';d.innerHTML='<img src="'+e.target.result+'" class="w-full h-full object-cover"><span class="absolute top-0 right-1 text-xs text-white font-bold drop-shadow">'+(i+1)+'</span>';l.appendChild(d)};rd.readAsDataURL(f)})}
+async function compVid(){const imgs=document.getElementById('cmImgs').files,audio=document.getElementById('cmAudio').files[0],bgm=document.getElementById('cmBgm').files[0],txt=document.getElementById('cmTxt').value.trim();if(!imgs.length)return toast('请上传图片','err');if(!audio)return toast('请上传配音','err');const btn=document.querySelector('#tab-compose .btn-primary');ld(btn,'合成中...');try{const fd=new FormData();Array.from(imgs).forEach(f=>fd.append('images',f));fd.append('audio',audio);if(bgm)fd.append('bgm',bgm);const[ti,...su]=txt.split('\n').filter(Boolean);fd.append('title',ti||'');fd.append('subtitleText',su.join(' '));fd.append('durationPerImage',document.getElementById('cmDur').value);const r=await fetch(API+'/api/video/compose',{method:'POST',headers:H(),body:fd});if(!r.ok){const d=await r.json();throw new Error(d.error)}const blob=await r.blob();if(cmBlob)URL.revokeObjectURL(cmBlob);cmBlob=URL.createObjectURL(blob);document.getElementById('cmRes').classList.remove('hidden');document.getElementById('cmPlayer').src=cmBlob;saveH('compose',imgs.length+'张图','合成完成');toast('合成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+function dlComp(){if(!cmBlob)return;const a=document.createElement('a');a.href=cmBlob;a.download='composed-'+Date.now()+'.mp4';a.click()}
+async function burnSub(){const mf=document.getElementById('subM').files[0],txt=document.getElementById('subT').value.trim(),dur=document.getElementById('subD').value;if(!mf)return toast('请上传文件','err');if(!txt)return toast('请输入字幕文本','err');toast('字幕烧录请使用智能处理 API (AK/SK)','err')}
+function dlSub(){if(!subBlob)return;const a=document.createElement('a');a.href=subBlob;a.download='subtitled-'+Date.now()+'.mp4';a.click()}
+
+// Smart
+async function runA(){const f=document.getElementById('asrF').files[0];if(!f)return toast('请上传文件','err');const btn=document.querySelector('#tab-smart .btn-primary');ld(btn);try{const fd=new FormData();fd.append('audio',f);const r=await fetch(API+'/api/volc/asr',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('asrS').textContent='JobId: '+d.jobId;saveH('smart','ASR','JobId:'+d.jobId);toast('ASR任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
+async function runB(){const f=document.getElementById('bgF').files[0];if(!f)return toast('请上传图片','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[1];ld(btn);try{const fd=new FormData();fd.append('image',f);const r=await fetch(API+'/api/volc/remove-bg',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('bgS').textContent='JobId: '+d.jobId;saveH('smart','背景移除','JobId:'+d.jobId);toast('任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
+async function runE(){const f=document.getElementById('enF').files[0];if(!f)return toast('请上传图片','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[2];ld(btn);try{const fd=new FormData();fd.append('image',f);const r=await fetch(API+'/api/volc/enhance-image',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('enS').textContent='JobId: '+d.jobId;saveH('smart','画质增强','JobId:'+d.jobId);toast('任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
+
+// Cover Template
+const CW=720,CH=1280;
+const CTPL={compare:{title:'显微镜下的真相',sub:'99元 vs 999元 白T恤面料差距有多大？',r(ctx,t,s,c,o){if(covImg){ctx.drawImage(covImg,0,0,CW/2,CH,0,0,CW/2,CH);ctx.drawImage(covImg,0,0,CW/2,CH,CW/2,0,CW/2,CH)}ctx.fillStyle=o+'CC';ctx.fillRect(CW/2-2,0,4,CH);ctx.beginPath();ctx.arc(CW/2,CH/2,48,0,Math.PI*2);ctx.fillStyle=o;ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 32px Inter,sans-serif';ctx.textAlign='center';ctx.fillText('VS',CW/2,CH/2+11);dT(ctx,t,c,o);if(s)dS(ctx,s,c,o)}},outfit:{title:'母女春日穿搭',sub:'同色系·Mini Me·设计师选款思路',r(ctx,t,s,c,o){if(covImg)ctx.drawImage(covImg,0,0,CW,CH);const g=ctx.createLinearGradient(0,CH*.5,0,CH);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,o+'E6');ctx.fillStyle=g;ctx.fillRect(0,CH*.5,CW,CH*.5);dT(ctx,t,c,o,CH*.7);if(s)dS(ctx,s,c,o,CH*.78)}},fabric:{title:'面料避坑指南',sub:'设计师教你3秒摸出面料好坏',r(ctx,t,s,c,o){if(covImg)ctx.drawImage(covImg,0,0,CW,CH);ctx.fillStyle=o;ctx.fillRect(0,0,120,CH);ctx.fillStyle=o+'E6';rR(ctx,CW*.15,CH*.38,CW*.82,CH*.28,20);ctx.fill();dT(ctx,t,c,o,CH*.5,160);if(s)dS(ctx,s,c,o,CH*.58,160)}},luxury:{title:'柜姐离职后',sub:'才敢说的5个奢侈品消费真相',r(ctx,t,s,c,o){if(covImg)ctx.drawImage(covImg,0,0,CW,CH);const g=ctx.createRadialGradient(CW/2,CH/2,CW*.3,CW/2,CH/2,CW);g.addColorStop(0,'rgba(0,0,0,.1)');g.addColorStop(1,o+'CC');ctx.fillStyle=g;ctx.fillRect(0,0,CW,CH);dT(ctx,t,c,o,CH*.55);if(s)dS(ctx,s,c,o,CH*.63)}},brand:{title:'5个品牌白T横评',sub:'显微镜+燃烧法+甲醛 全方位检测',r(ctx,t,s,c,o){if(covImg){const sz=CW/2;for(let r=0;r<2;r++)for(let c=0;c<2;c++)ctx.drawImage(covImg,c*sz,r*sz,sz,sz,c*sz,r*sz,sz,sz)}ctx.fillStyle=o+'99';for(let r=0;r<2;r++)for(let c=0;c<2;c++)ctx.fillRect(c*CW/2,r*CH/2,CW/2,CH/2);ctx.fillStyle=o+'CC';rR(ctx,CW*.15,CH*.42,CW*.7,CH*.2,24);ctx.fill();dT(ctx,t,'#fff',o,CH*.52);if(s)dS(ctx,s,'#ccc',o,CH*.59)}}};
+function rR(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
+function dT(ctx,t,c,o,y,ox){const yp=y||CH*.75;ctx.fillStyle=c||'#fff';ctx.font="bold 52px 'Noto Sans SC','PingFang SC',sans-serif";ctx.textAlign='center';ctx.shadowColor=o+'80';ctx.shadowBlur=16;ctx.fillText(t,ox||CW/2,yp);ctx.shadowColor='transparent';ctx.shadowBlur=0}
+function dS(ctx,t,c,o,y,ox){ctx.fillStyle=c?c+'CC':'rgba(255,255,255,.85)';ctx.font="28px 'Noto Sans SC','PingFang SC',sans-serif";ctx.textAlign='center';ctx.fillText(t,ox||CW/2,y||CH*.83)}
+function selCT(n){curCT=n;document.querySelectorAll('[data-ct]').forEach(c=>c.classList.remove('selected'));document.querySelector('[data-ct="'+n+'"]')?.classList.add('selected');const t=CTPL[n];if(t){document.getElementById('cT').value=t.title;document.getElementById('cS').value=t.sub}previewC()}
+function ldCI(i){const f=i.files[0];if(!f)return;const rd=new FileReader();rd.onload=e=>{const img=new Image();img.onload=()=>{covImg=img;previewC()};img.src=e.target.result};rd.readAsDataURL(f)}
+function previewC(){const c=document.getElementById('cCanvas'),ctx=c.getContext('2d');ctx.clearRect(0,0,CW,CH);ctx.fillStyle='#0f1a2e';ctx.fillRect(0,0,CW,CH);CTPL[curCT].r(ctx,document.getElementById('cT').value||CTPL[curCT].title,document.getElementById('cS').value,document.getElementById('cC').value,document.getElementById('cO').value)}
+function dlC(){previewC();const a=document.createElement('a');a.download='cover-'+Date.now()+'.png';a.href=document.getElementById('cCanvas').toDataURL('image/png');a.click();saveH('template',curCT,document.getElementById('cT').value);sendToPublish('cover',document.getElementById('cCanvas').toDataURL('image/png'));toast('封面已下载')}
+
+// Settings
+function showSettings(){document.getElementById('settingsModal').classList.remove('hidden')}
+function hideSettings(){document.getElementById('settingsModal').classList.add('hidden')}
+function toggleV(id){const e=document.getElementById(id);e.type=e.type==='password'?'text':'password'}
+function saveStg(){['sPlan','sTts','sVAk','sVSk'].forEach(id=>{const v=document.getElementById(id).value.trim();v?localStorage.setItem(id,v):localStorage.removeItem(id)});hideSettings();chkSt();toast('设置已保存')}
+
+// ── Content → Publish Bridge ──────────────────────────────
+let draftCache = {title:'',copy:'',cover:'',video:'',images:[],hashtags:[]};
+
+async function sendToPublish(type, url){
+  switch(type){
+    case 'copy':
+      draftCache.title = ''; // will be set from first line
+      draftCache.copy = document.getElementById('copyOut').textContent;
+      // Extract first line as title
+      const lines = draftCache.copy.split('\n').filter(Boolean);
+      if(lines.length>0){draftCache.title=lines[0].substring(0,60);draftCache.copy=lines.join('\n')}
+      break;
+    case 'image':
+      if(url){draftCache.images.push(url);if(!draftCache.cover)draftCache.cover=url}
+      break;
+    case 'video':
+      if(url)draftCache.video=url;
+      break;
+    case 'cover':
+      if(url){draftCache.cover=url;draftCache.images.unshift(url)}
+      break;
+  }
+  // Auto-save draft
+  try{
+    const body={id:localStorage.getItem('xhs_draft_id')||null,title:draftCache.title||'未命名',copy:draftCache.copy||'',cover:draftCache.cover||'',video:draftCache.video||'',images:draftCache.images||[],hashtags:draftCache.hashtags||[],status:'draft',publishDate:new Date().toISOString().split('T')[0]};
+    const r=await fetch(API+'/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();
+    localStorage.setItem('xhs_draft_id',p.id);
+    toast('<a onclick="S('publish');editPost(''+p.id+'')" class="underline cursor-pointer">已发送到发布管理 → 点击查看</a>','ok');
+  }catch(e){toast('自动保存草稿失败','err')}
+}
+
+// ── Export to 小红书 ──────────────────────────────────────
+function exportCopy(){
+  const title=document.getElementById('pubTitle').value.trim();
+  const copy=document.getElementById('pubCopy').value.trim();
+  const tags=document.getElementById('pubTags').value.trim();
+  const full=title+'\n\n'+copy+'\n\n'+tags;
+  navigator.clipboard.writeText(full).then(()=>toast('全文已复制！打开小红书粘贴即可','ok'));
+}
+
+function exportCover(){
+  const url=document.getElementById('pubCover').value.trim();
+  if(!url)return toast('请先填入封面图URL','err');
+  // Open in new tab for download
+  const a=document.createElement('a');a.href=url;a.download='cover-'+Date.now()+'.jpg';a.target='_blank';a.click();
+  toast('封面图已打开，右键另存为即可','ok');
+}
+
+function exportImages(){
+  const urls=document.getElementById('pubImages').value.trim();
+  if(!urls)return toast('暂无图片URL','err');
+  navigator.clipboard.writeText(urls).then(()=>toast('图片URL已复制','ok'));
+}
+
+// Cover URL preview
+document.addEventListener('DOMContentLoaded',()=>{
+  const covInput=document.getElementById('pubCover');
+  if(covInput){covInput.addEventListener('input',function(){const v=this.value.trim();const prv=document.getElementById('pubCoverPreview');if(v&&v.startsWith('http')){prv.src=v;prv.classList.remove('hidden')}else{prv.classList.add('hidden')}})};
+  // Init draft cache from localStorage
+  const did=localStorage.getItem('xhs_draft_id');
+  if(did){fetch(API+'/api/posts/'+did).then(r=>r.json()).then(p=>{if(p){draftCache={title:p.title||'',copy:p.copy||'',cover:p.cover||'',video:p.video||'',images:p.images||[],hashtags:p.hashtags||[]}}}).catch(()=>{})}
+})
+
+// ── Publish Management ────────────────────────────────────
+let curPostId = null;
+
+function quickToday(){document.getElementById('pubDate').value=new Date().toISOString().split('T')[0];loadPosts()}
+
+async function loadPosts(){
+  const date=document.getElementById('pubDate').value||new Date().toISOString().split('T')[0];
+  document.getElementById('pubDate').value=date;
+  document.getElementById('pubPDate').value=date;
+  try{
+    const r=await fetch(API+'/api/posts?date='+date);const posts=await r.json();
+    const ct=document.getElementById('pubList');
+    if(!posts.length){ct.innerHTML='<div class="text-center py-8 text-surface-400 text-sm">'+date+' 暂无帖子</div>';return}
+    ct.innerHTML=posts.map(p=>{
+      const icon=p.status==='published'?'✅':'📝';
+      const sel=p.id===curPostId?"border-brand-600 bg-brand-50/50":"border-transparent hover:border-surface-300";
+      return '<div class="flex items-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer transition '+sel+'" onclick="editPost(\''+p.id+'\')"><span class="text-sm">'+icon+'</span><div class="flex-1 min-w-0"><div class="text-sm font-medium text-surface-700 truncate">'+(p.title||'未命名帖子')+'</div><div class="text-xs text-surface-400">'+(p.copy||'').substring(0,40)+'</div></div></div>';
+    }).join('');
+    loadCalendar();
+  }catch(e){toast('加载失败','err')}
+}
+
+async function loadCalendar(){
+  const m=(document.getElementById('pubDate').value||new Date().toISOString().split('T')[0]).substring(0,7);
+  try{
+    const r=await fetch(API+'/api/posts/calendar?month='+m);const dates=await r.json();
+    const ct=document.getElementById('pubCal');const[yy,mm]=m.split('-');const days=new Date(+yy,+mm,0).getDate();
+    let h='<div class="text-surface-400 font-semibold py-1">日</div><div class="text-surface-400 font-semibold py-1">一</div><div class="text-surface-400 font-semibold py-1">二</div><div class="text-surface-400 font-semibold py-1">三</div><div class="text-surface-400 font-semibold py-1">四</div><div class="text-surface-400 font-semibold py-1">五</div><div class="text-surface-400 font-semibold py-1">六</div>';
+    const fd=new Date(+yy,+mm-1,1).getDay();
+    for(let i=0;i<fd;i++)h+='<div></div>';
+    for(let d=1;d<=days;d++){const ds=m+'-'+String(d).padStart(2,'0');const has=dates.includes(ds);h+='<div class="py-1 rounded cursor-pointer text-xs '+(has?'bg-brand-600 text-white font-semibold':'text-surface-600 hover:bg-surface-100')+'" onclick="document.getElementById(\'pubDate\').value=\''+ds+'\';loadPosts()">'+d+'</div>'}
+    ct.innerHTML=h;
+  }catch{}
+}
+
+function newPost(){curPostId=null;['pubId','pubTitle','pubCopy','pubCover','pubVideo','pubImages','pubTags','pubNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('pubStatus').value='draft';document.getElementById('pubEditorTitle').textContent='新建帖子';document.getElementById('pubCoverPreview').classList.add('hidden')}
+
+async function editPost(id){
+  try{const r=await fetch(API+'/api/posts/'+id);const p=await r.json();curPostId=p.id;
+    document.getElementById('pubId').value=p.id;document.getElementById('pubTitle').value=p.title||'';
+    document.getElementById('pubCopy').value=p.copy||'';document.getElementById('pubCover').value=p.cover||'';
+    document.getElementById('pubVideo').value=p.video||'';document.getElementById('pubImages').value=(p.images||[]).join('\n');
+    document.getElementById('pubTags').value=(p.hashtags||[]).join(', ');document.getElementById('pubNotes').value=p.notes||'';
+    document.getElementById('pubStatus').value=p.status||'draft';document.getElementById('pubPDate').value=p.publishDate||'';
+    document.getElementById('pubEditorTitle').textContent='编辑: '+(p.title||'未命名帖子');
+    const prv=document.getElementById('pubCoverPreview');
+    if(p.cover){prv.src=p.cover;prv.classList.remove('hidden')}else{prv.classList.add('hidden')}
+    loadPosts();
+  }catch(e){toast('加载帖子失败','err')}
+}
+
+async function savePost(){
+  const body={id:curPostId,title:document.getElementById('pubTitle').value.trim(),copy:document.getElementById('pubCopy').value.trim(),cover:document.getElementById('pubCover').value.trim(),video:document.getElementById('pubVideo').value.trim(),images:document.getElementById('pubImages').value.split('\n').map(s=>s.trim()).filter(Boolean),hashtags:document.getElementById('pubTags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean),notes:document.getElementById('pubNotes').value.trim(),status:document.getElementById('pubStatus').value,publishDate:document.getElementById('pubPDate').value};
+  try{
+    const r=await fetch(API+'/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();
+    curPostId=p.id;document.getElementById('pubId').value=p.id;document.getElementById('pubEditorTitle').textContent='编辑: '+(p.title||'未命名帖子');
+    loadPosts();toast(body.status==='published'?'已保存并发布！':'草稿已保存');
+  }catch(e){toast('保存失败','err')}
+}
+
+async function deletePost(){
+  if(!curPostId)return toast('请先选择一个帖子','err');
+  if(!confirm('确定删除此帖子？此操作不可撤销。'))return;
+  try{await fetch(API+'/api/posts/'+curPostId,{method:'DELETE'});newPost();loadPosts();toast('已删除')}catch(e){toast('删除失败','err')}
+}
+
+// Init
+document.addEventListener('DOMContentLoaded',()=>{
+  const today=new Date().toISOString().split('T')[0];
+  if(document.getElementById('pubDate'))document.getElementById('pubDate').value=today;
+  if(document.getElementById('pubPDate'))document.getElementById('pubPDate').value=today;
+});
+</script>
+</body>
+</html>

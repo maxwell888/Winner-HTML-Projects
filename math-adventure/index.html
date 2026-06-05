@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="小学数学探险之旅 — 动画互动学习2-6年级数学">
+  <title>🌟 数学探险之旅 — 小学数学动画学习</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>">
+
+  <!-- 基础兜底样式（Tailwind 加载失败时保底） -->
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#F0FDF4;color:#374151;min-height:100vh}
+    .max-w-5xl{max-width:1024px;margin:0 auto}
+    .max-w-4xl{max-width:896px;margin:0 auto}
+    .max-w-2xl{max-width:672px;margin:0 auto}
+    .max-w-lg{max-width:512px;margin:0 auto}
+    .mx-auto{margin-left:auto;margin-right:auto}
+    .px-4{padding-left:1rem;padding-right:1rem}
+    .py-6{padding-top:1.5rem;padding-bottom:1.5rem}
+    .text-center{text-align:center}
+    .bg-white{background:#fff}
+    .rounded-2xl{border-radius:1rem}
+    .rounded-3xl{border-radius:1.5rem}
+    .rounded-xl{border-radius:0.75rem}
+    .rounded-full{border-radius:9999px}
+    .shadow{border:1px solid #E5E7EB}
+    .shadow-lg{border:1px solid #E5E7EB}
+    .p-4{padding:1rem}
+    .p-5{padding:1.25rem}
+    .p-6{padding:1.5rem}
+    .mb-4{margin-bottom:1rem}
+    .mb-6{margin-bottom:1.5rem}
+    .mb-10{margin-bottom:2.5rem}
+    .mt-4{margin-top:1rem}
+    .mt-6{margin-top:1.5rem}
+    .mt-8{margin-top:2rem}
+    .flex{display:flex}
+    .grid{display:grid}
+    .grid-cols-2{grid-template-columns:repeat(2,1fr)}
+    .gap-3{gap:0.75rem}
+    .gap-5{gap:1.25rem}
+    .items-center{align-items:center}
+    .justify-center{justify-content:center}
+    .justify-between{justify-content:space-between}
+    .space-y-3>*+*{margin-top:0.75rem}
+    .font-bold{font-weight:700}
+    .text-lg{font-size:1.125rem}
+    .text-xl{font-size:1.25rem}
+    .text-2xl{font-size:1.5rem}
+    .text-3xl{font-size:1.875rem}
+    .text-4xl{font-size:2.25rem}
+    .text-5xl{font-size:3rem}
+    .text-6xl{font-size:3.75rem}
+    .text-sm{font-size:0.875rem}
+    .text-xs{font-size:0.75rem}
+    .text-gray-300{color:#D1D5DB}
+    .text-gray-400{color:#9CA3AF}
+    .text-gray-500{color:#6B7280}
+    .text-gray-600{color:#4B5563}
+    .text-gray-700{color:#374151}
+    .hidden{display:none}
+    .inline-block{display:inline-block}
+    .cursor-pointer{cursor:pointer}
+    .transition-all{transition:all 0.3s}
+    .duration-300{transition-duration:0.3s}
+    .hover\:scale-105:hover{transform:scale(1.05)}
+    .opacity-60{opacity:0.6}
+    .cursor-not-allowed{cursor:not-allowed}
+    .sticky{position:sticky;top:0;z-index:50}
+    .backdrop-blur-md{backdrop-filter:blur(12px)}
+    .border-b{border-bottom:1px solid #E5E7EB}
+    .min-h-screen{min-height:100vh}
+    button{padding:0.75rem 1.5rem;border-radius:0.75rem;font-weight:700;cursor:pointer;border:none;font-size:1rem}
+    button:hover{opacity:0.9}
+    .bg-emerald-500{background:#10B981;color:#fff}
+    .bg-amber-50{background:#FFFBEB}
+    input{padding:0.75rem;border:2px solid #D1D5DB;border-radius:0.75rem;font-size:1rem}
+    @media(max-width:640px){.grid-cols-2{grid-template-columns:1fr}}
+  </style>
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"
+          onerror="console.warn('Tailwind CDN load failed, using inline fallback styles')">
+  </script>
+  <script>
+    try {
+      tailwind.config = {
+        safelist: [
+          { pattern: /^text-(emerald|green|teal|blue|sky|indigo|purple|violet|pink|red|orange|amber|yellow|slate|gray|zinc|cyan)-(400|500|600|700)$/ },
+          { pattern: /^bg-(emerald|green|teal|blue|sky|indigo|purple|violet|pink|red|orange|amber|yellow|slate|gray|zinc|cyan)-(50|100|200|500)$/ },
+          { pattern: /^border-(emerald|green|teal|blue|sky|indigo|purple|violet|pink|red|orange|amber|yellow|slate|gray|zinc|cyan)-(100|200|300|400|500)$/ },
+          { pattern: /^from-(emerald|green|teal|blue|sky|indigo|purple|violet|pink|red|orange|amber|yellow|slate|gray|zinc|cyan)-(100|400|500)$/ },
+          { pattern: /^to-(emerald|green|teal|blue|sky|indigo|purple|violet|pink|red|orange|amber|yellow|slate|gray|zinc|cyan)-(50|500|600)$/ },
+        ],
+        theme: {
+          extend: {
+            colors: {
+              kid: { green:'#10B981', orange:'#F97316', blue:'#3B82F6', purple:'#8B5CF6', pink:'#EC4899', amber:'#F59E0B' }
+            }
+          }
+        }
+      }
+    } catch(e) {
+      console.warn('Tailwind not available, page will use basic styles');
+    }
+  </script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+        onerror="this.onerror=null;this.href='https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'">
+
+  <!-- canvas-confetti 庆祝特效（双CDN回退） -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"
+          onerror="this.onerror=null;this.src='https://s4.zstatic.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js'">
+  </script>
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen">
+
+  <!-- ===== 顶部导航栏 ===== -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.hash=''">
+        <span class="text-2xl animate-float">🌟</span>
+        <span class="text-lg font-bold bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent hidden sm:inline">
+          数学探险之旅
+        </span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="header-stats" class="flex items-center gap-3 text-sm">
+          <span class="text-gray-400" id="header-stars">⭐ 0</span>
+          <span class="text-gray-400 hidden sm:inline" id="header-streak"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== 主内容区 ===== -->
+  <main id="main-content" class="px-4 py-6 max-w-5xl mx-auto" style="min-height:60vh">
+    <!-- JS 加载中 / 错误回退 -->
+    <div class="flex flex-col items-center justify-center min-h-[50vh]" id="loading-screen">
+      <div class="text-center">
+        <div class="text-6xl mb-4" style="animation: sparkle 1.5s ease-in-out infinite">🌟</div>
+        <p class="text-gray-400 text-lg">正在加载数学探险之旅...</p>
+        <p class="text-gray-300 text-sm mt-2" id="load-status">请稍候...</p>
+        <div id="error-display" class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== 底部状态栏 ===== -->
+  <footer class="text-center py-4 text-xs text-gray-300">
+    <p>🐿️ 小松果陪你学数学 · 每天进步一点点 💪</p>
+  </footer>
+
+  <!-- ===== JavaScript（按依赖顺序加载） ===== -->
+  <script src="data.js" onerror="document.getElementById('load-status').textContent='❌ data.js 加载失败'"></script>
+  <script src="engine.js" onerror="document.getElementById('load-status').textContent='❌ engine.js 加载失败'"></script>
+  <script src="app.js" onerror="document.getElementById('load-status').textContent='❌ app.js 加载失败'"></script>
+
+  <!-- 初始化完成后隐藏加载画面 -->
+  <script>
+    // 全局错误捕获 — 在页面上显示 JS 错误
+    var _errors = [];
+    window.onerror = function(msg, url, line) {
+      _errors.push({msg: msg, url: url, line: line});
+      var el = document.getElementById('error-display');
+      if (el) {
+        el.classList.remove('hidden');
+        el.innerHTML = '⚠️ JS错误: ' + msg + ' (行' + line + ')';
+      }
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        var loading = document.getElementById('loading-screen');
+        if (loading && document.getElementById('main-content').children.length > 1) {
+          loading.style.display = 'none';
+        }
+        document.getElementById('load-status').textContent = '✓ 加载完成';
+        if (_errors.length > 0) {
+          document.getElementById('load-status').textContent = '❌ 有 ' + _errors.length + ' 个错误';
+        }
+      }, 1000);
+    });
+  </script>
+
+  <!-- 更新顶部状态栏 -->
+  <script>
+    // 监听进度变化更新头部显示
+    const updateHeader = () => {
+      try {
+        const raw = localStorage.getItem('math_adventure_progress');
+        if (raw) {
+          const p = JSON.parse(raw);
+          document.getElementById('header-stars').textContent = `⭐ ${p.stars || 0}`;
+          if (p.streak > 1) {
+            document.getElementById('header-streak').textContent = `🔥 ${p.streak}天`;
+          }
+        }
+      } catch(e) {}
+    };
+    // 初始化时更新
+    document.addEventListener('DOMContentLoaded', updateHeader);
+    // 页面路由变化时更新
+    window.addEventListener('hashchange', () => setTimeout(updateHeader, 100));
+  </script>
+
+</body>
+</html>

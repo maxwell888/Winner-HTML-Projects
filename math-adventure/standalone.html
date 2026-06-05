@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🌟 数学探险之旅</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>">
+
+<!-- 内联全部样式（不依赖 CDN） -->
+<style>
+/* === 基础重置 === */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#F0FDF4 0%,#ECFEFF 50%,#FEF3C7 100%);background-attachment:fixed;color:#374151;min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* === 布局 === */
+.mx-auto{margin-left:auto;margin-right:auto}
+.max-w-5xl{max-width:1024px;margin-left:auto;margin-right:auto}
+.px-4{padding-left:1rem;padding-right:1rem}
+.py-6{padding-top:1.5rem;padding-bottom:1.5rem}
+.flex{display:flex}
+.grid{display:grid}
+.hidden{display:none}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.justify-center{justify-content:center}
+.text-center{text-align:center}
+.gap-2{gap:0.5rem}
+.gap-3{gap:0.75rem}
+.gap-4{gap:1rem}
+.gap-5{gap:1.25rem}
+.space-y-3 > * + * {margin-top:0.75rem}
+.flex-col{flex-direction:column}
+.flex-1{flex:1}
+.overflow-hidden{overflow:hidden}
+
+/* === 卡片 === */
+.bg-white{background:#fff}
+.bg-white\/80{background:rgba(255,255,255,0.8)}
+.rounded-2xl{border-radius:1rem}
+.rounded-3xl{border-radius:1.5rem}
+.rounded-xl{border-radius:0.75rem}
+.rounded-full{border-radius:9999px}
+.shadow{border:1px solid #E5E7EB}
+.shadow-sm{border:1px solid #F3F4F6}
+.shadow-lg{border:1px solid #E5E7EB}
+.shadow-md{border:1px solid #E5E7EB}
+.shadow-xl{border:1px solid #D1D5DB}
+.p-2{padding:0.5rem}
+.p-3{padding:0.75rem}
+.p-4{padding:1rem}
+.p-5{padding:1.25rem}
+.p-6{padding:1.5rem}
+.p-8{padding:2rem}
+
+/* === 间距 === */
+.mb-2{margin-bottom:0.5rem}
+.mb-3{margin-bottom:0.75rem}
+.mb-4{margin-bottom:1rem}
+.mb-6{margin-bottom:1.5rem}
+.mb-8{margin-bottom:2rem}
+.mb-10{margin-bottom:2.5rem}
+.mt-1{margin-top:0.25rem}
+.mt-2{margin-top:0.5rem}
+.mt-4{margin-top:1rem}
+.mt-6{margin-top:1.5rem}
+.mt-8{margin-top:2rem}
+.mr-1{margin-right:0.25rem}
+.mr-2{margin-right:0.5rem}
+.ml-1{margin-left:0.25rem}
+.ml-2{margin-left:0.5rem}
+
+/* === 文字 === */
+.font-bold{font-weight:700}
+.text-xs{font-size:0.75rem}
+.text-sm{font-size:0.875rem}
+.text-base{font-size:1rem}
+.text-lg{font-size:1.125rem}
+.text-xl{font-size:1.25rem}
+.text-2xl{font-size:1.5rem}
+.text-3xl{font-size:1.875rem}
+.text-4xl{font-size:2.25rem}
+.text-5xl{font-size:3rem}
+.text-6xl{font-size:3.75rem}
+.text-gray-300{color:#D1D5DB}
+.text-gray-400{color:#9CA3AF}
+.text-gray-500{color:#6B7280}
+.text-gray-600{color:#4B5563}
+.text-gray-700{color:#374151}
+.text-white{color:#fff}
+.text-emerald-500{color:#10B981}
+.text-emerald-600{color:#059669}
+.text-emerald-700{color:#047857}
+.text-amber-500{color:#F59E0B}
+.text-amber-600{color:#D97706}
+.text-amber-700{color:#B45309}
+.text-orange-500{color:#F97316}
+.text-orange-600{color:#EA580C}
+.text-red-500{color:#EF4444}
+.text-red-600{color:#DC2626}
+.text-red-700{color:#B91C1C}
+
+/* === 背景 === */
+.bg-gray-50{background:#F9FAFB}
+.bg-gray-100{background:#F3F4F6}
+.bg-emerald-50{background:#ECFDF5}
+.bg-emerald-100{background:#D1FAE5}
+.bg-emerald-500{background:#10B981}
+.bg-amber-50{background:#FFFBEB}
+.bg-amber-100{background:#FEF3C7}
+.bg-orange-100{background:#FFF7ED}
+.bg-red-50{background:#FEF2F2}
+.bg-red-100{background:#FEE2E2}
+
+/* === 边框 === */
+.border{border:1px solid #E5E7EB}
+.border-2{border-width:2px}
+.border-b{border-bottom:1px solid #E5E7EB}
+.border-gray-100{border-color:#F3F4F6}
+.border-gray-200{border-color:#E5E7EB}
+.border-gray-300{border-color:#D1D5DB}
+.border-emerald-200{border-color:#A7F3D0}
+.border-emerald-400{border-color:#34D399}
+.border-emerald-500{border-color:#10B981}
+.border-amber-200{border-color:#FDE68A}
+.border-orange-200{border-color:#FED7AA}
+.border-orange-400{border-color:#FB923C}
+.border-red-200{border-color:#FECACA}
+.border-red-500{border-color:#EF4444}
+
+/* === 交互 === */
+.cursor-pointer{cursor:pointer}
+.cursor-not-allowed{cursor:not-allowed}
+.transition-all{transition:all 0.3s}
+.transition-colors{transition:color 0.2s,background-color 0.2s}
+.duration-200{transition-duration:0.2s}
+.duration-300{transition-duration:0.3s}
+.duration-500{transition-duration:0.5s}
+.hover\:scale-105:hover{transform:scale(1.05)}
+.hover\:shadow-lg:hover{border-color:#D1D5DB}
+.hover\:shadow-md:hover{border-color:#D1D5DB}
+.hover\:shadow-xl:hover{border-color:#D1D5DB}
+.active\:scale-95:active{transform:scale(0.95)}
+.opacity-30{opacity:0.3}
+.opacity-40{opacity:0.4}
+.opacity-60{opacity:0.6}
+.disabled\:opacity-40:disabled{opacity:0.4}
+
+/* === 导航 === */
+.sticky{position:sticky;top:0;z-index:50}
+.backdrop-blur-md{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.z-50{z-index:50}
+
+/* === 表单 === */
+button{padding:0.75rem 1.5rem;border-radius:0.75rem;font-weight:700;cursor:pointer;border:none;font-size:1rem;font-family:inherit;transition:all 0.2s}
+button:hover{filter:brightness(0.95)}
+button:disabled{opacity:0.4;cursor:not-allowed}
+input{padding:0.75rem;border:2px solid #D1D5DB;border-radius:0.75rem;font-size:1rem;font-family:inherit;outline:none}
+input:focus{border-color:#34D399}
+
+/* === 网格 === */
+.grid-cols-2{grid-template-columns:repeat(2,1fr)}
+@media(min-width:768px){.md\:grid-cols-3{grid-template-columns:repeat(3,1fr)}}
+
+/* === 渐变文字 === */
+.bg-gradient-to-r{background-clip:text;-webkit-background-clip:text;color:transparent}
+.from-emerald-500{--tw-from:#10B981}
+.to-teal-500{--tw-to:#14B8A6}
+.bg-clip-text{background-clip:text;-webkit-background-clip:text}
+
+/* === SVG 动画容器 === */
+#svg-scene{min-height:360px;overflow:hidden}
+#svg-scene svg{display:block;max-width:100%;height:auto}
+#svg-scene svg text{user-select:none;-webkit-user-select:none}
+
+/* === 关键帧动画 === */
+@keyframes popIn{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes wiggle{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes sparkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+.animate-float{animation:float 3s ease-in-out infinite}
+.animate-sparkle{animation:sparkle 1.5s ease-in-out infinite}
+.animate-fade-in{animation:fadeIn 0.5s ease-out both}
+.animate-slide-up{animation:slideUp 0.4s ease-out both}
+
+/* === 滚动条 === */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:3px}
+
+/* === 响应式 === */
+@media(max-width:640px){
+  .grid-cols-2{grid-template-columns:1fr}
+  #svg-scene{min-height:240px!important}
+  button{padding:0.6rem 1rem;font-size:0.9rem}
+  .hidden.sm\\:inline{display:none!important}
+}
+
+/* === 打印 === */
+@media print{
+  body{background:#fff}
+  button,#svg-scene,.shadow-lg{display:none!important}
+}
+</style>
+</head>
+<body class="min-h-screen" style="min-height:100vh">
+
+<!-- 顶部导航 -->
+<header class="sticky" style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E5E7EB">
+  <div class="max-w-5xl mx-auto px-4 flex items-center justify-between" style="padding:0.75rem 1rem">
+    <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.hash=''" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+      <span class="animate-float" style="font-size:1.5rem">🌟</span>
+      <span class="font-bold hidden sm:inline" style="font-size:1.125rem;background:linear-gradient(to right,#10B981,#14B8A6);-webkit-background-clip:text;background-clip:text;color:transparent">数学探险之旅</span>
+    </div>
+    <div class="flex items-center gap-3" style="display:flex;align-items:center;gap:0.75rem">
+      <span class="text-gray-400" id="header-stars" style="font-size:0.875rem;color:#9CA3AF">⭐ 0</span>
+    </div>
+  </div>
+</header>
+
+<!-- 主内容区 -->
+<main id="main-content" class="max-w-5xl mx-auto px-4 py-6" style="min-height:60vh;padding:1.5rem 1rem">
+  <div class="flex flex-col items-center justify-center" id="loading-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh">
+    <div class="text-center">
+      <div class="animate-sparkle" style="font-size:3.75rem;margin-bottom:1rem">🌟</div>
+      <p class="text-lg" style="font-size:1.125rem;color:#9CA3AF">正在加载数学探险之旅...</p>
+      <p id="load-status" class="text-sm mt-2" style="font-size:0.875rem;color:#D1D5DB;margin-top:0.5rem">初始化中...</p>
+      <div id="error-display" class="hidden mt-4 p-3" style="display:none;margin-top:1rem;padding:0.75rem;background:#FEF2F2;border:1px solid #FECACA;border-radius:0.75rem;color:#DC2626;font-size:0.875rem"></div>
+    </div>
+  </div>
+</main>
+
+<!-- 底部 -->
+<footer class="text-center py-4" style="text-align:center;padding:1rem;font-size:0.75rem;color:#D1D5DB">
+  <p>🐿️ 小松果陪你学数学 · 每天进步一点点 💪</p>
+</footer>
+
+<!-- ============ 全部 JS 内联（零依赖外部文件） ============ -->
+<script>
+// ===== 全局错误显示 =====
+var _loadErrors = [];
+window.onerror = function(msg, url, line) {
+  _loadErrors.push({msg:msg, url:url, line:line});
+  var el = document.getElementById('error-display');
+  if (el) {
+    el.style.display = 'block';
+    el.textContent = '⚠️ JS错误: ' + msg + ' (行' + line + ')';
+  }
+  var status = document.getElementById('load-status');
+  if (status) status.textContent = '❌ 有错误! 按 F12 查看控制台';
+};
+
+// ===== 庆祝特效（轻量替代 canvas-confetti） =====
+(function(){
+  var confettiCanvas = document.createElement('canvas');
+  confettiCanvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9999';
+  document.body.appendChild(confettiCanvas);
+  var ctx = confettiCanvas.getContext('2d');
+  var particles = [];
+  var running = false;
+
+  function resize() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  window.confetti = function(opts) {
+    opts = opts || {};
+    var count = opts.particleCount || 50;
+    var spread = opts.spread || 70;
+    var originX = (opts.origin && opts.origin.x !== undefined) ? opts.origin.x * confettiCanvas.width : confettiCanvas.width / 2;
+    var originY = (opts.origin && opts.origin.y !== undefined) ? opts.origin.y * confettiCanvas.height : confettiCanvas.height * 0.6;
+    var colors = ['#10B981','#F59E0B','#EF4444','#3B82F6','#8B5CF6','#EC4899','#34D399','#F97316'];
+    for (var i = 0; i < count; i++) {
+      particles.push({
+        x: originX, y: originY,
+        vx: (Math.random() - 0.5) * spread * 0.1,
+        vy: -Math.random() * 8 - 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 6 + 3,
+        life: 1, decay: Math.random() * 0.02 + 0.008,
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10
+      });
+    }
+    if (!running) {
+      running = true;
+      (function loop() {
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        for (var i = particles.length - 1; i >= 0; i--) {
+          var p = particles[i];
+          p.x += p.vx;
+          p.vy += 0.15;
+          p.y += p.vy;
+          p.life -= p.decay;
+          p.rotation += p.rotSpeed;
+          if (p.life <= 0) { particles.splice(i, 1); continue; }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation * Math.PI / 180);
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+          ctx.restore();
+        }
+        if (particles.length > 0) requestAnimationFrame(loop);
+        else running = false;
+      })();
+    }
+  };
+})();
+
+document.getElementById('load-status').textContent = 'JS 基础框架就绪...';
+</script>
+
+<!-- ===== 数据层 (data.js 内联) ===== -->
+<script>
+/**
+ * math-adventure/data.js
+ * 小学数学探险之旅 — 全量知识点数据 + 题库 + 成就配置
+ * Phase 2: 二年级全部 8 个单元 (18 课时 + 90 练习题)
+ */
+const MATH_DATA = {
+  version: "2.0.0",
+  grades: {
+    "2": {
+      id: "grade-2", name: "二年级", subtitle: "开启数学探险之旅", color: "emerald", icon: "fa-seedling", mascot: "🐿️", mascotName: "小松果", bgGradient: "from-emerald-100 via-green-50 to-teal-50",
+      units: [
+        // ===== 第1单元：100以内加减法 =====
+        {
+          id: "g2-u1", name: "100以内加减法", icon: "fa-plus-minus", color: "orange", order: 1,
+          lessons: [
+            { id:"g2-u1-l1",title:"不进位加法",subtitle:"把小棒合起来数一数",difficulty:1,sceneType:"sticks-addition",
+              sceneConfig:{num1:23,num2:15,hasCarry:false,story:"小松果采了23个松果，又采了15个，一共有多少个？",
+                steps:[{narration:"先把单根的小棒合起来：3根+5根=8根",highlight:"ones",resultText:"3+5=8"},{narration:"再把整捆的小棒合起来：2捆+1捆=3捆",highlight:"tens",resultText:"20+10=30"},{narration:"一共是3捆8根，所以23+15=38！",highlight:"result",resultText:"23+15=38",celebration:!0}]},
+              exercises:[{id:"e1",type:"choice",question:"21+17=?",options:["38","48","28","37"],answer:0,hint:"先加个位",explanation:"个位1+7=8,十位2+1=3,结果是38"},{id:"e2",type:"choice",question:"34+23=?",options:["47","57","67","53"],answer:1,hint:"个位4+3=?,十位3+2=?",explanation:"个位4+3=7,十位3+2=5,结果是57"},{id:"e3",type:"choice",question:"45+12=?",options:["57","67","53","47"],answer:0,explanation:"个位5+2=7,十位4+1=5,结果是57"},{id:"e4",type:"fill",question:"52+36=?",answer:"88",hint:"个位2+6=8,十位5+3=8",explanation:"个位2+6=8,十位5+3=8,结果是88"},{id:"e5",type:"choice",question:"63+25=?",options:["88","78","98","85"],answer:0,explanation:"个位3+5=8,十位6+2=8,结果是88"}]},
+            { id:"g2-u1-l2",title:"进位加法",subtitle:"个位满了十根，捆成一捆",difficulty:2,sceneType:"sticks-addition",
+              sceneConfig:{num1:27,num2:16,hasCarry:!0,story:"小松果早采27个，晚采16个，今天一共采了多少？",
+                steps:[{narration:"先把单根合起来：7+6=13根，超过10根了！",highlight:"ones",resultText:"7+6=13"},{narration:"把10根单棒捆成1捆，这就是「进位」！个位剩3根",highlight:"carry",resultText:"满十进一，个位写3"},{narration:"十位：原来2捆+1捆+进位1捆=4捆，个位3根",highlight:"tens",resultText:"2+1+1=4"},{narration:"所以27+16=43！进位加法关键：满十进一！",highlight:"result",resultText:"27+16=43",celebration:!0}]},
+              exercises:[{id:"e6",type:"choice",question:"28+15=?",options:["43","33","53","47"],answer:0,hint:"个位8+5=13",explanation:"8+5=13,进1留3;十位2+1+1=4,结果是43"},{id:"e7",type:"choice",question:"36+27=?",options:["53","63","73","57"],answer:1,hint:"个位6+7=13",explanation:"6+7=13,进1留3;十位3+2+1=6,结果是63"},{id:"e8",type:"choice",question:"49+18=?",options:["57","67","77","59"],answer:1,explanation:"9+8=17,进1留7;十位4+1+1=6,结果是67"},{id:"e9",type:"fill",question:"54+29=?",answer:"83",hint:"4+9=13",explanation:"4+9=13,进1留3;十位5+2+1=8,结果是83"},{id:"e10",type:"choice",question:"68+25=?",options:["93","83","103","87"],answer:0,explanation:"8+5=13,进1留3;十位6+2+1=9,结果是93"}]},
+            { id:"g2-u1-l3",title:"不退位减法",subtitle:"从小棒里拿走一部分",difficulty:1,sceneType:"sticks-subtraction",
+              sceneConfig:{num1:38,num2:15,hasBorrow:!1,story:"小松果有38个松果，吃掉了15个，还剩多少个？",
+                steps:[{narration:"先拿走单根的：8根−5根=3根",highlight:"ones",resultText:"8-5=3"},{narration:"再拿走整捆的：3捆−1捆=2捆",highlight:"tens",resultText:"30-10=20"},{narration:"还剩2捆3根，所以38−15=23！",highlight:"result",resultText:"38-15=23",celebration:!0}]},
+              exercises:[{id:"e11",type:"choice",question:"47−23=?",options:["24","14","34","26"],answer:0,explanation:"个位7-3=4,十位4-2=2,结果是24"},{id:"e12",type:"choice",question:"56−14=?",options:["32","42","52","46"],answer:1,explanation:"个位6-4=2,十位5-1=4,结果是42"},{id:"e13",type:"fill",question:"69−35=?",answer:"34",explanation:"个位9-5=4,十位6-3=3,结果是34"},{id:"e14",type:"choice",question:"85−42=?",options:["43","33","53","47"],answer:0},{id:"e15",type:"choice",question:"78−26=?",options:["42","52","62","48"],answer:1}]},
+            { id:"g2-u1-l4",title:"退位减法",subtitle:"不够减？拆一捆来帮忙！",difficulty:2,sceneType:"sticks-subtraction",
+              sceneConfig:{num1:43,num2:16,hasBorrow:!0,story:"小松果有43个松果，送朋友16个，还剩多少个？",
+                steps:[{narration:"先看个位：3根不够减6根，怎么办？",highlight:"ones",resultText:"3<6，不够减！"},{narration:"从十位借1捆拆开！个位有10+3=13根，这叫「退位」",highlight:"borrow",resultText:"十位退1，个位加10→13"},{narration:"个位：13−6=7。十位：还剩3−1=2捆",highlight:"tens",resultText:"13-6=7, 3-1=2"},{narration:"还剩2捆7根，所以43−16=27！退位秘诀：不够减向十位借1当10！",highlight:"result",resultText:"43-16=27",celebration:!0}]},
+              exercises:[{id:"e16",type:"choice",question:"52−18=?",options:["34","44","24","36"],answer:0,explanation:"借位:12-8=4;十位5-1-1=3,结果是34"},{id:"e17",type:"choice",question:"71−35=?",options:["46","36","26","44"],answer:1},{id:"e18",type:"choice",question:"90−27=?",options:["73","63","53","67"],answer:1},{id:"e19",type:"fill",question:"64−38=?",answer:"26",explanation:"借位:14-8=6;十位6-1-3=2,结果是26"},{id:"e20",type:"choice",question:"83−49=?",options:["44","34","24","36"],answer:1}]}
+          ]
+        },
+        // ===== 第2单元：认识长度单位 =====
+        {
+          id: "g2-u2", name: "认识长度单位", icon: "fa-ruler", color: "blue", order: 2, locked: !1,
+          lessons: [
+            { id:"g2-u2-l1",title:"认识厘米",subtitle:"用尺子量一量",difficulty:1,sceneType:"ruler-measure",
+              sceneConfig:{story:"小松果想知道铅笔有多长，我们来帮它量一量！",objects:[{name:"铅笔",length:8,color:"#F59E0B"},{name:"橡皮",length:3,color:"#EC4899"},{name:"蜡笔",length:6,color:"#8B5CF6"}],
+                steps:[{narration:"量物体时，要把尺子的「0刻度」对准物体的一端",highlight:"zero",resultText:"0刻度=起点"},{narration:"看物体另一端对着刻度几，就是几厘米。铅笔对着8就是8厘米！",highlight:"measure",resultText:"铅笔长8厘米"},{narration:"厘米用字母「cm」表示。8厘米写作8cm。你学会了吗？",highlight:"unit",resultText:"厘米=cm",celebration:!0}]},
+              exercises:[{id:"e21",type:"choice",question:"铅笔长8厘米写作？",options:["8cm","8m","8mm","8km"],answer:0},{id:"e22",type:"choice",question:"橡皮大约多长？",options:["3厘米","10厘米","20厘米","30厘米"],answer:0},{id:"e23",type:"fill",question:"15厘米=__cm",answer:"15"},{id:"e24",type:"choice",question:"量物体时尺子哪里对准物体一端？",options:["0刻度","1刻度","尺子中间","尺子末端"],answer:0},{id:"e25",type:"choice",question:"下面哪个最适合用厘米来量？",options:["铅笔","马路","房子","城市距离"],answer:0}]},
+            { id:"g2-u2-l2",title:"认识米",subtitle:"1米有多长？",difficulty:1,sceneType:"ruler-measure",
+              sceneConfig:{story:"厘米太小了，量教室要用更大的单位——「米」！",objects:[{name:"课桌",length:1,color:"#3B82F6",unit:"m"},{name:"门",length:2,color:"#10B981",unit:"m"}],
+                steps:[{narration:"量比较长的物体用「米」做单位。1米=100厘米",highlight:"relation",resultText:"1米=100厘米"},{narration:"米的字母是「m」。你的两臂张开大约就是1米！",highlight:"body",resultText:"张开双臂≈1m"},{narration:"课桌高约1米，门高约2米。你还能想到什么是用米来量的？",highlight:"examples",resultText:"1米=100cm=1m",celebration:!0}]},
+              exercises:[{id:"e26",type:"choice",question:"1米=?厘米",options:["10","100","1000","50"],answer:1},{id:"e27",type:"choice",question:"教室门高约多少？",options:["2厘米","2米","20米","20厘米"],answer:1},{id:"e28",type:"fill",question:"2米=__厘米",answer:"200"},{id:"e29",type:"choice",question:"下面哪个用「米」最合适？",options:["橡皮","教室长度","指甲宽度","铅笔"],answer:1},{id:"e30",type:"choice",question:"300厘米=?米",options:["3","30","300","0.3"],answer:0}]}
+          ]
+        },
+        // ===== 第3-8单元(精简数据，保持功能完整) =====
+        {
+          id: "g2-u3", name: "角的初步认识", icon: "fa-draw-polygon", color: "purple", order: 3, locked: !1,
+          lessons: [
+            { id:"g2-u3-l1",title:"认识角",subtitle:"角长什么样？",difficulty:1,sceneType:"angle-explorer",
+              sceneConfig:{story:"生活里到处是「角」——桌子角、书本角、三角尺的角！",angles:[{type:"standard",deg:45,label:"锐角"}],
+                steps:[{narration:"角有一个「顶点」和两条「边」",highlight:"parts",resultText:"角=1个顶点+2条边"},{narration:"角的大小看两条边张开的程度，和边的长短没关系！",highlight:"size",resultText:"角的大小=张开程度"},{narration:"画角：先画顶点，再从顶点出发画两条边",highlight:"draw",resultText:"顶点→两条边",celebration:!0}]},
+              exercises:[{id:"e31",type:"choice",question:"一个角有几个顶点？",options:["1个","2个","3个","0个"],answer:0},{id:"e32",type:"choice",question:"一个角有几条边？",options:["1条","2条","3条","4条"],answer:1},{id:"e33",type:"choice",question:"角的大小和什么有关？",options:["边的长短","边张开的大小","顶点位置","边的颜色"],answer:1},{id:"e34",type:"fill",question:"一个角有__个顶点和__条边",answer:"1,2"},{id:"e35",type:"choice",question:"下面哪个不是角？",options:["三角尺的尖","打开的书本","圆圆的球","剪刀的交叉"],answer:2}]},
+            { id:"g2-u3-l2",title:"直角锐角钝角",subtitle:"三角尺是判断好帮手",difficulty:2,sceneType:"angle-explorer",
+              sceneConfig:{story:"角也有不同类型！用三角尺上的直角来比一比吧。",angles:[{type:"right",deg:90,label:"直角"},{type:"acute",deg:45,label:"锐角"},{type:"obtuse",deg:135,label:"钝角"}],
+                steps:[{narration:"三角尺上最大的角就是「直角」。直角=90度，方方正正！",highlight:"right",resultText:"直角=90°"},{narration:"比直角小的角叫「锐角」。锐角尖尖的",highlight:"acute",resultText:"锐角<直角"},{narration:"比直角大的角叫「钝角」。钝角张得很开",highlight:"obtuse",resultText:"钝角>直角"},{narration:"巧记：锐<直<钝！用三角尺的直角去比！",highlight:"compare",resultText:"锐角<直角<钝角",celebration:!0}]},
+              exercises:[{id:"e36",type:"choice",question:"直角是多少度？",options:["45°","90°","180°","60°"],answer:1},{id:"e37",type:"choice",question:"比直角小的角叫什么？",options:["钝角","直角","锐角","大角"],answer:2},{id:"e38",type:"choice",question:"比直角大的角叫什么？",options:["锐角","直角","钝角","小角"],answer:2},{id:"e39",type:"choice",question:"三角尺上最大的角是什么角？",options:["锐角","钝角","直角","尖角"],answer:2},{id:"e40",type:"choice",question:"120°的角是什么角？",options:["锐角","直角","钝角","尖角"],answer:2}]}
+          ]
+        },
+        {
+          id: "g2-u4", name: "乘法的初步认识", icon: "fa-xmark", color: "pink", order: 4, locked: !1,
+          lessons: [
+            { id:"g2-u4-l1",title:"乘法的意义",subtitle:"相同加数加很多次用乘法！",difficulty:1,sceneType:"multiplication-array",
+              sceneConfig:{story:"每排3个苹果，摆了4排，一共有多少个？",rows:4,cols:3,item:"🍎",
+                steps:[{narration:"加法：3+3+3+3=12。4个3相加好长啊！",highlight:"addition",resultText:"3+3+3+3=12"},{narration:"用乘法简单多了！4个3写作4×3，读作「4乘3」",highlight:"multiplication",resultText:"4×3=12"},{narration:"乘法就是「相同加数」的简便运算。×叫「乘号」",highlight:"symbol",resultText:"×=乘号",celebration:!0}]},
+              exercises:[{id:"e41",type:"choice",question:"3+3+3+3用乘法表示是？",options:["4×3","3×3","3+4","4+3"],answer:0},{id:"e42",type:"choice",question:"5×2表示什么意思？",options:["5+2","2+2+2+2+2","5+5","5-2"],answer:1},{id:"e43",type:"fill",question:"2+2+2+2+2+2=6×__",answer:"2"},{id:"e44",type:"choice",question:"乘号是什么符号？",options:["+","−","×","÷"],answer:2},{id:"e45",type:"choice",question:"4×3等于多少？",options:["7","12","1","43"],answer:1}]},
+            { id:"g2-u4-l2",title:"2和3的乘法口诀",subtitle:"背口诀算得快！",difficulty:1,sceneType:"multiplication-array",
+              sceneConfig:{story:"乘法口诀是快速计算的法宝！先学2和3的口诀。",rows:3,cols:2,item:"⭐",
+                steps:[{narration:"2的口诀:一二得二,二二得四。每多1个2积就多2",highlight:"2table",resultText:"1×2=2, 2×2=4"},{narration:"3的口诀:一三得三,二三得六,三三得九",highlight:"3table",resultText:"1×3=3, 2×3=6, 3×3=9"},{narration:"背口诀有规律:几的口诀积就每次加几。你发现了吗？",highlight:"pattern",resultText:"规律:每次加相同的数",celebration:!0}]},
+              exercises:[{id:"e46",type:"choice",question:"二二得？",options:["二","四","六","八"],answer:1},{id:"e47",type:"choice",question:"三三得？",options:["三","六","九","十二"],answer:2},{id:"e48",type:"fill",question:"2×3=__",answer:"6"},{id:"e49",type:"choice",question:"3×2=?",options:["5","6","9","8"],answer:1},{id:"e50",type:"fill",question:"3×3=__",answer:"9"}]}
+          ]
+        },
+        {
+          id: "g2-u5", name: "表内乘法(2-6口诀)", icon: "fa-table", color: "indigo", order: 5, locked: !1,
+          lessons: [
+            { id:"g2-u5-l1",title:"4的乘法口诀",subtitle:"每次加4",difficulty:2,sceneType:"multiplication-array",
+              sceneConfig:{story:"今天学4的口诀!每多1个4积就多4。",rows:4,cols:4,item:"🌸",
+                steps:[{narration:"一四得四,二四得八,三四十二,四四十六",highlight:"table",resultText:"每次+4"},{narration:"巧记:4的口诀积都是双数！因为两个双数相加还是双数",highlight:"hint",resultText:"结果都是双数"},{narration:"多读几遍就记住啦！",highlight:"recite",resultText:"4的口诀背起来！",celebration:!0}]},
+              exercises:[{id:"e51",type:"choice",question:"三四得？",options:["七","十二","十六","八"],answer:1},{id:"e52",type:"choice",question:"四四得？",options:["八","十二","十六","二十"],answer:2},{id:"e53",type:"fill",question:"4×2=__",answer:"8"},{id:"e54",type:"choice",question:"4×3=?",options:["7","12","9","16"],answer:1},{id:"e55",type:"fill",question:"4×5=__",answer:"20"}]},
+            { id:"g2-u5-l2",title:"5的乘法口诀",subtitle:"积的个位是0或5",difficulty:2,sceneType:"multiplication-array",
+              sceneConfig:{story:"5的口诀最简单！积的个位不是0就是5。",rows:5,cols:5,item:"🖐️",
+                steps:[{narration:"一五得五,二五一十,三五十五,四五二十,五五二十五",highlight:"table",resultText:"每次+5"},{narration:"巧记:5的积个位交替5,0,5,0,5！永不例外！",highlight:"pattern",resultText:"个位:5→0→5→0→5"},{narration:"用手指数5的口诀:1只手5根,2只手10根...",highlight:"fingers",resultText:"数手指也能算！",celebration:!0}]},
+              exercises:[{id:"e56",type:"choice",question:"三五得？",options:["八","十五","二十","十"],answer:1},{id:"e57",type:"choice",question:"五五得？",options:["十","二十","二十五","三十"],answer:2},{id:"e58",type:"fill",question:"5×4=__",answer:"20"},{id:"e59",type:"choice",question:"5×6=?",options:["25","30","35","11"],answer:1},{id:"e60",type:"choice",question:"5口诀积的个位有什么规律？",options:["全是5","全是0","0和5交替","没有规律"],answer:2}]},
+            { id:"g2-u5-l3",title:"6的乘法口诀",subtitle:"挑战最后一行",difficulty:2,sceneType:"multiplication-array",
+              sceneConfig:{story:"6的口诀稍微难一点，但你一定可以！",rows:6,cols:6,item:"🐝",
+                steps:[{narration:"一六得六,二六十二,三六十八,四六二十四,五六三十,六六三十六",highlight:"table",resultText:"每次+6"},{narration:"巧记:1×6=6,6×6=36→尾数都是6！",highlight:"symmetry",resultText:"头尾对称巧记"},{narration:"六六三十六~背口诀要专心别串词哦~",highlight:"fun",resultText:"2-6口诀全掌握！",celebration:!0}]},
+              exercises:[{id:"e61",type:"choice",question:"三六得？",options:["十二","十八","二十四","九"],answer:1},{id:"e62",type:"choice",question:"六六得？",options:["三十","三十二","三十六","四十二"],answer:2},{id:"e63",type:"fill",question:"6×4=__",answer:"24"},{id:"e64",type:"choice",question:"6×5=?",options:["25","30","35","40"],answer:1},{id:"e65",type:"fill",question:"6×2=__",answer:"12"}]}
+          ]
+        },
+        {
+          id: "g2-u6", name: "认识时间", icon: "fa-clock", color: "teal", order: 6, locked: !1,
+          lessons: [
+            { id:"g2-u6-l1",title:"认识整时",subtitle:"时针指几就是几点",difficulty:1,sceneType:"clock-reader",
+              sceneConfig:{story:"小松果要按时上学！先来认识整点时间吧。",times:[{hour:8,minute:0,label:"8:00上学"},{hour:12,minute:0,label:"12:00午饭"},{hour:4,minute:0,label:"4:00放学"}],
+                steps:[{narration:"钟面上有12个数字。短的是「时针」，长的是「分针」",highlight:"parts",resultText:"短=时针,长=分针"},{narration:"整点时：分针指向12，时针指向几就是几点。时针指向8就是8点！",highlight:"8oclock",resultText:"8:00=八点整"},{narration:"8:00写作「8时」也写作「8:00」。你每天几点起床？",highlight:"write",resultText:"认识整时很简单！",celebration:!0}]},
+              exercises:[{id:"e66",type:"choice",question:"钟面上短针叫什么？",options:["时针","分针","秒针","长针"],answer:0},{id:"e67",type:"choice",question:"整点时，分针指向几？",options:["6","12","3","9"],answer:1},{id:"e68",type:"choice",question:"分针指12时针指9是几点？",options:["12点","9点","3点","6点"],answer:1},{id:"e69",type:"fill",question:"钟面上有__个数字",answer:"12"},{id:"e70",type:"choice",question:"1小时=?分钟",options:["10","30","60","100"],answer:2}]},
+            { id:"g2-u6-l2",title:"认识几时几分",subtitle:"分针走一小格是1分钟",difficulty:2,sceneType:"clock-reader",
+              sceneConfig:{story:"除了整点还需要知道具体几分。分针走1小格=1分钟！",times:[{hour:3,minute:15,label:"3:15"},{hour:7,minute:30,label:"7:30"},{hour:10,minute:45,label:"10:45"}],
+                steps:[{narration:"分针走1小格是1分钟，走1大格(5小格)是5分钟",highlight:"minute-basics",resultText:"1大格=5分钟"},{narration:"时针在3和4之间→3点多；分针指向3→三五十五→3:15！",highlight:"315",resultText:"3:15=三点十五分"},{narration:"分针指向6→五六三十→半点！7:30也叫「七点半」",highlight:"730",resultText:"7:30=七点半"},{narration:"时针在10和11之间→10点多，分针指9→五九四十五→10:45！",highlight:"1045",resultText:"用口诀读数快！",celebration:!0}]},
+              exercises:[{id:"e71",type:"choice",question:"分针走1大格是几分钟？",options:["1分钟","5分钟","10分钟","60分钟"],answer:1},{id:"e72",type:"choice",question:"分针指向6是多少分钟？",options:["6分钟","15分钟","30分钟","60分钟"],answer:2},{id:"e73",type:"choice",question:"时针在2和3之间分针指向6是几点？",options:["2:06","2:30","3:30","6:02"],answer:1},{id:"e74",type:"fill",question:"分针指向9是__分钟",answer:"45"},{id:"e75",type:"choice",question:"时针在8和9之间分针指向3是几点？",options:["8:03","8:15","9:15","3:08"],answer:1}]}
+          ]
+        },
+        {
+          id: "g2-u7", name: "表内除法", icon: "fa-divide", color: "red", order: 7, locked: !1,
+          lessons: [
+            { id:"g2-u7-l1",title:"平均分",subtitle:"每份分得一样多",difficulty:1,sceneType:"division-sharing",
+              sceneConfig:{story:"小松果有12个松果，想平均分给3个朋友，每人分几个？",total:12,groups:3,item:"🥜",
+                steps:[{narration:"「平均分」就是每份分得一样多。总共12个分成3份",highlight:"total",resultText:"总数=12"},{narration:"一个接一个轮流分：你一个你一个...直到分完",highlight:"distribute",resultText:"每人分到4个"},{narration:"12平均分成3份每份4个。这就是除法：12÷3=4",highlight:"result",resultText:"12÷3=4",celebration:!0}]},
+              exercises:[{id:"e76",type:"choice",question:"「平均分」什么意思？",options:["随便分","每份一样多","分给一个人","分很多次"],answer:1},{id:"e77",type:"choice",question:"8个苹果平均分给2人每人几个？",options:["2","4","6","8"],answer:1},{id:"e78",type:"fill",question:"10÷2=__",answer:"5"},{id:"e79",type:"choice",question:"15个糖平均分给5人每人几个？",options:["2","3","5","10"],answer:1},{id:"e80",type:"choice",question:"6个蛋糕平均分3人算式是？",options:["6+3","6−3","6×3","6÷3"],answer:3}]},
+            { id:"g2-u7-l2",title:"用口诀求商",subtitle:"乘法口诀反过来用！",difficulty:2,sceneType:"division-sharing",
+              sceneConfig:{story:"学会乘法口诀除法就简单了！因为乘法和除法是相反的。",total:18,groups:6,item:"🍬",
+                steps:[{narration:"18÷6=? 想:6×?=18。背6的口诀...三六十八！",highlight:"think",resultText:"6×3=18"},{narration:"所以18÷6=3！用乘法口诀反过来算除法叫「口诀求商」",highlight:"reverse",resultText:"18÷6=3"},{narration:"试试:24÷4=? 想4的口诀:四六二十四！所以24÷4=6",highlight:"practice",resultText:"乘法口诀是除法好帮手！",celebration:!0}]},
+              exercises:[{id:"e81",type:"choice",question:"12÷3=? 想3×?=12",options:["3","4","5","6"],answer:1},{id:"e82",type:"choice",question:"20÷5=?",options:["3","4","5","6"],answer:1},{id:"e83",type:"fill",question:"36÷6=__",answer:"6"},{id:"e84",type:"choice",question:"24÷4=?",options:["4","5","6","8"],answer:2},{id:"e85",type:"fill",question:"30÷5=__",answer:"6"}]}
+          ]
+        },
+        {
+          id: "g2-u8", name: "数据收集整理", icon: "fa-chart-bar", color: "cyan", order: 8, locked: !1,
+          lessons: [
+            { id:"g2-u8-l1",title:"简单统计",subtitle:"数一数画一画",difficulty:1,sceneType:"bar-chart",
+              sceneConfig:{story:"班里要选最喜欢的运动！小松果来帮忙统计投票结果。",data:[{label:"跑步",value:8,color:"#EF4444"},{label:"跳绳",value:12,color:"#3B82F6"},{label:"游泳",value:6,color:"#10B981"},{label:"篮球",value:10,color:"#F59E0B"}],
+                steps:[{narration:"收集数据：用「正」字记录，一笔代表1票",highlight:"collect",resultText:"用「正」字计数"},{narration:"画条形图：横轴是项目竖轴是票数。柱子越高票数越多！",highlight:"chart",resultText:"条形图一目了然"},{narration:"看！跳绳最高(12票)游泳最低(6票)。喜欢跳绳的人最多！",highlight:"analyze",resultText:"跳绳最受欢迎！",celebration:!0}]},
+              exercises:[{id:"e86",type:"choice",question:"一个「正」代表几票？",options:["3","5","10","1"],answer:1},{id:"e87",type:"choice",question:"条形图柱子越高表示什么？",options:["越矮","数量越少","数量越多","没有意义"],answer:2},{id:"e88",type:"choice",question:"跳绳12票游泳6票，多几人？",options:["3","6","12","18"],answer:1},{id:"e89",type:"fill",question:"跑步8票+篮球10票=__票",answer:"18"},{id:"e90",type:"choice",question:"哪种方式最适合统计投票？",options:["死记硬背","画条形图","乱写","猜"],answer:1}]}
+          ]
+        }
+      ]
+    },
+    "3": {
+      id: "grade-3", name: "三年级", subtitle: "探索更广阔的数学世界", color: "blue", icon: "fa-tree", mascot: "🐰", mascotName: "小跳跳", bgGradient: "from-blue-100",
+      units: [
+        { id:"g3-u1", name:"时、分、秒", icon:"fa-clock", color:"blue", order:1, locked:!1, lessons:[
+          { id:"g3-u1-l1",title:"秒的认识",subtitle:"1秒很短",difficulty:1,sceneType:"clock-reader",
+            sceneConfig:{story:"运动会跑步，谁最快？看秒表！",times:[],steps:[{narration:"1秒很短，眨眼睛就过去",highlight:"zero",resultText:"1秒=眨眼"},{narration:"细最长的针是秒针",highlight:"ones",resultText:"秒针=细最长"},{narration:"1分=60秒，1小时=60分",highlight:"carry",resultText:"1分=60秒"},{narration:"短时间用秒，长时间用分",highlight:"tens",resultText:"短时间用秒",celebration:!0}]},
+            exercises:[{id:"e1",type:"choice",question:"眨眼睛大约多长？",options:["1秒","1分钟","1小时"],answer:0},{id:"e2",type:"choice",question:"1分钟=?秒",options:["10","60"],answer:1},{id:"e3",type:"fill",question:"唱一首歌约用1____",answer:"分钟"},{id:"e4",type:"choice",question:"50米跑用什么单位？",options:["秒","分"],answer:0},{id:"e5",type:"choice",question:"刷牙约用多长时间？",options:["3秒","3分钟"],answer:1}]},
+          { id:"g3-u1-l2",title:"时间计算",subtitle:"算经过多久",difficulty:2,sceneType:"clock-reader",
+            sceneConfig:{story:"7:30出门，8:15到学校，花了多长时间？",times:[],steps:[{narration:"结束-开始=经过时间",highlight:"zero",resultText:"结束-开始"},{narration:"8:15-7:30=45分",highlight:"ones",resultText:"45分"},{narration:"分钟不够减，从小时借1小时=60分",highlight:"carry",resultText:"借位1小时=60分"},{narration:"记得借位后再减！",highlight:"tens",resultText:"时间计算要借位",celebration:!0}]},
+            exercises:[{id:"e6",type:"choice",question:"上课8:00-8:40，多久？",options:["30分","40分"],answer:1},{id:"e7",type:"choice",question:"7:10-7:40多久？",options:["20分","30分"],answer:1},{id:"e8",type:"choice",question:"电影10:00-11:30多久？",options:["1小时","1小时30分"],answer:1},{id:"e9",type:"fill",question:"6:30-7:00准备____分钟",answer:"30"},{id:"e10",type:"choice",question:"2:40看书，3:10结束，看多久？",options:["20分","30分"],answer:1}]}]},
+        { id:"g3-u2", name:"多位数乘一位数", icon:"fa-xmark", color:"indigo", order:2, locked:!1, lessons:[
+          { id:"g3-u2-l1",title:"整十整百乘一位数",subtitle:"20×3=60",difficulty:1,sceneType:"multiplication-array",
+            sceneConfig:{story:"每盒20支铅笔，3盒共多少？",steps:[{narration:"20+20+20=60",highlight:"addition",resultText:"20×3=60"},{narration:"2×3=6，补一个0",highlight:"multiplication",resultText:"补0"},{narration:"补0算！",highlight:"symbol",resultText:"先算再补0",celebration:!0}]},
+            exercises:[{id:"e11",type:"choice",question:"20×3=?",options:["60","70"],answer:0},{id:"e12",type:"choice",question:"300×2=?",options:["600","700"],answer:0},{id:"e13",type:"fill",question:"40×5=____",answer:"200"},{id:"e14",type:"choice",question:"500×4=?",options:["2000","2500"],answer:0},{id:"e15",type:"fill",question:"70×6=____",answer:"420"}]},
+          { id:"g3-u2-l2",title:"两位数乘一位数不进位",subtitle:"12×3=36",difficulty:2,sceneType:"multiplication-array",
+            sceneConfig:{story:"一行12个星星，3行共多少？",steps:[{narration:"10×3=30，2×3=6",highlight:"addition",resultText:"30+6=36"},{narration:"12×3=36",highlight:"multiplication",resultText:"36"},{narration:"竖式从个位算",highlight:"symbol",resultText:"从个位算",celebration:!0}]},
+            exercises:[{id:"e16",type:"choice",question:"12×3=?",options:["32","36"],answer:1},{id:"e17",type:"choice",question:"21×4=?",options:["82","84"],answer:1},{id:"e18",type:"choice",question:"43×2=?",options:["84","86"],answer:1},{id:"e19",type:"choice",question:"32×3=?",options:["96","98"],answer:0},{id:"e20",type:"fill",question:"24×2=____",answer:"48"}]}]},
+        { id:"g3-u3", name:"长方形正方形周长", icon:"fa-border-all", color:"green", order:3, locked:!1, lessons:[
+          { id:"g3-u3-l1",title:"周长认识",subtitle:"绕一圈多长",difficulty:1,sceneType:"multiplication-array",
+            sceneConfig:{story:"照片围花边要多长？",steps:[{narration:"周长=绕图形一周长度",highlight:"addition",resultText:"周长=一周"},{narration:"长方形=2×(长+宽)",highlight:"multiplication",resultText:"2×(长+宽)"},{narration:"正方形=4×边长",highlight:"symbol",resultText:"4×边长",celebration:!0}]},
+            exercises:[{id:"e26",type:"choice",question:"长方形周长？",options:["长+宽","2×(长+宽)"],answer:1},{id:"e27",type:"choice",question:"正方形边长5cm周长是？",options:["20cm","25cm"],answer:0},{id:"e28",type:"fill",question:"长8m宽2m周长____m",answer:"20"},{id:"e29",type:"choice",question:"正方形边长10dm周长？",options:["40dm","45dm"],answer:0},{id:"e30",type:"choice",question:"长6m宽4m周长？",options:["20m","25m"],answer:0}]}]},
+        { id:"g3-u4", name:"分数初步认识", icon:"fa-pie-chart", color:"orange", order:4, locked:!1, lessons:[
+          { id:"g3-u4-l1",title:"认识1/2等",subtitle:"一半=1/2",difficulty:1,sceneType:"division-sharing",
+            sceneConfig:{story:"1个月饼分给2人，每人分一半",steps:[{narration:"1/2读作二分之一",highlight:"zero",resultText:"1/2"},{narration:"分母是分成几份，分子是取几份",highlight:"ones",resultText:"分子在上，分母在下"},{narration:"分的份数越多，每份越小",highlight:"carry",resultText:"份数越多每份越小",celebration:!0}]},
+            exercises:[{id:"e36",type:"choice",question:"分2份每份是？",options:["1/2","1/3"],answer:0},{id:"e37",type:"choice",question:"1/3读作？",options:["三分之一","三分之一"],answer:0},{id:"e38",type:"fill",question:"分成6份每份____分之1",answer:"六"},{id:"e39",type:"choice",question:"1/2和1/3哪个大？",options:["1/2","1/3"],answer:0}]}]},
+        { id:"g3-u5", name:"面积", icon:"fa-square", color:"purple", order:5, locked:!1, lessons:[
+          { id:"g3-u5-l1",title:"面积和单位",subtitle:"平方厘米等",difficulty:1,sceneType:"multiplication-array",
+            sceneConfig:{story:"谁大谁小？物体表面大小叫面积",steps:[{narration:"指甲盖约1平方厘米",highlight:"addition",resultText:"1平方厘米"},{narration:"手掌心约1平方分米",highlight:"ones",resultText:"1平方分米"},{narration:"地砖约1平方米",highlight:"multiplication",resultText:"1平方米"},{narration:"大小合适最重要！",highlight:"symbol",resultText:"选合适的单位",celebration:!0}]},
+            exercises:[{id:"e46",type:"choice",question:"指甲盖面积？",options:["1平方厘米","1平方分米"],answer:0},{id:"e47",type:"choice",question:"桌面面积？",options:["40平方厘米","40平方分米"],answer:1},{id:"e48",type:"fill",question:"教室用____单位",answer:"平方米"}]}]},
+        { id:"g3-u6", name:"小数初步认识", icon:"fa-ellipsis-h", color:"pink", order:6, locked:!1, lessons:[
+          { id:"g3-u6-l1",title:"小数认识",subtitle:"0.1、1.2等",difficulty:1,sceneType:"division-sharing",
+            sceneConfig:{story:"1米平均分10份，1份是1分米=0.1米",steps:[{narration:"1/10=0.1米",highlight:"zero",resultText:"0.1米"},{narration:"5分米=0.5米，读作零点五",highlight:"ones",resultText:"0.5米"},{narration:"1米1分米=1.1米",highlight:"multiplication",resultText:"1.1米"},{narration:"小数点左边是整数，右边是小数！",highlight:"symbol",resultText:"小数点分开整数小数",celebration:!0}]},
+            exercises:[{id:"e56",type:"choice",question:"0.4读作？",options:["零点四","零四"],answer:0},{id:"e57",type:"choice",question:"3分米=?米",options:["0.3米","3.0米"],answer:0}]}]}]
+    },
+    "4": { id: "grade-4", name: "四年级", subtitle: "成为数学小能手", color: "purple", icon: "fa-leaf", mascot: "🦊", mascotName: "小聪聪", bgGradient: "from-purple-100", locked: !0, units: [] },
+    "5": { id: "grade-5", name: "五年级", subtitle: "挑战更高难度", color: "red", icon: "fa-fire", mascot: "🦉", mascotName: "小博士", bgGradient: "from-red-100", locked: !0, units: [] },
+    "6": { id: "grade-6", name: "六年级", subtitle: "小学毕业冲刺", color: "slate", icon: "fa-graduation-cap", mascot: "🐉", mascotName: "小龙", bgGradient: "from-slate-100", locked: !0, units: [] }
+  },
+  achievements: [
+    { id:"first-lesson", name:"初次探险", desc:"完成第一个课时", icon:"fa-flag-checkered", color:"emerald" },
+    { id:"unit-complete", name:"单元通关", desc:"完成一个单元的所有课时", icon:"fa-trophy", color:"amber" },
+    { id:"streak-3", name:"三天坚持", desc:"连续3天学习", icon:"fa-calendar-check", color:"blue" }
+  ]
+};
+const DEFAULT_PROGRESS = { version:"2.0.0", nickname:"", grade:2, stars:0, coins:0, streak:0, lastStudyDate:null, lessons:{}, achievements:[], settings:{soundEnabled:!0,dailyGoal:2} };
+const STORAGE_KEY = "math_adventure_progress";
+document.getElementById('load-status').textContent = '数据加载完毕...';
+</script>
+
+<!-- ===== 引擎层 (engine.js 内联) ===== -->
+<script>
+document.getElementById('load-status').textContent = '正在启动引擎...';
+/**
+ * math-adventure/engine.js — SVG动画引擎 + 音效 + 题目引擎
+ */
+class SoundEngine {
+  constructor() {
+    this.ctx = null; this.enabled = !0;
+    this._init = () => { if(!this.ctx){ this.ctx = new (window.AudioContext||window.webkitAudioContext)(); if(this.ctx.state==='suspended') this.ctx.resume(); } };
+    ['click','touchstart','keydown'].forEach(e=>document.addEventListener(e,this._init,{once:!0}));
+  }
+  _play(freq,type,dur,vol,rd){ if(!this.enabled)return; try{this._init(); if(!this.ctx)return; var o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type=type; o.frequency.setValueAtTime(freq,this.ctx.currentTime); g.gain.setValueAtTime(vol||0.15,this.ctx.currentTime); if(rd!==!1)g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+dur); o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(this.ctx.currentTime+dur); }catch(e){} }
+  correct(){ this._play(523,'sine',0.15,0.15); setTimeout(()=>this._play(659,'sine',0.15,0.15),100); setTimeout(()=>this._play(784,'sine',0.2,0.15),200); }
+  incorrect(){ this._play(200,'triangle',0.3,0.08,!1); }
+  click(){ this._play(880,'sine',0.06,0.05); }
+  complete(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>this._play(f,'sine',0.2,0.12),i*120)); }
+  celebration(){ [523,587,659,698,784,880,988,1047].forEach((f,i)=>setTimeout(()=>this._play(f,'triangle',0.25,0.08),i*80)); }
+}
+const Easing = {
+  linear:t=>t, easeInOut:t=>t<.5?2*t*t:-1+(4-2*t)*t,
+  easeOutBounce:t=>{var n1=7.5625,d1=2.75; if(t<1/d1)return n1*t*t; else if(t<2/d1)return n1*(t-=1.5/d1)*t+.75; else if(t<2.5/d1)return n1*(t-=2.25/d1)*t+.9375; else return n1*(t-=2.625/d1)*t+.984375;},
+  easeOutElastic:t=>t===0||t===1?t:Math.pow(2,-10*t)*Math.sin((t-.075)*(2*Math.PI)/.3)+1,
+  easeOutBack:t=>{var c1=1.70158; return 1+(c1+1)*Math.pow(t-1,3)+c1*Math.pow(t-1,2);}
+};
+
+class AnimationEngine {
+  constructor(){ this.animations=[]; this.running=!1; this.rafId=null; }
+  tween(svgEl,props,duration,easing){
+    duration=duration||800; var easingFn=typeof easing==='function'?easing:(Easing[easing]||Easing.linear);
+    return new Promise(resolve=>{
+      var startTime=performance.now(),initial={};
+      for(var prop in props){
+        var targetVal=props[prop];
+        if(prop==='transform')initial[prop]=this._getTransform(svgEl);
+        else if(prop==='opacity')initial[prop]=parseFloat(svgEl.getAttribute('opacity')??1);
+        else initial[prop]=parseFloat(svgEl.getAttribute(prop)??0);
+      }
+      var animate=now=>{
+        var elapsed=now-startTime,progress=Math.min(elapsed/duration,1),eased=easingFn(progress);
+        for(var prop in props){
+          var targetVal=props[prop];
+          if(prop==='transform')this._setTransform(svgEl,initial[prop],targetVal,eased);
+          else if(prop==='opacity'){ svgEl.setAttribute('opacity',initial[prop]+(targetVal-initial[prop])*eased); }
+          else if(prop==='fill'){ if(progress>=.5)svgEl.setAttribute('fill',targetVal); }
+          else { svgEl.setAttribute(prop,initial[prop]+(targetVal-initial[prop])*eased); }
+        }
+        if(progress<1)this.rafId=requestAnimationFrame(animate);
+        else { for(var p in props){ if(p!=='transform')svgEl.setAttribute(p,props[p]); } resolve(); }
+      };
+      this.rafId=requestAnimationFrame(animate);
+    });
+  }
+  async sequence(steps){ for(var i=0;i<steps.length;i++){ var s=steps[i]; if(s.delay)await this._wait(s.delay); var el=typeof s.el==='string'?document.querySelector(s.el):s.el; if(el)await this.tween(el,s.props,s.duration||600,s.easing||'easeOutBounce'); } }
+  async parallel(anims){ await Promise.all(anims.map(a=>{ var el=typeof a.el==='string'?document.querySelector(a.el):a.el; if(!el)return Promise.resolve(); return this.tween(el,a.props,a.duration||600,a.easing||'easeOutBounce'); })); }
+  stop(){ if(this.rafId){ cancelAnimationFrame(this.rafId); this.rafId=null; } this.running=!1; }
+  _wait(ms){ return new Promise(r=>setTimeout(r,ms)); }
+  _getTransform(el){ var t=el.getAttribute('transform'); if(!t)return{tx:0,ty:0,sx:1,sy:1,rot:0}; var tx=(t.match(/translate\(([^,]+),?\s*([^)]+)?\)/)||[]).slice(1).map(Number),sc=(t.match(/scale\(([^,]+),?\s*([^)]+)?\)/)||[]).slice(1).map(Number),rt=(t.match(/rotate\(([^)]+)\)/)||[])[1]; return{tx:tx[0]||0,ty:tx[1]||0,sx:sc[0]||1,sy:sc[1]||sc[0]||1,rot:parseFloat(rt)||0}; }
+  _setTransform(el,from,to,t){ var tx=from.tx+(to.tx-from.tx)*t,ty=from.ty+(to.ty-from.ty)*t,sx=from.sx+(to.sx-from.sx)*t,sy=from.sy+(to.sy-from.sy)*t,rot=from.rot+(to.rot-from.rot)*t; el.setAttribute('transform','translate('+tx+','+ty+') scale('+sx+','+sy+') rotate('+rot+')'); }
+}
+
+class SVGSceneRenderer {
+  constructor(){ this.engine=new AnimationEngine(); this.onComplete=null; }
+  render(container,sceneType,config,onComplete){
+    this.onComplete=onComplete; container.innerHTML=''; this.engine.stop();
+    switch(sceneType){
+      case 'sticks-addition': return this._renderSticksAddition(container,config);
+      case 'sticks-subtraction': return this._renderSticksSubtraction(container,config);
+      case 'ruler-measure': return this._renderSimpleScene(container,config,'📏');
+      case 'angle-explorer': return this._renderSimpleScene(container,config,'📐');
+      case 'multiplication-array': return this._renderSimpleScene(container,config,'🔢');
+      case 'clock-reader': return this._renderSimpleScene(container,config,'🕐');
+      case 'division-sharing': return this._renderSimpleScene(container,config,'➗');
+      case 'bar-chart': return this._renderSimpleScene(container,config,'📊');
+      default: container.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:3rem">未知场景类型</p>';
+    }
+  }
+  destroy(){ this.engine.stop(); }
+
+  // 通用简化场景（用于 Phase 2 的场景类型）
+  _renderSimpleScene(container,config,emoji){
+    var W=660,H=400,svg=this._mkSVG(container,W,H);
+    // 背景故事
+    this._addText(svg,W/2,60,emoji+' '+config.story,'text-lg','#374151');
+    // 步骤展示
+    var stepY=160;
+    config.steps.forEach(function(s,i){
+      var y=stepY+i*55;
+      this._addCircle(svg,40,y,8,'#10B981','#10B981');
+      this._addText(svg,58,y-8,(i+1)+'. '+s.resultText,'text-sm font-bold','#374151');
+      this._addText(svg,58,y+10,s.narration,'text-xs','#6B7280');
+    }.bind(this));
+
+    var narrationEl=this._addText(svg,W/2,H-20,'','text-sm','#6B7280','nar-text');
+    var formulaEl=this._addText(svg,W/2,H-50,'','text-xl font-bold','#F97316','form-text');
+    formulaEl.setAttribute('opacity','0');
+
+    var stepIdx=0,totalSteps=config.steps.length;
+    var runStep=function(){
+      if(stepIdx>=totalSteps){ if(this.onComplete)this.onComplete(); return; }
+      var s=config.steps[stepIdx];
+      narrationEl.textContent=s.narration;
+      formulaEl.textContent=s.resultText;
+      formulaEl.setAttribute('opacity','1');
+      if(stepIdx===totalSteps-1&&s.celebration&&window.confetti){
+        window.confetti({particleCount:60,spread:70,origin:{y:0.6}});
+      }
+      stepIdx++;
+    }.bind(this);
+
+    container._animController={runStep:runStep,totalSteps:totalSteps,getCurrentStep:function(){return stepIdx;},reset:function(){stepIdx=0;formulaEl.setAttribute('opacity','0');narrationEl.textContent='';formulaEl.textContent='';},isDone:function(){return stepIdx>=totalSteps;}};
+    return container._animController;
+  }
+
+  // === 小棒加法场景（保留原始完整动画） ===
+  _renderSticksAddition(container,config){
+    var num1=config.num1,num2=config.num2,hasCarry=config.hasCarry,steps=config.steps;
+    var tens1=Math.floor(num1/10),ones1=num1%10,tens2=Math.floor(num2/10),ones2=num2%10;
+    var totalOnes=ones1+ones2,carry=hasCarry?Math.floor(totalOnes/10):0,finalOnes=totalOnes%10;
+    var W=660,H=440,svg=this._mkSVG(container,W,H);
+    this._addLine(svg,W/2,60,W/2,H-40,'#E5E7EB',2,'dashed');
+    this._addText(svg,W/4,30,''+num1,'text-2xl font-bold','#374151');
+    this._addBundles(svg,tens1,50,110,'orange','g1-tens');
+    this._addSingles(svg,ones1,50+tens1*45,110,'emerald','g1-ones');
+    this._addText(svg,W*3/4,30,''+num2,'text-2xl font-bold','#374151');
+    this._addBundles(svg,tens2,W/2+40,110,'orange','g2-tens');
+    this._addSingles(svg,ones2,W/2+40+tens2*45,110,'emerald','g2-ones');
+    this._addText(svg,W/2,140,'+','text-3xl font-bold','#F97316');
+    var resultY=320;
+    this._addLine(svg,30,resultY-40,W-30,resultY-40,'#D1D5DB',1);
+    this._addText(svg,W/2,resultY-20,'=','text-2xl','#9CA3AF');
+    var resultText=this._addText(svg,W/2,resultY+35,'?','text-4xl font-bold','#F97316','result-text');
+    resultText.setAttribute('opacity','0');
+    var carryText,carryBundle;
+    if(hasCarry){
+      carryText=this._addText(svg,W/2,95,'','text-sm font-bold','#EF4444','carry-text');
+      carryText.setAttribute('opacity','0');
+      carryBundle=this._addBundle(svg,W/2-22,resultY-10,'orange','#carry-bundle');
+      carryBundle.setAttribute('opacity','0');
+    }
+    var narrationEl=this._addText(svg,W/2,H-25,'','text-sm','#6B7280','narration-text');
+    var formulaEl=this._addText(svg,W/2,H-55,'','text-lg font-bold','#374151','formula-text');
+    formulaEl.setAttribute('opacity','0');
+    var stepIdx=0,totalSteps=steps.length;
+    var runStep=function(){
+      if(stepIdx>=totalSteps){ if(this.onComplete)this.onComplete(); return; }
+      var step=steps[stepIdx];
+      narrationEl.textContent=step.narration;
+      formulaEl.textContent=step.resultText;
+      formulaEl.setAttribute('opacity','1');
+      if(step.highlight==='ones'){ this._highlightGroup(svg,'g1-ones','#34D399'); this._highlightGroup(svg,'g2-ones','#34D399'); }
+      else if(step.highlight==='carry'&&hasCarry){ carryText.textContent='进'+carry; carryText.setAttribute('opacity','1'); this._highlightGroup(svg,'g1-ones','#FCA5A5'); this._highlightGroup(svg,'g2-ones','#FCA5A5'); }
+      else if(step.highlight==='tens'){ this._highlightGroup(svg,'g1-tens','#FB923C'); this._highlightGroup(svg,'g2-tens','#FB923C'); if(carryBundle)carryBundle.setAttribute('opacity','1'); }
+      else if(step.highlight==='result'){ resultText.textContent=''+(num1+num2); resultText.setAttribute('opacity','1'); this.engine.tween(resultText,{transform:{tx:0,ty:0,sx:0.3,sy:0.3,rot:0}},600,'easeOutBack').then(function(){resultText.setAttribute('transform','');}); if(step.celebration&&window.confetti)window.confetti({particleCount:80,spread:70,origin:{y:0.6}}); }
+      stepIdx++;
+    }.bind(this);
+    container._animController={runStep:runStep,totalSteps:totalSteps,getCurrentStep:function(){return stepIdx;},reset:function(){stepIdx=0;resultText.setAttribute('opacity','0');formulaEl.setAttribute('opacity','0');if(carryText)carryText.setAttribute('opacity','0');if(carryBundle)carryBundle.setAttribute('opacity','0');narrationEl.textContent='';formulaEl.textContent='';},isDone:function(){return stepIdx>=totalSteps;}};
+    return container._animController;
+  }
+
+  // === 小棒减法场景 ===
+  _renderSticksSubtraction(container,config){
+    var num1=config.num1,num2=config.num2,hasBorrow=config.hasBorrow,steps=config.steps;
+    var tens1=Math.floor(num1/10),ones1=num1%10,tens2=Math.floor(num2/10),ones2=num2%10;
+    var W=660,H=440,svg=this._mkSVG(container,W,H);
+    this._addText(svg,W/2,28,''+num1,'text-2xl font-bold','#374151');
+    this._addBundles(svg,tens1,60,100,'orange','g-tens');
+    this._addSingles(svg,ones1,60+tens1*45,100,'emerald','g-ones');
+    this._addText(svg,W/2,155,'−','text-3xl font-bold','#EF4444');
+    this._addText(svg,W-80,28,'拿走'+num2,'text-sm','#EF4444');
+    var takeX=W-160;
+    this._addBundles(svg,tens2,takeX,100,'red','g-take-tens');
+    this._addSingles(svg,ones2,takeX+tens2*45,100,'red','g-take-ones');
+    var resultY=320;
+    this._addLine(svg,30,resultY-40,W-30,resultY-40,'#D1D5DB',1);
+    this._addText(svg,W/2,resultY-20,'=','text-2xl','#9CA3AF');
+    var resultText=this._addText(svg,W/2,resultY+35,'?','text-4xl font-bold','#8B5CF6','result-text');
+    resultText.setAttribute('opacity','0');
+    var borrowText;
+    if(hasBorrow){ borrowText=this._addText(svg,50+tens1*45-20,65,'','text-xs font-bold','#EF4444','borrow-text'); borrowText.setAttribute('opacity','0'); }
+    var narrationEl=this._addText(svg,W/2,H-25,'','text-sm','#6B7280','narration-text');
+    var formulaEl=this._addText(svg,W/2,H-55,'','text-lg font-bold','#374151','formula-text');
+    formulaEl.setAttribute('opacity','0');
+    var stepIdx=0,totalSteps=steps.length;
+    var runStep=function(){
+      if(stepIdx>=totalSteps){ if(this.onComplete)this.onComplete(); return; }
+      var step=steps[stepIdx];
+      narrationEl.textContent=step.narration;
+      formulaEl.textContent=step.resultText;
+      formulaEl.setAttribute('opacity','1');
+      if(step.highlight==='ones'){ this._highlightGroup(svg,'g-ones','#6EE7B7'); this._highlightGroup(svg,'g-take-ones','#FCA5A5'); }
+      else if(step.highlight==='borrow'&&hasBorrow){ borrowText.textContent='退1→10'; borrowText.setAttribute('opacity','1'); }
+      else if(step.highlight==='tens'){ this._highlightGroup(svg,'g-tens','#FB923C'); this._highlightGroup(svg,'g-take-tens','#FCA5A5'); }
+      else if(step.highlight==='result'){ resultText.textContent=''+(num1-num2); resultText.setAttribute('opacity','1'); if(step.celebration&&window.confetti)window.confetti({particleCount:80,spread:70,origin:{y:0.6}}); }
+      stepIdx++;
+    }.bind(this);
+    container._animController={runStep:runStep,totalSteps:totalSteps,getCurrentStep:function(){return stepIdx;},reset:function(){stepIdx=0;resultText.setAttribute('opacity','0');formulaEl.setAttribute('opacity','0');if(borrowText)borrowText.setAttribute('opacity','0');narrationEl.textContent='';formulaEl.textContent='';},isDone:function(){return stepIdx>=totalSteps;}};
+    return container._animController;
+  }
+
+  // === 辅助绘图 ===
+  _mkSVG(container,w,h){ var svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 '+w+' '+h); svg.setAttribute('width','100%'); svg.setAttribute('height','100%'); container.appendChild(svg); return svg; }
+  _addLine(svg,x1,y1,x2,y2,stroke,width,dash){ var line=document.createElementNS('http://www.w3.org/2000/svg','line'); line.setAttribute('x1',x1); line.setAttribute('y1',y1); line.setAttribute('x2',x2); line.setAttribute('y2',y2); line.setAttribute('stroke',stroke); line.setAttribute('stroke-width',width); if(dash)line.setAttribute('stroke-dasharray','6,4'); svg.appendChild(line); return line; }
+  _addText(svg,x,y,text,cls,fill,id){ var t=document.createElementNS('http://www.w3.org/2000/svg','text'); t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central'); t.setAttribute('fill',fill); var fs='14'; if(cls.includes('4xl'))fs='36'; else if(cls.includes('3xl'))fs='30'; else if(cls.includes('2xl'))fs='24'; else if(cls.includes('xl'))fs='20'; else if(cls.includes('lg'))fs='18'; t.setAttribute('font-size',fs); t.setAttribute('font-family','system-ui,sans-serif'); if(cls.includes('bold'))t.setAttribute('font-weight','bold'); if(id)t.setAttribute('id',id); t.textContent=text; svg.appendChild(t); return t; }
+  _addCircle(svg,cx,cy,r,fill,stroke,groupId){ var c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',cx); c.setAttribute('cy',cy); c.setAttribute('r',r); c.setAttribute('fill',fill); c.setAttribute('stroke',stroke||'#9CA3AF'); c.setAttribute('stroke-width','1'); if(groupId)c.setAttribute('data-group',groupId); svg.appendChild(c); return c; }
+  _addRect(svg,x,y,w,h,fill,stroke,rx,groupId){ var rect=document.createElementNS('http://www.w3.org/2000/svg','rect'); rect.setAttribute('x',x); rect.setAttribute('y',y); rect.setAttribute('width',w); rect.setAttribute('height',h); rect.setAttribute('fill',fill); rect.setAttribute('stroke',stroke||'#D1D5DB'); rect.setAttribute('stroke-width','1.5'); rect.setAttribute('rx',rx||'3'); if(groupId)rect.setAttribute('data-group',groupId); svg.appendChild(rect); return rect; }
+  _addBundle(svg,x,y,color,id){ var g=document.createElementNS('http://www.w3.org/2000/svg','g'); var cols={orange:'#FB923C',red:'#F87171'}; var fill=cols[color]||'#FB923C'; for(var i=0;i<10;i++){ var line=document.createElementNS('http://www.w3.org/2000/svg','line'); line.setAttribute('x1',x+i*3.5); line.setAttribute('y1',y); line.setAttribute('x2',x+i*3.5); line.setAttribute('y2',y+55); line.setAttribute('stroke',fill); line.setAttribute('stroke-width','2.5'); line.setAttribute('stroke-linecap','round'); g.appendChild(line); } var tie=document.createElementNS('http://www.w3.org/2000/svg','rect'); tie.setAttribute('x',x-3); tie.setAttribute('y',y+22); tie.setAttribute('width',38); tie.setAttribute('height',10); tie.setAttribute('fill','#FBBF24'); tie.setAttribute('rx','4'); tie.setAttribute('stroke','#D97706'); tie.setAttribute('stroke-width','1'); g.appendChild(tie); var label=document.createElementNS('http://www.w3.org/2000/svg','text'); label.setAttribute('x',x+17); label.setAttribute('y',y+70); label.setAttribute('text-anchor','middle'); label.setAttribute('font-size','12'); label.setAttribute('fill','#6B7280'); label.textContent='1捆(10根)'; g.appendChild(label); if(id)g.setAttribute('id',id); svg.appendChild(g); return g; }
+  _addBundles(svg,count,startX,y,color,groupId){ for(var i=0;i<count;i++){ var bundle=this._addBundle(svg,startX+i*46,y,color); if(groupId)bundle.setAttribute('data-group',groupId); } }
+  _addStick(svg,x,y,color,groupId){ var cols={emerald:'#34D399',red:'#F87171'}; var fill=cols[color]||'#34D399'; var line=document.createElementNS('http://www.w3.org/2000/svg','line'); line.setAttribute('x1',x+4); line.setAttribute('y1',y+12); line.setAttribute('x2',x+4); line.setAttribute('y2',y+62); line.setAttribute('stroke',fill); line.setAttribute('stroke-width','2.5'); line.setAttribute('stroke-linecap','round'); if(groupId)line.setAttribute('data-group',groupId); svg.appendChild(line); return line; }
+  _addSingles(svg,count,startX,y,color,groupId){ for(var i=0;i<count;i++)this._addStick(svg,startX+i*12,y,color,groupId); }
+  _highlightGroup(svg,groupId,color){ var els=svg.querySelectorAll('[data-group="'+groupId+'"]'); els.forEach(function(el){ var strokeEl=el; if(strokeEl.tagName==='g'){ var lines=strokeEl.querySelectorAll('line'); lines.forEach(function(l){ l.setAttribute('stroke',color); l.setAttribute('stroke-width','3'); }); } else { strokeEl.setAttribute('stroke',color); strokeEl.setAttribute('stroke-width','3'); } }); if(groupId.includes('ones')||groupId.includes('tens')){ setTimeout(function(){ els.forEach(function(el){ var strokeEl=el; if(strokeEl.tagName==='g'){ var lines=strokeEl.querySelectorAll('line'); lines.forEach(function(l){ l.removeAttribute('stroke'); l.removeAttribute('stroke-width'); }); } else { el.removeAttribute('stroke'); el.removeAttribute('stroke-width'); } }); },1000); } }
+}
+
+// === 题目引擎 ===
+class QuizEngine {
+  constructor(){ this.sound=new SoundEngine(); this.currentQuestion=0; this.score=0; this.questions=[]; this.onFinish=null; }
+  load(questions){ this.questions=questions; this.currentQuestion=0; this.score=0; }
+  renderQuestion(container,onAnswer){
+    if(this.currentQuestion>=this.questions.length){ this._renderComplete(container); if(this.onFinish)this.onFinish(this.score,this.questions.length); return; }
+    var q=this.questions[this.currentQuestion]; container.innerHTML='';
+    var card=document.createElement('div'); card.style.cssText='background:#fff;border-radius:1rem;padding:1.5rem;border:1px solid #E5E7EB';
+    // 进度
+    var progDiv=document.createElement('div'); progDiv.style.cssText='display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem';
+    progDiv.innerHTML='<span style="font-size:0.875rem;color:#9CA3AF">第'+(this.currentQuestion+1)+'/'+this.questions.length+'题</span><div style="flex:1;height:8px;background:#F3F4F6;border-radius:4px;overflow:hidden"><div style="height:100%;background:linear-gradient(to right,#34D399,#10B981);border-radius:4px;transition:width 0.5s;width:'+((this.currentQuestion/this.questions.length)*100)+'%"></div></div><span style="font-size:0.875rem;color:#F59E0B;font-weight:700">⭐'+this.score+'</span>';
+    card.appendChild(progDiv);
+    // 题目
+    var qTitle=document.createElement('h3'); qTitle.style.cssText='font-size:1.25rem;font-weight:700;color:#374151;margin-bottom:1.5rem'; qTitle.textContent=q.question; card.appendChild(qTitle);
+    // 选项
+    var optDiv=document.createElement('div');
+    if(q.type==='choice'){
+      optDiv.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:0.75rem';
+      q.options.forEach(function(opt,idx){
+        var btn=document.createElement('button'); btn.style.cssText='padding:1rem;font-size:1.125rem;font-weight:700;border:2px solid #E5E7EB;border-radius:0.75rem;background:#fff;cursor:pointer;transition:all 0.2s'; btn.textContent=opt;
+        btn.addEventListener('click',function(){ this._handleAnswer(idx,q,optDiv,onAnswer); }.bind(this));
+        optDiv.appendChild(btn);
+      }.bind(this));
+    } else if(q.type==='fill'){
+      optDiv.style.cssText='display:flex;flex-direction:column;align-items:center;gap:1rem';
+      var input=document.createElement('input'); input.type='number'; input.style.cssText='width:10rem;text-align:center;font-size:1.875rem;font-weight:700;padding:1rem;border:2px solid #D1D5DB;border-radius:0.75rem;outline:none'; input.placeholder='?';
+      var subBtn=document.createElement('button'); subBtn.style.cssText='padding:0.75rem 2rem;background:#10B981;color:#fff;font-weight:700;border-radius:0.75rem;border:none;cursor:pointer;font-size:1rem'; subBtn.textContent='确认答案 ✓';
+      subBtn.addEventListener('click',function(){ var val=parseInt(input.value); if(!isNaN(val))this._handleFillAnswer(val,q,optDiv,onAnswer); }.bind(this));
+      input.addEventListener('keydown',function(e){ if(e.key==='Enter')subBtn.click(); });
+      optDiv.appendChild(input); optDiv.appendChild(subBtn);
+    }
+    card.appendChild(optDiv);
+    // 提示
+    var hintDiv=document.createElement('div'); hintDiv.style.cssText='margin-top:1rem;text-align:center';
+    var hintBtn=document.createElement('button'); hintBtn.style.cssText='font-size:0.875rem;color:#9CA3AF;background:none;border:none;cursor:pointer;padding:0.25rem 0.5rem'; hintBtn.innerHTML='💡 需要提示吗？';
+    hintBtn.addEventListener('click',function(){ hintDiv.innerHTML='<p style="font-size:0.875rem;color:#D97706;background:#FFFBEB;border-radius:0.5rem;padding:0.75rem;margin-top:0.5rem">💡 '+q.hint+'</p>'; });
+    hintDiv.appendChild(hintBtn); card.appendChild(hintDiv);
+    container.appendChild(card);
+  }
+  _handleAnswer(selectedIdx,question,container,onAnswer){
+    var buttons=container.querySelectorAll('button'); buttons.forEach(function(b){ b.disabled=!0; });
+    var isCorrect=selectedIdx===question.answer;
+    if(isCorrect){ this.score++; this.sound.correct(); buttons[selectedIdx].style.cssText='background:#D1FAE5;border-color:#10B981;color:#047857;padding:1rem;font-size:1.125rem;font-weight:700;border-radius:0.75rem'; }
+    else { this.sound.incorrect(); buttons[selectedIdx].style.cssText='background:#FEE2E2;border-color:#EF4444;color:#B91C1C;padding:1rem;font-size:1.125rem;font-weight:700;border-radius:0.75rem'; buttons[question.answer].style.cssText='background:#D1FAE5;border-color:#10B981;color:#047857;padding:1rem;font-size:1.125rem;font-weight:700;border-radius:0.75rem'; }
+    var explainDiv=document.createElement('div'); explainDiv.style.cssText='margin-top:1rem;padding:0.75rem;border-radius:0.5rem;font-size:0.875rem;'+(isCorrect?'background:#ECFDF5;color:#047857':'background:#FFFBEB;color:#D97706'); explainDiv.textContent=(isCorrect?'✅ 答对了！':'❌ 再想想～')+' '+question.explanation; container.appendChild(explainDiv);
+    var nextBtn=document.createElement('button'); nextBtn.style.cssText='margin-top:1rem;width:100%;padding:0.5rem;background:#F3F4F6;color:#4B5563;font-weight:700;border-radius:0.75rem;border:none;cursor:pointer'; nextBtn.textContent=this.currentQuestion+1>=this.questions.length?'查看结果 →':'下一题 →';
+    nextBtn.addEventListener('click',function(){ this.currentQuestion++; if(onAnswer)onAnswer(); }.bind(this)); container.appendChild(nextBtn);
+  }
+  _handleFillAnswer(val,question,container,onAnswer){
+    var correctAnswer=parseInt(question.answer),isCorrect=val===correctAnswer;
+    if(isCorrect){ this.score++; this.sound.correct(); } else this.sound.incorrect();
+    var resultDiv=document.createElement('div'); resultDiv.style.cssText='margin-top:0.75rem;padding:0.75rem;border-radius:0.5rem;text-align:center;font-size:0.875rem;'+(isCorrect?'background:#ECFDF5;color:#047857':'background:#FFFBEB;color:#D97706'); resultDiv.innerHTML=isCorrect?'✅ 答对了！'+question.explanation:'❌ 答案是<b>'+correctAnswer+'</b>。'+question.explanation; container.appendChild(resultDiv);
+    var inp=container.querySelector('input'),sb=container.querySelector('button'); if(inp)inp.disabled=!0; if(sb)sb.style.display='none';
+    var nextBtn=document.createElement('button'); nextBtn.style.cssText='margin-top:0.75rem;width:100%;padding:0.5rem;background:#F3F4F6;color:#4B5563;font-weight:700;border-radius:0.75rem;border:none;cursor:pointer'; nextBtn.textContent=this.currentQuestion+1>=this.questions.length?'查看结果 →':'下一题 →';
+    nextBtn.addEventListener('click',function(){ this.currentQuestion++; if(onAnswer)onAnswer(); }.bind(this)); container.appendChild(nextBtn);
+  }
+  _renderComplete(container){
+    var pct=Math.round((this.score/this.questions.length)*100),stars=pct>=90?3:pct>=60?2:1;
+    var msgs={3:{title:'太棒了！🌟',desc:'你全部掌握了！',color:'#10B981'},2:{title:'做得不错！👍',desc:'再加把劲就更好了！',color:'#F59E0B'},1:{title:'继续加油！💪',desc:'多练习几次就会了！',color:'#F97316'}};
+    var m=msgs[stars];
+    container.innerHTML='<div style="text-align:center;padding:2rem"><div style="font-size:3.75rem;margin-bottom:1rem">'+(stars===3?'🏆':stars===2?'🌟':'💪')+'</div><h2 style="font-size:1.5rem;font-weight:700;color:'+m.color+';margin-bottom:0.5rem">'+m.title+'</h2><p style="color:#6B7280;margin-bottom:0.5rem">'+m.desc+'</p><div style="display:flex;justify-content:center;gap:0.25rem;margin-bottom:1rem">'+[1,2,3].map(function(i){return'<span style="font-size:1.875rem;'+(i<=stars?'':'opacity:0.3')+'">⭐</span>';}).join('')+'</div><p style="font-size:1.125rem;font-weight:700;color:#374151">正确率: <span style="color:'+m.color+'">'+pct+'%</span> ('+this.score+'/'+this.questions.length+')</p></div>';
+    if(stars>=2)this.sound.complete(); if(stars===3&&window.confetti)window.confetti({particleCount:150,spread:100,origin:{y:0.6}});
+  }
+  getScore(){return this.score;} getTotal(){return this.questions.length;}
+  getStars(){var pct=Math.round((this.score/this.questions.length)*100); return pct>=90?3:pct>=60?2:1;}
+  reset(){this.currentQuestion=0;this.score=0;}
+}
+
+document.getElementById('load-status').textContent = '引擎就绪...';
+</script>
+
+<!-- ===== 应用层 (app.js 内联) ===== -->
+<script>
+document.getElementById('load-status').textContent = '正在初始化应用...';
+/**
+ * math-adventure/app.js — 路由 + 状态管理 + 页面渲染
+ */
+const App = {
+  state: { gradeId: null, unitId: null, lessonId: null, mode: 'grades', currentStep: 0 },
+  sceneRenderer: null, quizEngine: null, animController: null, progress: null,
+
+  init() {
+    try {
+      this.sceneRenderer = new SVGSceneRenderer();
+      this.quizEngine = new QuizEngine();
+      this.progress = this._loadProgress();
+      window.addEventListener('hashchange', () => { try { this._route(); } catch(e) { console.error(e); } });
+      this._route();
+      document.getElementById('load-status').textContent = '✓ 加载完成！';
+      setTimeout(() => {
+        var ls = document.getElementById('loading-screen');
+        if (ls) ls.style.display = 'none';
+      }, 500);
+    } catch(e) {
+      console.error('App init error:', e);
+      document.getElementById('load-status').textContent = '❌ 初始化失败: ' + e.message;
+      document.getElementById('error-display').style.display = 'block';
+      document.getElementById('error-display').textContent = '错误: ' + e.message;
+    }
+  },
+
+  _loadProgress() {
+    try { var raw = localStorage.getItem(STORAGE_KEY); if (raw) return JSON.parse(raw); } catch(e) {}
+    return JSON.parse(JSON.stringify(DEFAULT_PROGRESS));
+  },
+
+  _saveProgress() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(this.progress)); } catch(e) {} },
+
+  _markLessonComplete(lessonId, stars) {
+    if (!this.progress.lessons[lessonId]) this.progress.lessons[lessonId] = {};
+    var lesson = this.progress.lessons[lessonId];
+    lesson.completed = true; lesson.stars = Math.max(lesson.stars || 0, stars);
+    lesson.completedAt = new Date().toISOString().split('T')[0];
+    var today = new Date().toISOString().split('T')[0];
+    if (this.progress.lastStudyDate !== today) {
+      var yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      if (this.progress.lastStudyDate === yesterday) this.progress.streak = (this.progress.streak || 0) + 1;
+      else this.progress.streak = 1;
+      this.progress.lastStudyDate = today;
+    }
+    this.progress.stars += stars;
+    this._saveProgress();
+  },
+
+  _route() {
+    var hash = window.location.hash.replace('#/', '').replace('#', '');
+    var parts = hash.split('/').filter(Boolean);
+    if (parts.length === 0) { this.state.mode = 'grades'; this._renderGrades(); }
+    else if (parts[0] === 'grade' && parts.length >= 2) {
+      this.state.gradeId = parts[1];
+      if (parts.length === 2) { this.state.mode = 'units'; this._renderUnits(); }
+      else if (parts[2] === 'unit' && parts.length >= 4) {
+        this.state.unitId = parts[3];
+        if (parts.length === 4) this._renderLessonList();
+        else if (parts[4] === 'lesson' && parts.length >= 6) {
+          this.state.lessonId = parts[5];
+          if (parts[6] === 'quiz') { this.state.mode = 'quiz'; this._renderQuiz(); }
+          else { this.state.mode = 'animation'; this._renderAnimation(); }
+        }
+      }
+    }
+  },
+
+  _navigate(path) { window.location.hash = '#' + path; },
+
+  _renderGrades() {
+    this.state.mode = 'grades';
+    var main = document.getElementById('main-content');
+    var grades = MATH_DATA.grades;
+    var cards = Object.entries(grades).map(function(entry) {
+      var id = entry[0], g = entry[1];
+      var isUnlocked = parseInt(id) <= 3;
+      return '<div class="cursor-pointer bg-white rounded-3xl p-6 shadow" style="'+(isUnlocked?'cursor:pointer;background:#fff;border:2px solid #A7F3D0':'cursor:not-allowed;opacity:0.6;background:#fff;border:2px solid #E5E7EB')+';border-radius:1.5rem;padding:1.5rem;transition:all 0.3s"' + (isUnlocked ? ' onclick="App._navigate(\'grade/'+id+'\')"' : '') + '><div class="text-center" style="text-align:center"><div style="font-size:3rem;margin-bottom:0.75rem">'+g.mascot+'</div><div style="display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.875rem;font-weight:700;background:#D1FAE5;color:#059669;margin-bottom:0.5rem">'+g.name+'</div><p style="font-size:0.875rem;color:#9CA3AF">'+g.subtitle+'</p>' + (isUnlocked ? '' : '<div style="margin-top:0.75rem"><span style="font-size:1.5rem;color:#D1D5DB">🔒</span></div>') + '</div></div>';
+    }).join('');
+    main.innerHTML = '<div class="max-w-4xl mx-auto" style="max-width:896px;margin:0 auto"><div class="text-center mb-10" style="text-align:center;margin-bottom:2.5rem"><h1 style="font-size:2.25rem;font-weight:700;background:linear-gradient(to right,#10B981,#14B8A6,#3B82F6);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:0.5rem">🌟 数学探险之旅</h1><p style="color:#9CA3AF;font-size:1.125rem">和吉祥物一起探索有趣的数学世界</p></div><div class="grid grid-cols-2 md:grid-cols-3 gap-5" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem">'+cards+'</div>'+(this.progress.stars>0?'<div class="mt-8 text-center" style="margin-top:2rem;text-align:center"><div style="display:inline-flex;align-items:center;gap:0.75rem;background:#fff;border-radius:1rem;padding:0.75rem 1.5rem;border:1px solid #E5E7EB"><span style="font-size:1.5rem">⭐</span><span style="font-size:1.125rem;font-weight:700;color:#374151">共获得 '+this.progress.stars+' 颗星</span></div></div>':'')+'</div>';
+  },
+
+  _renderUnits() {
+    var main = document.getElementById('main-content');
+    var grade = MATH_DATA.grades[this.state.gradeId];
+    if (!grade || grade.locked) return this._renderGrades();
+    var units = grade.units.map(function(u) {
+      var isLocked = u.locked;
+      return '<div class="bg-white rounded-2xl p-5 shadow" style="'+(isLocked?'opacity:0.6;cursor:not-allowed;':'cursor:pointer;')+'background:#fff;border-radius:1rem;padding:1.25rem;border:2px solid '+(isLocked?'#E5E7EB':'#FED7AA')+';transition:all 0.3s" '+(isLocked?'':'onclick="App._navigate(\'grade/'+this.state.gradeId+'/unit/'+u.id+'\')"')+'><div class="flex items-center gap-3" style="display:flex;align-items:center;gap:0.75rem"><div style="width:3rem;height:3rem;border-radius:0.75rem;background:#FFF7ED;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:#F97316">'+(u.icon==='fa-ruler'?'📏':u.icon==='fa-draw-polygon'?'📐':u.icon==='fa-xmark'?'✖️':u.icon==='fa-table'?'🔢':u.icon==='fa-clock'?'🕐':u.icon==='fa-divide'?'➗':u.icon==='fa-chart-bar'?'📊':u.icon==='fa-plus-minus'?'➕':'📖')+'</div><div><h3 style="font-weight:700;color:#374151">'+u.name+'</h3><p style="font-size:0.75rem;color:#9CA3AF">'+(isLocked?'🔒 即将开放':'点击进入学习')+'</p></div></div></div>';
+    }.bind(this)).join('');
+    main.innerHTML = '<div class="max-w-2xl mx-auto" style="max-width:672px;margin:0 auto"><div class="flex items-center gap-3 mb-6" style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem"><button onclick="App._navigate(\'\')" style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#fff;display:flex;align-items:center;justify-content:center;color:#9CA3AF;border:1px solid #E5E7EB;padding:0;font-size:1rem;cursor:pointer">←</button><div><h1 style="font-size:1.5rem;font-weight:700;color:#374151">'+grade.name+' '+grade.mascot+'</h1><p style="font-size:0.875rem;color:#9CA3AF">'+grade.subtitle+' · '+grade.mascotName+'陪你学</p></div></div><div class="space-y-3">'+units+'</div></div>';
+  },
+
+  _renderLessonList() {
+    var main = document.getElementById('main-content');
+    var grade = MATH_DATA.grades[this.state.gradeId];
+    var unit = grade && grade.units.find(function(u) { return u.id === this.state.unitId; }.bind(this));
+    if (!unit || unit.locked) return this._renderUnits();
+    var lessons = unit.lessons.map(function(l, idx) {
+      var prog = this.progress.lessons[l.id];
+      var completed = prog && prog.completed;
+      var stars = prog ? prog.stars || 0 : 0;
+      return '<div class="bg-white rounded-2xl p-5 shadow cursor-pointer" style="background:#fff;border-radius:1rem;padding:1.25rem;border:2px solid #E5E7EB;transition:all 0.3s;cursor:pointer" onclick="App._navigate(\'grade/'+this.state.gradeId+'/unit/'+this.state.unitId+'/lesson/'+l.id+'\')"><div class="flex items-center gap-4" style="display:flex;align-items:center;gap:1rem"><div style="width:2.5rem;height:2.5rem;border-radius:9999px;'+(completed?'background:#D1FAE5;color:#10B981':'background:#FFF7ED;color:#F97316')+';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem">'+(idx+1)+'</div><div class="flex-1" style="flex:1"><h3 style="font-weight:700;color:#374151">'+l.title+'</h3><p style="font-size:0.875rem;color:#9CA3AF">'+l.subtitle+'</p></div><div style="text-align:right">'+(completed?'<div style="display:flex;gap:0.125rem">'+[1,2,3].map(function(i){return '<span style="'+(i<=stars?'':'opacity:0.3')+'">⭐</span>';}).join('')+'</div>':'<span style="font-size:0.75rem;color:#D1D5DB">未学习</span>')+'</div></div></div>';
+    }.bind(this)).join('');
+    main.innerHTML = '<div class="max-w-2xl mx-auto" style="max-width:672px;margin:0 auto"><div class="flex items-center gap-3 mb-6" style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem"><button onclick="App._navigate(\'grade/'+this.state.gradeId+'\')" style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#fff;display:flex;align-items:center;justify-content:center;color:#9CA3AF;border:1px solid #E5E7EB;padding:0;font-size:1rem;cursor:pointer">←</button><div><h1 style="font-size:1.5rem;font-weight:700;color:#374151">'+unit.name+'</h1><p style="font-size:0.875rem;color:#9CA3AF">共 '+unit.lessons.length+' 个课时</p></div></div><div class="space-y-3">'+lessons+'</div></div>';
+  },
+
+  _renderAnimation() {
+    var main = document.getElementById('main-content');
+    var grade = MATH_DATA.grades[this.state.gradeId];
+    var unit = grade && grade.units.find(function(u) { return u.id === this.state.unitId; }.bind(this));
+    var lesson = unit && unit.lessons.find(function(l) { return l.id === this.state.lessonId; }.bind(this));
+    if (!lesson) return this._renderLessonList();
+    this.state.currentStep = 0;
+    if (this.animController) this.animController.reset();
+
+    main.innerHTML = '<div class="max-w-3xl mx-auto" style="max-width:768px;margin:0 auto"><div class="flex items-center justify-between mb-4" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem"><button onclick="App._navigate(\'grade/'+this.state.gradeId+'/unit/'+this.state.unitId+'\')" style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#fff;display:flex;align-items:center;justify-content:center;color:#9CA3AF;border:1px solid #E5E7EB;padding:0;font-size:1rem;cursor:pointer">←</button><div class="text-center" style="text-align:center"><h1 style="font-size:1.25rem;font-weight:700;color:#374151">'+lesson.title+'</h1><p style="font-size:0.75rem;color:#9CA3AF">'+lesson.subtitle+'</p></div><button id="btn-replay" style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#fff;display:flex;align-items:center;justify-content:center;color:#9CA3AF;border:1px solid #E5E7EB;padding:0;font-size:1rem;cursor:pointer">🔄</button></div><div style="background:#FFFBEB;border-radius:1rem;padding:1rem;margin-bottom:1rem;text-align:center;border:1px solid #FDE68A"><p style="color:#D97706"><span style="font-size:1.5rem;margin-right:0.5rem">📖</span>'+lesson.sceneConfig.story+'</p></div><div id="svg-scene" style="background:#fff;border-radius:1rem;padding:1rem;margin-bottom:1rem;border:1px solid #E5E7EB;min-height:360px"></div><div style="background:#fff;border-radius:1rem;padding:1rem;margin-bottom:1rem;border:1px solid #E5E7EB;text-align:center"><p style="font-size:1.125rem;color:#4B5563" id="narration-display">点击"下一步"开始动画</p><p style="font-size:1.25rem;font-weight:700;color:#F97316;margin-top:0.25rem" id="formula-display"></p><p style="font-size:0.75rem;color:#9CA3AF;margin-top:0.5rem" id="step-counter">步骤 0/'+lesson.sceneConfig.steps.length+'</p></div><div class="flex justify-center gap-3" style="display:flex;justify-content:center;gap:0.75rem"><button id="btn-prev" disabled style="padding:0.75rem 1.5rem;background:#F3F4F6;color:#6B7280;border-radius:0.75rem;font-weight:700;border:none;cursor:pointer;opacity:0.4">◀ 上一步</button><button id="btn-next" style="padding:0.75rem 2rem;background:linear-gradient(to right,#34D399,#10B981);color:#fff;border-radius:0.75rem;font-weight:700;border:none;cursor:pointer">下一步 ▶</button></div><div id="post-animation-area" class="mt-6 text-center hidden" style="margin-top:1.5rem;text-align:center;display:none"><button onclick="App._navigate(\'grade/'+this.state.gradeId+'/unit/'+this.state.unitId+'/lesson/'+this.state.lessonId+'/quiz\')" style="padding:0.75rem 2rem;background:linear-gradient(to right,#F59E0B,#F97316);color:#fff;border-radius:0.75rem;font-weight:700;border:none;cursor:pointer;font-size:1.125rem">✨ 开始练习 ✨</button></div></div>';
+
+    var sceneContainer = document.getElementById('svg-scene');
+    this.animController = this.sceneRenderer.render(sceneContainer, lesson.sceneType, lesson.sceneConfig, function() {
+      document.getElementById('btn-next').disabled = true;
+      document.getElementById('btn-prev').disabled = true;
+      document.getElementById('post-animation-area').style.display = 'block';
+      document.getElementById('step-counter').textContent = '🎉 讲解完成！';
+      document.getElementById('narration-display').textContent = '你已经理解了这个知识点，来做几道练习巩固一下吧！';
+    });
+
+    this._syncNarration(lesson);
+
+    var btnNext = document.getElementById('btn-next');
+    var btnPrev = document.getElementById('btn-prev');
+    var btnReplay = document.getElementById('btn-replay');
+
+    btnNext.addEventListener('click', function() {
+      if (this.animController) {
+        this.animController.runStep();
+        this.state.currentStep++;
+        this._syncNarration(lesson);
+        if (this.state.currentStep > 0) btnPrev.disabled = false;
+        if (this.state.currentStep >= this.animController.totalSteps) btnNext.disabled = true;
+      }
+    }.bind(this));
+
+    btnPrev.addEventListener('click', function() {
+      var sc = document.getElementById('svg-scene');
+      this.animController = this.sceneRenderer.render(sc, lesson.sceneType, lesson.sceneConfig, function() {
+        document.getElementById('btn-next').disabled = true;
+        document.getElementById('post-animation-area').style.display = 'block';
+      });
+      this.state.currentStep = 0;
+      btnPrev.disabled = true;
+      btnNext.disabled = false;
+      document.getElementById('post-animation-area').style.display = 'none';
+      this._syncNarration(lesson);
+    }.bind(this));
+
+    btnReplay.addEventListener('click', function() {
+      var sc = document.getElementById('svg-scene');
+      this.animController = this.sceneRenderer.render(sc, lesson.sceneType, lesson.sceneConfig, function() {
+        document.getElementById('btn-next').disabled = true;
+        document.getElementById('post-animation-area').style.display = 'block';
+        document.getElementById('step-counter').textContent = '🎉 讲解完成！';
+        document.getElementById('narration-display').textContent = '你已经理解了这个知识点，来做几道练习巩固一下吧！';
+      });
+      this.state.currentStep = 0;
+      btnPrev.disabled = true;
+      btnNext.disabled = false;
+      document.getElementById('post-animation-area').style.display = 'none';
+      this._syncNarration(lesson);
+    }.bind(this));
+  },
+
+  _syncNarration(lesson) {
+    var narrationEl = document.getElementById('narration-display');
+    var formulaEl = document.getElementById('formula-display');
+    var counterEl = document.getElementById('step-counter');
+    if (!narrationEl || !counterEl) return;
+    var totalSteps = lesson.sceneConfig.steps.length;
+    if (this.state.currentStep === 0) {
+      narrationEl.textContent = '点击"下一步"开始动画';
+      if (formulaEl) formulaEl.textContent = '';
+      counterEl.textContent = '步骤 0/' + totalSteps;
+    } else if (this.state.currentStep <= totalSteps) {
+      var step = lesson.sceneConfig.steps[this.state.currentStep - 1];
+      narrationEl.textContent = step.narration;
+      if (formulaEl) formulaEl.textContent = step.resultText || '';
+      counterEl.textContent = '步骤 ' + this.state.currentStep + '/' + totalSteps;
+    }
+  },
+
+  _renderQuiz() {
+    var main = document.getElementById('main-content');
+    var grade = MATH_DATA.grades[this.state.gradeId];
+    var unit = grade && grade.units.find(function(u) { return u.id === this.state.unitId; }.bind(this));
+    var lesson = unit && unit.lessons.find(function(l) { return l.id === this.state.lessonId; }.bind(this));
+    if (!lesson) return this._renderLessonList();
+    this.quizEngine.load(lesson.exercises);
+    this.quizEngine.onFinish = function(score, total) {
+      var stars = this.quizEngine.getStars();
+      this._markLessonComplete(this.state.lessonId, stars);
+      setTimeout(function() {
+        var qc = document.getElementById('quiz-container');
+        if (qc) {
+          var backDiv = document.createElement('div');
+          backDiv.style.cssText = 'text-align:center;margin-top:1.5rem';
+          backDiv.innerHTML = '<button onclick="App._navigate(\'grade/'+this.state.gradeId+'/unit/'+this.state.unitId+'\')" style="padding:0.75rem 2rem;background:linear-gradient(to right,#34D399,#10B981);color:#fff;border-radius:0.75rem;font-weight:700;border:none;cursor:pointer">← 返回课时列表</button><br><button onclick="App.quizEngine.reset(); App._renderQuiz();" style="padding:0.5rem 1.5rem;color:#F59E0B;background:none;border:none;cursor:pointer;font-size:0.875rem;margin-top:0.5rem">🔄 重新练习</button>';
+          qc.appendChild(backDiv);
+        }
+      }.bind(this), 100);
+    }.bind(this);
+    main.innerHTML = '<div class="max-w-lg mx-auto" style="max-width:512px;margin:0 auto"><div class="flex items-center gap-3 mb-4" style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem"><button onclick="App._navigate(\'grade/'+this.state.gradeId+'/unit/'+this.state.unitId+'/lesson/'+this.state.lessonId+'\')" style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#fff;display:flex;align-items:center;justify-content:center;color:#9CA3AF;border:1px solid #E5E7EB;padding:0;font-size:1rem;cursor:pointer">←</button><div><h1 style="font-size:1.25rem;font-weight:700;color:#374151">📝 '+lesson.title+' — 练习</h1><p style="font-size:0.75rem;color:#9CA3AF">共 '+lesson.exercises.length+' 题，加油！</p></div></div><div id="quiz-container"></div></div>';
+    var quizContainer = document.getElementById('quiz-container');
+    var renderNext = function() { this.quizEngine.renderQuestion(quizContainer, renderNext); }.bind(this);
+    renderNext();
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function() { App.init(); });
+document.getElementById('load-status').textContent = '应用逻辑就绪，等待 DOM 就绪...';
+</script>
+
+</body>
+</html>

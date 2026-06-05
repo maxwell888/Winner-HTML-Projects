@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学探险之旅 — 调试</title>
+<style>
+body { font-family: system-ui, sans-serif; padding: 20px; background: #f5f5f5; }
+.pass { color: #10B981; } .fail { color: #EF4444; font-weight: bold; }
+.test { margin: 8px 0; padding: 8px; border-radius: 8px; background: #fff; }
+</style>
+</head>
+<body>
+<h1>🔍 加载诊断</h1>
+<div id="results"></div>
+
+<script src="data.js" onerror="show('❌ data.js 加载失败', 'fail')"></script>
+<script src="engine.js" onerror="show('❌ engine.js 加载失败', 'fail')"></script>
+<script src="app.js" onerror="show('❌ app.js 加载失败', 'fail')"></script>
+
+<script>
+function show(msg, cls) {
+  var d = document.getElementById('results');
+  d.innerHTML += '<div class="test ' + (cls||'pass') + '">' + msg + '</div>';
+}
+
+// 诊断检查
+show('✓ 所有 script 标签已加载');
+
+try {
+  if (typeof MATH_DATA !== 'undefined') {
+    var grades = Object.keys(MATH_DATA.grades);
+    show('✓ MATH_DATA 已定义，年级: ' + grades.join(', '));
+    var g2 = MATH_DATA.grades['2'];
+    if (g2) {
+      show('✓ 二年级数据存在，单元数: ' + g2.units.length);
+      var unlockedUnits = g2.units.filter(function(u) { return !u.locked; });
+      show('✓ 可用单元: ' + unlockedUnits.length + ' 个');
+      var totalLessons = 0;
+      unlockedUnits.forEach(function(u) { totalLessons += u.lessons.length; });
+      show('✓ 可用课时: ' + totalLessons + ' 节');
+    }
+  } else {
+    show('❌ MATH_DATA 未定义！', 'fail');
+  }
+} catch(e) {
+  show('❌ MATH_DATA 检查出错: ' + e.message, 'fail');
+}
+
+try {
+  var checks = ['SoundEngine', 'AnimationEngine', 'SVGSceneRenderer', 'QuizEngine'];
+  checks.forEach(function(name) {
+    if (typeof window[name] !== 'undefined') {
+      show('✓ ' + name + ' 已定义');
+    } else {
+      show('❌ ' + name + ' 未定义', 'fail');
+    }
+  });
+} catch(e) {
+  show('❌ Engine 检查出错: ' + e.message, 'fail');
+}
+
+try {
+  if (typeof App !== 'undefined') {
+    show('✓ App 已定义');
+    show('  - sceneRenderer: ' + (App.sceneRenderer ? '✓' : '未初始化'));
+    show('  - quizEngine: ' + (App.quizEngine ? '✓' : '未初始化'));
+    show('  - state.mode: ' + App.state.mode);
+  } else {
+    show('❌ App 未定义！', 'fail');
+  }
+} catch(e) {
+  show('❌ App 检查出错: ' + e.message, 'fail');
+}
+
+// 手动触发初始化
+try {
+  document.addEventListener('DOMContentLoaded', function() {
+    show('✓ DOMContentLoaded 已触发');
+  });
+} catch(e) {
+  show('❌ 事件绑定出错: ' + e.message, 'fail');
+}
+</script>
+</body>
+</html>
