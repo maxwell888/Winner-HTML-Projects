@@ -1,0 +1,20 @@
+{
+  "name": "xiaohongshu-tools",
+  "version": "1.0.0",
+  "description": "小红书「设计师妈妈的服装实验室」AI 内容生产集成工作台",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "check": "node --check server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "multer": "^1.4.5-lts.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
