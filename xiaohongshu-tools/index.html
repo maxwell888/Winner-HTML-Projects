@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -662,9 +662,43 @@ input[type=file].input{font-family:var(--mono);font-size:11px;padding:8px 0;bord
 
 <script>
 const API=window.location.origin;
+const IS_STATIC_PREVIEW=location.hostname.endsWith('github.io')||location.protocol==='file:';
+const LS_POSTS='xhs_posts_v1';
 let hist=(()=>{try{return JSON.parse(localStorage.getItem('xhs_h'))||[]}catch{return[]}})();
 let curM='auto',curT='title',curCT='compare',covImg=null,cmBlob=null,subBlob=null,curPostId=null;
 let draftCache={title:'',copy:'',cover:'',video:'',images:[],hashtags:[]};
+
+function readLocalPosts(){try{return JSON.parse(localStorage.getItem(LS_POSTS))||[]}catch{return[]}}
+function writeLocalPosts(posts){localStorage.setItem(LS_POSTS,JSON.stringify(posts))}
+function localId(){return 'post_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function localListPosts({date,status,q,limit=50}={}){let posts=readLocalPosts();if(date)posts=posts.filter(p=>p.publishDate===date);if(status)posts=posts.filter(p=>p.status===status);if(q){const s=q.toLowerCase();posts=posts.filter(p=>(p.title||'').toLowerCase().includes(s)||(p.copy||'').toLowerCase().includes(s)||(p.notes||'').toLowerCase().includes(s))}return posts.sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||'')).slice(0,+limit||50)}
+function localGetPost(id){return readLocalPosts().find(p=>p.id===id)||null}
+function localSavePost(body){const now=new Date().toISOString();let posts=readLocalPosts();let p={...body,id:body.id||localId(),updatedAt:now,createdAt:body.createdAt||now};const i=posts.findIndex(x=>x.id===p.id);if(i>=0)posts[i]={...posts[i],...p};else posts.unshift(p);writeLocalPosts(posts);return p}
+function localDeletePost(id){let posts=readLocalPosts();const before=posts.length;posts=posts.filter(p=>p.id!==id);writeLocalPosts(posts);return before!==posts.length}
+function localCalendar(month){return [...new Set(readLocalPosts().filter(p=>p.status==='published'&&p.publishDate&&p.publishDate.startsWith(month)).map(p=>p.publishDate))]}
+function apiUnavailableText(){return IS_STATIC_PREVIEW?'当前是 GitHub Pages 静态预览版：此功能需要后端服务。':'后端服务不可用'}
+async function apiJSON(path,options={}){
+  if(IS_STATIC_PREVIEW&&path.startsWith('/api/posts'))return localAPI(path,options);
+  try{const r=await fetch(API+path,options);const txt=await r.text();let data;try{data=txt?JSON.parse(txt):{}}catch{throw new Error('服务返回非 JSON')};if(!r.ok||data.error)throw new Error(data.error||('HTTP '+r.status));return data}catch(e){if(path.startsWith('/api/posts'))return localAPI(path,options);throw e}
+}
+function localAPI(path,options={}){
+  const method=(options.method||'GET').toUpperCase();const url=new URL(path,location.origin);
+  if(url.pathname==='/api/posts'&&method==='GET')return localListPosts({date:url.searchParams.get('date'),status:url.searchParams.get('status'),q:url.searchParams.get('q'),limit:url.searchParams.get('limit')||50});
+  if(url.pathname==='/api/posts/calendar'&&method==='GET')return localCalendar(url.searchParams.get('month')||new Date().toISOString().slice(0,7));
+  if(url.pathname==='/api/posts'&&method==='POST'){const body=JSON.parse(options.body||'{}');return localSavePost(body)}
+  const m=url.pathname.match(/^\/api\/posts\/([^/]+)$/);if(m&&method==='GET'){const p=localGetPost(m[1]);return p||{error:'not found'}}
+  if(m&&method==='DELETE')return {ok:localDeletePost(m[1])};
+  return {error:'unsupported local api'}
+}
+
+function offlineCopy(tpl,userText){
+  const topic=(userText||'今天的内容主题').replace(/[\[\]填入：:]/g,'').trim()||'今天的内容主题';
+  const tagLine='#服装测评 #面料科普 #设计师妈妈 #小红书穿搭 #真实测评';
+  if(tpl==='title')return ['这件衣服值不值？我测给你看','99元和999元差在哪？','设计师妈妈的真实测评','显微镜下的衣服真相','别只看款式，面料更关键','买衣服前先看这3点','柜姐离开后才敢说','孩子衣服别乱买','同样是白T，差距很大','普通家庭也能看懂的服装检测'].map((x,i)=>`${i+1}. ${x}`).join('\n');
+  if(tpl==='ideas')return ['检测实验室系列','母女穿搭系列','面料避坑系列','奢侈品销售经验系列','家庭实测系列'].map((c,i)=>`${i+1}. ${c}\n- ${topic}：做一次真实体验\n- 选一个常见误区拆解\n- 用一张图讲清楚判断方法\n- 加入妈妈视角的购买建议\n- 结尾引导大家留言想测什么`).join('\n\n');
+  if(tpl==='detect')return `标题：${topic}，普通人到底怎么看？\n\n1. 先说结论\n这次结果最值得关注的是：不要只看宣传词，要看真实材料、做工和使用场景。\n\n2. 数据怎么理解\n把专业数据翻译成人话：数值不是越复杂越好，关键是它是否影响舒适度、耐穿度和安全感。\n\n3. 选购建议\n如果给孩子/日常穿，优先看亲肤、耐洗、版型稳定；如果追求质感，再看面料结构和细节工艺。\n\n4. 我的真实感受\n作为服装设计背景+妈妈视角，我更愿意把钱花在看得见、摸得着、经得起洗的地方。\n\n${tagLine}`;
+  return `标题：${topic}\n\n开头：\n今天这件事我想用设计师妈妈+家庭检测的视角，认真但不吓人地聊一聊。\n\n一、为什么值得关注\n很多人买衣服只看款式和价格，但真正影响体验的，往往是面料、工艺和细节。\n\n二、我会怎么看\n- 先看上身和触感：是否舒服、是否适合日常\n- 再看细节：走线、版型、面料稳定性\n- 最后看性价比：不是越贵越好，而是钱花在哪里\n\n三、给普通家庭的建议\n如果预算有限，优先买稳定、耐穿、好打理的款；如果是孩子穿，舒适和安全永远排第一。\n\n结尾：\n你们还想让我测哪一类衣服？留言告诉我。\n\n${tagLine}`;
+}
 
 const TPLS={
   title:{name:'A1 · TITLE GENERATOR',sys:'你是小红书穿搭+检测博主的标题助手。请为内容生成10个标题。\n要求：8-20字；数字对比/悬念钩子/身份标签/痛点共鸣/反常识至少一种；让人1秒想点进去；保持真实真诚。\n博主：服装设计专业+前奢侈品销售+两孩子妈妈，有家庭检测实验室。',usr:'内容主题：[填入今天的穿搭/检测主题]'},
@@ -688,7 +722,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(covInput){covInput.addEventListener('input',function(){const v=this.value.trim();const prv=document.getElementById('pubCoverPreview');if(v&&v.startsWith('http')){prv.src=v;prv.classList.remove('hidden')}else{prv.classList.add('hidden')}})}
   // Init draft cache from localStorage
   const did=localStorage.getItem('xhs_draft_id');
-  if(did){fetch(API+'/api/posts/'+did).then(r=>r.json()).then(p=>{if(p&&!p.error){draftCache={title:p.title||'',copy:p.copy||'',cover:p.cover||'',video:p.video||'',images:p.images||[],hashtags:p.hashtags||[]}}}).catch(()=>{})}
+  if(did){Promise.resolve(apiJSON('/api/posts/'+did)).then(p=>{if(p&&!p.error){draftCache={title:p.title||'',copy:p.copy||'',cover:p.cover||'',video:p.video||'',images:p.images||[],hashtags:p.hashtags||[]}}}).catch(()=>{})}
   // Default publish date
   const today=new Date().toISOString().split('T')[0];
   if(document.getElementById('pubDate'))document.getElementById('pubDate').value=today;
@@ -709,7 +743,7 @@ function selModel(m){curM=m;document.querySelectorAll('.model-chip').forEach(c=>
 function selTpl(n){curT=n;document.querySelectorAll('[data-tpl]').forEach(c=>c.classList.remove('selected'));document.querySelector('[data-tpl="'+n+'"]')?.classList.add('selected');const t=TPLS[n];if(t){document.getElementById('sys').value=t.sys;document.getElementById('usr').value=t.usr;const h=document.getElementById('copyHint');if(h)h.textContent=t.name}}
 
 function H(){const h={};const m={sPlan:'x-plan-key',sTts:'x-tts-api-key',sVAk:'x-volc-access-key',sVSk:'x-volc-secret-key'};Object.entries(m).forEach(([id,k])=>{const v=document.getElementById(id)?.value?.trim()||localStorage.getItem(id)||'';if(v)h[k]=v});return h}
-async function chkSt(){try{const r=await fetch(API+'/api/status',{headers:H()});const s=await r.json();const ok=s.plan||s.tts||s.volc_smart;const dot=document.getElementById('apiDot');dot.className='pulse-dot'+(ok?'':' warn');document.getElementById('apiLabel').textContent=ok?'已配置 · ACTIVE':'待配置 · STANDBY'}catch{}}
+async function chkSt(){const dot=document.getElementById('apiDot');try{if(IS_STATIC_PREVIEW){dot.className='pulse-dot warn';document.getElementById('apiLabel').textContent='静态预览 · LOCAL';return}const r=await fetch(API+'/api/status',{headers:H()});const s=await r.json();const ok=s.plan||s.tts||s.volc_smart;dot.className='pulse-dot'+(ok?'':' warn');document.getElementById('apiLabel').textContent=ok?'已配置 · ACTIVE':'待配置 · STANDBY'}catch{dot.className='pulse-dot warn';document.getElementById('apiLabel').textContent='本地模式 · LOCAL'}}
 
 function toast(m,t='ok'){const e=document.getElementById('toast');e.className='toast show '+t;e.innerHTML='<span class="font-mono text-[10px] tracking-[.18em] mr-1">'+(t==='ok'?'·OK·':'·ERR·')+'</span>'+m;e.onclick=function(){if(typeof m==='string'&&m.indexOf('发送到发布')>-1){const id=localStorage.getItem('xhs_draft_id');if(id){S('publish');editPost(id)}}};clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),3200)}
 function ld(b,t='处理中…'){if(!b)return;b.disabled=true;b.dataset.o=b.innerHTML;b.innerHTML='<i class="fa fa-spinner fa-spin"></i>'+t}
@@ -717,31 +751,31 @@ function ul(b){if(!b)return;b.disabled=false;if(b.dataset.o)b.innerHTML=b.datase
 function saveH(t,i,o){hist.unshift({type:t,input:(i||'').substring(0,200),output:typeof o==='string'?o.substring(0,500):o,time:new Date().toISOString()});if(hist.length>50)hist.length=50;localStorage.setItem('xhs_h',JSON.stringify(hist))}
 
 // ── 01 Copy ──
-async function genCopy(){const sys=document.getElementById('sys').value.trim(),usr=document.getElementById('usr').value.trim();if(!usr)return toast('请输入需求','err');const btn=document.getElementById('copyBtn');ld(btn,'生成中…');try{const r=await fetch(API+'/api/plan/chat',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({system:sys,messages:[{role:'user',content:usr}],model:curM})});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('copyRes').classList.remove('hidden');document.getElementById('copyOut').textContent=d.text;document.getElementById('copyUsage').textContent='Tokens · '+(d.usage?.total_tokens||'?')+' · Model · '+d.model;saveH('copy',usr,d.text);toast('生成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+async function genCopy(){const sys=document.getElementById('sys').value.trim(),usr=document.getElementById('usr').value.trim();if(!usr)return toast('请输入需求','err');const btn=document.getElementById('copyBtn');ld(btn,'生成中…');try{let d;if(IS_STATIC_PREVIEW&&!localStorage.getItem('sPlan')){d={text:offlineCopy(curT,usr),model:'offline-template',usage:{total_tokens:0}}}else{const r=await fetch(API+'/api/plan/chat',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({system:sys,messages:[{role:'user',content:usr}],model:curM})});d=await r.json();if(d.error)throw new Error(d.error)}document.getElementById('copyRes').classList.remove('hidden');document.getElementById('copyOut').textContent=d.text;document.getElementById('copyUsage').textContent='Mode · '+(d.model||'unknown')+' · Tokens · '+(d.usage?.total_tokens||'0');saveH('copy',usr,d.text);toast(d.model==='offline-template'?'已用离线模板生成':'生成完成')}catch(e){const text=offlineCopy(curT,usr);document.getElementById('copyRes').classList.remove('hidden');document.getElementById('copyOut').textContent=text;document.getElementById('copyUsage').textContent='Mode · offline-template · 后端不可用';saveH('copy',usr,text);toast('后端不可用，已用离线模板生成','ok')}ul(btn)}
 
 // ── 02 Image ──
-async function genImg(){const p=document.getElementById('imgP').value.trim();if(!p)return toast('请输入描述','err');const btn=document.querySelector('#tab-image .btn-primary');ld(btn,'生成中…');try{const[w,h]=document.getElementById('imgSz').value.split('x');const r=await fetch(API+'/api/plan/txt2img',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({prompt:p,negative_prompt:document.getElementById('imgNP').value,width:+w,height:+h})});const d=await r.json();if(d.error)throw new Error(d.error);const ct=document.getElementById('imgRes');ct.classList.remove('hidden');ct.classList.add('animate-up');ct.innerHTML=(d.images||[]).map(i=>'<div style="border:1px solid var(--rule)"><img src="'+(i.url||i.b64_json)+'" class="w-full h-auto block"></div>').join('');saveH('image',p,(d.images?.length||0)+'张');if(d.images&&d.images[0]&&d.images[0].url){sendToPublish('image',d.images[0].url)}toast('已生成 '+(d.images?.length||0)+' 张')}catch(e){toast(e.message,'err')}ul(btn)}
+async function genImg(){if(IS_STATIC_PREVIEW&&!localStorage.getItem('sPlan'))return toast(apiUnavailableText()+' · 图片生成需要后端/AI Key','err');const p=document.getElementById('imgP').value.trim();if(!p)return toast('请输入描述','err');const btn=document.querySelector('#tab-image .btn-primary');ld(btn,'生成中…');try{const[w,h]=document.getElementById('imgSz').value.split('x');const r=await fetch(API+'/api/plan/txt2img',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({prompt:p,negative_prompt:document.getElementById('imgNP').value,width:+w,height:+h})});const d=await r.json();if(d.error)throw new Error(d.error);const ct=document.getElementById('imgRes');ct.classList.remove('hidden');ct.classList.add('animate-up');ct.innerHTML=(d.images||[]).map(i=>'<div style="border:1px solid var(--rule)"><img src="'+(i.url||i.b64_json)+'" class="w-full h-auto block"></div>').join('');saveH('image',p,(d.images?.length||0)+'张');if(d.images&&d.images[0]&&d.images[0].url){sendToPublish('image',d.images[0].url)}toast('已生成 '+(d.images?.length||0)+' 张')}catch(e){toast(e.message,'err')}ul(btn)}
 
 // ── 03 Video ──
 function hVI(){const f=document.getElementById('vidF').files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const p=document.getElementById('vidP');p.src=e.target.result;p.classList.remove('hidden')};r.readAsDataURL(f)}
-async function genVid(){const f=document.getElementById('vidF').files[0];if(!f&&!document.getElementById('vidP').src)return toast('请上传图片','err');const btn=document.querySelector('#tab-video .btn-primary');ld(btn,'生成中…');try{const fd=new FormData();if(f)fd.append('image',f);fd.append('prompt',document.getElementById('vidT').value);fd.append('duration',document.getElementById('vidD').value);const r=await fetch(API+'/api/plan/img2video',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('vidRes').classList.remove('hidden');document.getElementById('vidPlayer').src=d.video_url;saveH('video',document.getElementById('vidT').value||'图生视频',d.video_url);if(d.video_url){sendToPublish('video',d.video_url)}toast('视频生成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+async function genVid(){if(IS_STATIC_PREVIEW&&!localStorage.getItem('sPlan'))return toast(apiUnavailableText()+' · 视频生成需要后端/AI Key','err');const f=document.getElementById('vidF').files[0];if(!f&&!document.getElementById('vidP').src)return toast('请上传图片','err');const btn=document.querySelector('#tab-video .btn-primary');ld(btn,'生成中…');try{const fd=new FormData();if(f)fd.append('image',f);fd.append('prompt',document.getElementById('vidT').value);fd.append('duration',document.getElementById('vidD').value);const r=await fetch(API+'/api/plan/img2video',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('vidRes').classList.remove('hidden');document.getElementById('vidPlayer').src=d.video_url;saveH('video',document.getElementById('vidT').value||'图生视频',d.video_url);if(d.video_url){sendToPublish('video',d.video_url)}toast('视频生成完成')}catch(e){toast(e.message,'err')}ul(btn)}
 
 // ── 04 TTS ──
-async function genTTS(){const t=document.getElementById('ttsT').value.trim();if(!t)return toast('请输入文本','err');const btn=document.querySelector('#tab-tts .btn-primary');ld(btn,'合成中…');try{const r=await fetch(API+'/api/tts/generate',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({text:t,voice:document.getElementById('ttsV').value,speed:+document.getElementById('ttsS').value})});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('ttsRes').classList.remove('hidden');const p=document.getElementById('ttsPlayer');p.src='data:audio/mp3;base64,'+d.audio_base64;p.dataset.b64=d.audio_base64;saveH('tts',t.substring(0,80),'TTS完成');toast('合成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+async function genTTS(){if(IS_STATIC_PREVIEW&&!localStorage.getItem('sTts'))return toast(apiUnavailableText()+' · 语音合成需要后端/TTS Key','err');const t=document.getElementById('ttsT').value.trim();if(!t)return toast('请输入文本','err');const btn=document.querySelector('#tab-tts .btn-primary');ld(btn,'合成中…');try{const r=await fetch(API+'/api/tts/generate',{method:'POST',headers:{'Content-Type':'application/json',...H()},body:JSON.stringify({text:t,voice:document.getElementById('ttsV').value,speed:+document.getElementById('ttsS').value})});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('ttsRes').classList.remove('hidden');const p=document.getElementById('ttsPlayer');p.src='data:audio/mp3;base64,'+d.audio_base64;p.dataset.b64=d.audio_base64;saveH('tts',t.substring(0,80),'TTS完成');toast('合成完成')}catch(e){toast(e.message,'err')}ul(btn)}
 function dlTTS(){const b=document.getElementById('ttsPlayer').dataset.b64;if(!b)return;const a=document.createElement('a');a.href='data:audio/mp3;base64,'+b;a.download='tts-'+Date.now()+'.mp3';a.click()}
 
 // ── 05 Compose ──
 function swCM(m){document.querySelectorAll('[data-cm]').forEach(b=>{if(b.dataset.cm===m)b.classList.add('selected');else b.classList.remove('selected')});document.getElementById('cmFull').classList.toggle('hidden',m!=='full');document.getElementById('cmSub').classList.toggle('hidden',m!=='sub')}
 function hCI(){const fs=document.getElementById('cmImgs').files;const l=document.getElementById('cmImgList');l.innerHTML='';Array.from(fs).forEach((f,i)=>{const rd=new FileReader();rd.onload=e=>{const d=document.createElement('div');d.className='relative w-16 h-16 overflow-hidden';d.style.border='1px solid var(--ink)';d.innerHTML='<img src="'+e.target.result+'" class="w-full h-full object-cover"><span class="absolute top-0 right-1 font-serif italic text-xs text-white drop-shadow font-bold">'+(i+1)+'</span>';l.appendChild(d)};rd.readAsDataURL(f)})}
-async function compVid(){const imgs=document.getElementById('cmImgs').files,audio=document.getElementById('cmAudio').files[0],bgm=document.getElementById('cmBgm').files[0],txt=document.getElementById('cmTxt').value.trim();if(!imgs.length)return toast('请上传图片','err');if(!audio)return toast('请上传配音','err');const btn=document.querySelector('#cmFull .btn-primary');ld(btn,'合成中…');try{const fd=new FormData();Array.from(imgs).forEach(f=>fd.append('images',f));fd.append('audio',audio);if(bgm)fd.append('bgm',bgm);const lines=txt.split('\n').filter(Boolean);fd.append('title',lines[0]||'');fd.append('subtitleText',lines.slice(1).join(' '));fd.append('durationPerImage',document.getElementById('cmDur').value);const r=await fetch(API+'/api/video/compose',{method:'POST',headers:H(),body:fd});if(!r.ok){const d=await r.json();throw new Error(d.error)}const blob=await r.blob();if(cmBlob)URL.revokeObjectURL(cmBlob);cmBlob=URL.createObjectURL(blob);document.getElementById('cmRes').classList.remove('hidden');document.getElementById('cmPlayer').src=cmBlob;saveH('compose',imgs.length+'张图','合成完成');toast('合成完成')}catch(e){toast(e.message,'err')}ul(btn)}
+async function compVid(){if(IS_STATIC_PREVIEW)return toast(apiUnavailableText()+' · 视频合成需要 Node + FFmpeg','err');const imgs=document.getElementById('cmImgs').files,audio=document.getElementById('cmAudio').files[0],bgm=document.getElementById('cmBgm').files[0],txt=document.getElementById('cmTxt').value.trim();if(!imgs.length)return toast('请上传图片','err');if(!audio)return toast('请上传配音','err');const btn=document.querySelector('#cmFull .btn-primary');ld(btn,'合成中…');try{const fd=new FormData();Array.from(imgs).forEach(f=>fd.append('images',f));fd.append('audio',audio);if(bgm)fd.append('bgm',bgm);const lines=txt.split('\n').filter(Boolean);fd.append('title',lines[0]||'');fd.append('subtitleText',lines.slice(1).join(' '));fd.append('durationPerImage',document.getElementById('cmDur').value);const r=await fetch(API+'/api/video/compose',{method:'POST',headers:H(),body:fd});if(!r.ok){const d=await r.json();throw new Error(d.error)}const blob=await r.blob();if(cmBlob)URL.revokeObjectURL(cmBlob);cmBlob=URL.createObjectURL(blob);document.getElementById('cmRes').classList.remove('hidden');document.getElementById('cmPlayer').src=cmBlob;saveH('compose',imgs.length+'张图','合成完成');toast('合成完成')}catch(e){toast(e.message,'err')}ul(btn)}
 function dlComp(){if(!cmBlob)return;const a=document.createElement('a');a.href=cmBlob;a.download='composed-'+Date.now()+'.mp4';a.click()}
 async function burnSub(){const mf=document.getElementById('subM').files[0],txt=document.getElementById('subT').value.trim();if(!mf)return toast('请上传文件','err');if(!txt)return toast('请输入字幕文本','err');toast('字幕烧录请使用智能处理 API (AK/SK)','err')}
 function dlSub(){if(!subBlob)return;const a=document.createElement('a');a.href=subBlob;a.download='subtitled-'+Date.now()+'.mp4';a.click()}
 
 // ── 06 Smart Processing ──
-async function runA(){const f=document.getElementById('asrF').files[0];if(!f)return toast('请上传文件','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[0];ld(btn);try{const fd=new FormData();fd.append('audio',f);const r=await fetch(API+'/api/volc/asr',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('asrS').textContent='JOB · '+d.jobId;saveH('smart','ASR','JobId:'+d.jobId);toast('ASR 任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
-async function runB(){const f=document.getElementById('bgF').files[0];if(!f)return toast('请上传图片','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[1];ld(btn);try{const fd=new FormData();fd.append('image',f);const r=await fetch(API+'/api/volc/remove-bg',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('bgS').textContent='JOB · '+d.jobId;saveH('smart','背景移除','JobId:'+d.jobId);toast('任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
-async function runE(){const f=document.getElementById('enF').files[0];if(!f)return toast('请上传图片','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[2];ld(btn);try{const fd=new FormData();fd.append('image',f);const r=await fetch(API+'/api/volc/enhance-image',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('enS').textContent='JOB · '+d.jobId;saveH('smart','画质增强','JobId:'+d.jobId);toast('任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
+async function runA(){if(IS_STATIC_PREVIEW)return toast(apiUnavailableText()+' · ASR 需要后端服务','err');const f=document.getElementById('asrF').files[0];if(!f)return toast('请上传文件','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[0];ld(btn);try{const fd=new FormData();fd.append('audio',f);const r=await fetch(API+'/api/volc/asr',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('asrS').textContent='JOB · '+d.jobId;saveH('smart','ASR','JobId:'+d.jobId);toast('ASR 任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
+async function runB(){if(IS_STATIC_PREVIEW)return toast(apiUnavailableText()+' · 背景移除需要后端服务','err');const f=document.getElementById('bgF').files[0];if(!f)return toast('请上传图片','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[1];ld(btn);try{const fd=new FormData();fd.append('image',f);const r=await fetch(API+'/api/volc/remove-bg',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('bgS').textContent='JOB · '+d.jobId;saveH('smart','背景移除','JobId:'+d.jobId);toast('任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
+async function runE(){if(IS_STATIC_PREVIEW)return toast(apiUnavailableText()+' · 画质增强需要后端服务','err');const f=document.getElementById('enF').files[0];if(!f)return toast('请上传图片','err');const btn=document.querySelectorAll('#tab-smart .btn-primary')[2];ld(btn);try{const fd=new FormData();fd.append('image',f);const r=await fetch(API+'/api/volc/enhance-image',{method:'POST',headers:H(),body:fd});const d=await r.json();if(d.error)throw new Error(d.error);document.getElementById('enS').textContent='JOB · '+d.jobId;saveH('smart','画质增强','JobId:'+d.jobId);toast('任务已提交')}catch(e){toast(e.message,'err')}ul(btn)}
 
 // ── 07 Cover Template ──
 const CW=720,CH=1280;
@@ -780,7 +814,7 @@ async function sendToPublish(type,url){
   }
   try{
     const body={id:localStorage.getItem('xhs_draft_id')||null,title:draftCache.title||'未命名',copy:draftCache.copy||'',cover:draftCache.cover||'',video:draftCache.video||'',images:draftCache.images||[],hashtags:draftCache.hashtags||[],status:'draft',publishDate:new Date().toISOString().split('T')[0]};
-    const r=await fetch(API+'/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();
+    const p=await apiJSON('/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     localStorage.setItem('xhs_draft_id',p.id);
     toast('已发送到发布管理 · 点击查看 →','ok');
   }catch(e){toast('自动保存草稿失败','err')}
@@ -799,7 +833,7 @@ async function loadPosts(){
   document.getElementById('pubDate').value=date;
   if(!document.getElementById('pubPDate').value)document.getElementById('pubPDate').value=date;
   try{
-    const r=await fetch(API+'/api/posts?date='+date);const posts=await r.json();
+    const posts=await apiJSON('/api/posts?date='+date);
     const ct=document.getElementById('pubList');
     if(!posts.length){ct.innerHTML='<div class="text-center py-12 text-mute font-mono text-[10px] tracking-[.18em] uppercase">'+date+' · NO ENTRIES</div>';loadCalendar();return}
     ct.innerHTML=posts.map((p,i)=>{
@@ -815,7 +849,7 @@ async function loadPosts(){
 async function loadCalendar(){
   const m=(document.getElementById('pubDate').value||new Date().toISOString().split('T')[0]).substring(0,7);
   try{
-    const r=await fetch(API+'/api/posts/calendar?month='+m);const dates=await r.json();
+    const dates=await apiJSON('/api/posts/calendar?month='+m);
     const ct=document.getElementById('pubCal');const[yy,mm]=m.split('-');const days=new Date(+yy,+mm,0).getDate();
     let h='<div class="cal-day head">SU</div><div class="cal-day head">MO</div><div class="cal-day head">TU</div><div class="cal-day head">WE</div><div class="cal-day head">TH</div><div class="cal-day head">FR</div><div class="cal-day head">SA</div>';
     const fd=new Date(+yy,+mm-1,1).getDay();
@@ -828,7 +862,7 @@ async function loadCalendar(){
 function newPost(){curPostId=null;['pubId','pubTitle','pubCopy','pubCover','pubVideo','pubImages','pubTags','pubNotes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});document.getElementById('pubStatus').value='draft';document.getElementById('pubEditorTitle').textContent='新建帖子';document.getElementById('pubCoverPreview').classList.add('hidden')}
 
 async function editPost(id){
-  try{const r=await fetch(API+'/api/posts/'+id);const p=await r.json();if(p.error)throw new Error(p.error);curPostId=p.id;
+  try{const p=await apiJSON('/api/posts/'+id);if(p.error)throw new Error(p.error);curPostId=p.id;
     document.getElementById('pubId').value=p.id;document.getElementById('pubTitle').value=p.title||'';
     document.getElementById('pubCopy').value=p.copy||'';document.getElementById('pubCover').value=p.cover||'';
     document.getElementById('pubVideo').value=p.video||'';document.getElementById('pubImages').value=(p.images||[]).join('\n');
@@ -844,7 +878,7 @@ async function editPost(id){
 async function savePost(){
   const body={id:curPostId,title:document.getElementById('pubTitle').value.trim(),copy:document.getElementById('pubCopy').value.trim(),cover:document.getElementById('pubCover').value.trim(),video:document.getElementById('pubVideo').value.trim(),images:document.getElementById('pubImages').value.split('\n').map(s=>s.trim()).filter(Boolean),hashtags:document.getElementById('pubTags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean),notes:document.getElementById('pubNotes').value.trim(),status:document.getElementById('pubStatus').value,publishDate:document.getElementById('pubPDate').value};
   try{
-    const r=await fetch(API+'/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();
+    const p=await apiJSON('/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     curPostId=p.id;document.getElementById('pubId').value=p.id;document.getElementById('pubEditorTitle').textContent=p.title||'未命名帖子';
     loadPosts();toast(body.status==='published'?'已保存并发布':'草稿已保存')
   }catch(e){toast('保存失败','err')}
@@ -853,8 +887,9 @@ async function savePost(){
 async function deletePost(){
   if(!curPostId)return toast('请先选择一个帖子','err');
   if(!confirm('确定删除此帖子？此操作不可撤销。'))return;
-  try{await fetch(API+'/api/posts/'+curPostId,{method:'DELETE'});newPost();loadPosts();toast('已删除')}catch(e){toast('删除失败','err')}
+  try{await apiJSON('/api/posts/'+curPostId,{method:'DELETE'});newPost();loadPosts();toast('已删除')}catch(e){toast('删除失败','err')}
 }
 </script>
 </body>
 </html>
+
