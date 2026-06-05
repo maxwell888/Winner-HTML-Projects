@@ -623,7 +623,13 @@ input[type=file].input{font-family:var(--mono);font-size:11px;padding:8px 0;bord
       <button onclick="hideSettings()" class="text-mute hover:text-ink text-xl">×</button>
     </div>
     <div class="p-7 space-y-7">
-      <p class="text-[12px] text-mute leading-relaxed">API Key 仅存储于浏览器本地 localStorage，通过本机服务器代理转发，不上传任何第三方。</p>
+      <p class="text-[12px] text-mute leading-relaxed">API Key 仅存储于浏览器本地 localStorage，通过本机/云端服务器代理转发。GitHub Pages 静态版可先用离线模板和本地草稿；部署后端后可在这里填写服务地址。</p>
+
+      <div>
+        <div class="label">Backend URL · 后端服务地址</div>
+        <input id="sApiBase" class="input mt-2" placeholder="例如：https://your-app.onrender.com">
+        <p class="mt-3 text-[11px] text-mute">留空则使用当前页面同源服务；GitHub Pages 静态版填写 Render/Railway/VPS 后端地址后可调用真实 API。</p>
+      </div>
 
       <div class="field-group">
         <div class="flex items-baseline gap-3 mb-2"><span class="num-anchor !text-[28px]">A</span><span class="eyebrow eyebrow-ink">Agent Plan</span><span class="badge badge-ink ml-auto">一个 KEY 搞定全部</span></div>
@@ -661,7 +667,7 @@ input[type=file].input{font-family:var(--mono);font-size:11px;padding:8px 0;bord
 </div>
 
 <script>
-const API=window.location.origin;
+let API=localStorage.getItem('xhs_api_base')||window.location.origin;
 const IS_STATIC_PREVIEW=location.hostname.endsWith('github.io')||location.protocol==='file:';
 const LS_POSTS='xhs_posts_v1';
 let hist=(()=>{try{return JSON.parse(localStorage.getItem('xhs_h'))||[]}catch{return[]}})();
@@ -714,6 +720,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const saved=localStorage.getItem('xhs_paper');
   if(saved){setPaper(saved);document.getElementById('paperPicker').value=saved}
   selTpl('title');chkSt();
+  const apiBase=localStorage.getItem('xhs_api_base');if(apiBase&&document.getElementById('sApiBase'))document.getElementById('sApiBase').value=apiBase;
   ['sPlan','sTts','sVAk','sVSk'].forEach(id=>{const v=localStorage.getItem(id);if(v)document.getElementById(id).value=v});
   document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){const t=document.querySelector('.tab-panel:not(.hidden)');if(t?.id==='tab-copy')genCopy();else if(t?.id==='tab-image')genImg();else if(t?.id==='tab-video')genVid();else if(t?.id==='tab-tts')genTTS()}});
   setTimeout(previewC,500);
@@ -743,7 +750,7 @@ function selModel(m){curM=m;document.querySelectorAll('.model-chip').forEach(c=>
 function selTpl(n){curT=n;document.querySelectorAll('[data-tpl]').forEach(c=>c.classList.remove('selected'));document.querySelector('[data-tpl="'+n+'"]')?.classList.add('selected');const t=TPLS[n];if(t){document.getElementById('sys').value=t.sys;document.getElementById('usr').value=t.usr;const h=document.getElementById('copyHint');if(h)h.textContent=t.name}}
 
 function H(){const h={};const m={sPlan:'x-plan-key',sTts:'x-tts-api-key',sVAk:'x-volc-access-key',sVSk:'x-volc-secret-key'};Object.entries(m).forEach(([id,k])=>{const v=document.getElementById(id)?.value?.trim()||localStorage.getItem(id)||'';if(v)h[k]=v});return h}
-async function chkSt(){const dot=document.getElementById('apiDot');try{if(IS_STATIC_PREVIEW){dot.className='pulse-dot warn';document.getElementById('apiLabel').textContent='静态预览 · LOCAL';return}const r=await fetch(API+'/api/status',{headers:H()});const s=await r.json();const ok=s.plan||s.tts||s.volc_smart;dot.className='pulse-dot'+(ok?'':' warn');document.getElementById('apiLabel').textContent=ok?'已配置 · ACTIVE':'待配置 · STANDBY'}catch{dot.className='pulse-dot warn';document.getElementById('apiLabel').textContent='本地模式 · LOCAL'}}
+async function chkSt(){const dot=document.getElementById('apiDot');try{if(IS_STATIC_PREVIEW&&!localStorage.getItem('xhs_api_base')){dot.className='pulse-dot warn';document.getElementById('apiLabel').textContent='静态预览 · LOCAL';return}const r=await fetch(API+'/api/status',{headers:H()});const s=await r.json();const ok=s.plan||s.tts||s.volc_smart||s.mock;dot.className='pulse-dot'+(ok?'':' warn');document.getElementById('apiLabel').textContent=ok?(s.mock?'后端 MOCK · ACTIVE':'已配置 · ACTIVE'):'后端已连 · STANDBY'}catch{dot.className='pulse-dot warn';document.getElementById('apiLabel').textContent=IS_STATIC_PREVIEW?'静态预览 · LOCAL':'本地模式 · LOCAL'}}
 
 function toast(m,t='ok'){const e=document.getElementById('toast');e.className='toast show '+t;e.innerHTML='<span class="font-mono text-[10px] tracking-[.18em] mr-1">'+(t==='ok'?'·OK·':'·ERR·')+'</span>'+m;e.onclick=function(){if(typeof m==='string'&&m.indexOf('发送到发布')>-1){const id=localStorage.getItem('xhs_draft_id');if(id){S('publish');editPost(id)}}};clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),3200)}
 function ld(b,t='处理中…'){if(!b)return;b.disabled=true;b.dataset.o=b.innerHTML;b.innerHTML='<i class="fa fa-spinner fa-spin"></i>'+t}
@@ -798,7 +805,7 @@ function showSettings(){document.getElementById('settingsModal').classList.remov
 function hideSettings(){document.getElementById('settingsModal').classList.add('hidden')}
 function setPaper(hex){document.documentElement.style.setProperty('--paper',hex);document.documentElement.style.setProperty('--paper-cream',hex+'dd');localStorage.setItem('xhs_paper',hex);document.getElementById('paperPicker').value=hex}
 function toggleV(id){const e=document.getElementById(id);e.type=e.type==='password'?'text':'password'}
-function saveStg(){['sPlan','sTts','sVAk','sVSk'].forEach(id=>{const v=document.getElementById(id).value.trim();v?localStorage.setItem(id,v):localStorage.removeItem(id)});hideSettings();chkSt();toast('设置已保存')}
+function saveStg(){const apiBase=document.getElementById('sApiBase')?.value?.trim().replace(/\/$/,'')||'';if(apiBase){localStorage.setItem('xhs_api_base',apiBase);API=apiBase}else{localStorage.removeItem('xhs_api_base');API=window.location.origin}['sPlan','sTts','sVAk','sVSk'].forEach(id=>{const v=document.getElementById(id).value.trim();v?localStorage.setItem(id,v):localStorage.removeItem(id)});hideSettings();chkSt();toast('设置已保存')}
 
 // ── Content → Publish Bridge ──
 async function sendToPublish(type,url){
