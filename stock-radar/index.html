@@ -141,6 +141,22 @@
     .search { min-width: min(360px, 100%); }
 
     .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 18px; }
+    .mobile-stock-list { display: none; gap: 12px; }
+    .mobile-stock-card {
+      border: 1px solid rgba(148, 163, 184, .18);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(15, 23, 42, .46);
+    }
+    .mobile-stock-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .mobile-price { text-align: right; }
+    .mobile-price strong { display: block; font-size: 22px; line-height: 1.05; }
+    .mobile-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin: 12px 0; }
+    .mobile-cell { border: 1px solid rgba(148, 163, 184, .14); border-radius: 13px; padding: 9px; background: rgba(2, 6, 23, .24); }
+    .mobile-cell small { display: block; color: var(--muted); font-size: 11px; margin-bottom: 4px; }
+    .mobile-cell b { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mobile-advice { color: #cbd5e1; font-size: 13px; line-height: 1.55; margin-top: 8px; }
+    .mobile-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
     table { width: 100%; border-collapse: collapse; min-width: 1120px; }
     th, td { padding: 12px 12px; border-bottom: 1px solid rgba(148, 163, 184, 0.14); text-align: left; vertical-align: top; }
     th { position: sticky; top: 0; z-index: 1; background: rgba(15, 23, 42, .96); color: var(--muted); font-size: 12px; font-weight: 650; white-space: nowrap; }
@@ -323,6 +339,9 @@
       .toolbar { align-items: stretch; }
       .toolbar-left, .toolbar-right, .search { width: 100%; }
       .btn { flex: 1; }
+      .table-wrap { display: none; }
+      .mobile-stock-list { display: grid; }
+      .mobile-actions .btn { width: 100%; padding-left: 6px; padding-right: 6px; }
       .detail-hero { grid-template-columns: 1fr; }
       .metric-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .position-chips { grid-template-columns: 1fr; }
@@ -398,6 +417,7 @@
               <tbody id="stockBody"></tbody>
             </table>
           </div>
+          <div class="mobile-stock-list" id="mobileStockList"></div>
         </div>
       </section>
 
@@ -746,8 +766,11 @@
 
       const tbody = el('stockBody');
       tbody.innerHTML = '';
+      const mobileList = el('mobileStockList');
+      mobileList.innerHTML = '';
       if (!rows.length) {
         tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:28px">暂无股票。先在右侧添加，或点击“载入示例”。</td></tr>`;
+        mobileList.innerHTML = `<div class="mobile-stock-card" style="text-align:center;color:var(--muted);padding:24px">暂无股票。先添加股票，或点击“载入示例”。</div>`;
         return;
       }
       rows.forEach(({ stock, calc: r, signal }) => {
@@ -767,6 +790,25 @@
           <td><div class="ops"><button class="btn small" data-action="detail" data-id="${stock.id}">详情</button><button class="btn small" data-action="edit" data-id="${stock.id}">编辑</button><button class="btn small danger" data-action="delete" data-id="${stock.id}">删除</button></div></td>
         `;
         tbody.appendChild(tr);
+
+        const card = document.createElement('article');
+        card.className = 'mobile-stock-card';
+        card.innerHTML = `
+          <div class="mobile-stock-top">
+            <div><div class="stock-name">${escapeHtml(q?.name || stock.name || '未命名')}</div><span class="code">${normalizeCode(stock.code)} · ${marketLabel(resolveMarket(stock.code, stock.market))}</span></div>
+            <div class="mobile-price"><strong>${q ? r.price.toFixed(2) : '--'}</strong><span class="${cls(q?.changePct || 0)}">${q ? pct(q.changePct) : '--'}</span></div>
+          </div>
+          <div class="mobile-grid">
+            <div class="mobile-cell"><small>持仓/成本</small><b>${fmt.format(r.shares)} 股 · ${r.cost ? r.cost.toFixed(3) : '--'}</b></div>
+            <div class="mobile-cell"><small>市值</small><b>${r.marketValue ? moneyFmt.format(r.marketValue) : '--'}</b></div>
+            <div class="mobile-cell"><small>浮盈亏</small><b class="${cls(r.pnl)}">${r.costValue ? moneyFmt.format(r.pnl) : '--'} ${r.cost ? pct(r.pnlPct) : ''}</b></div>
+            <div class="mobile-cell"><small>目标仓位</small><b>${stock.targetWeight ? stock.targetWeight + '%' : '--'} / 当前 ${signal.weight ? signal.weight.toFixed(1) + '%' : '--'}</b></div>
+          </div>
+          <span class="tag ${signal.type}">${signalIcon(signal.type)} ${signal.label}</span>
+          <div class="mobile-advice">${escapeHtml(signal.reasons[0])}</div>
+          <div class="mobile-actions"><button class="btn small" data-action="detail" data-id="${stock.id}">详情</button><button class="btn small" data-action="edit" data-id="${stock.id}">编辑</button><button class="btn small danger" data-action="delete" data-id="${stock.id}">删除</button></div>
+        `;
+        mobileList.appendChild(card);
       });
     }
 
@@ -1154,6 +1196,15 @@
     el('filterSelect').addEventListener('change', render);
     el('sortBtn').addEventListener('click', () => { sortBySignal = !sortBySignal; el('sortBtn').textContent = sortBySignal ? '恢复原顺序' : '按信号排序'; render(); });
     el('stockBody').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'edit') fillForm(stocks.find(s => s.id === id));
+      if (action === 'delete') deleteStock(id);
+      if (action === 'detail') showDetail(id);
+    });
+    el('mobileStockList').addEventListener('click', e => {
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
       const id = btn.dataset.id;
