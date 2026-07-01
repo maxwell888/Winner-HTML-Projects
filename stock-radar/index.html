@@ -478,11 +478,11 @@
     }
 
     function rangeLabel(range) {
-      return ({ '1D': '今日分时', '1M': '近 1 月', '3M': '近 3 月', '6M': '近 6 月', '1Y': '近 1 年' })[range] || range;
+      return ({ '1D': '今日分时', '1W': '近 1 周', '1M': '近 1 月', '3M': '近 3 月', '6M': '近 6 月', '1Y': '近 1 年' })[range] || range;
     }
 
     function rangeLimit(range) {
-      return ({ '1M': 24, '3M': 66, '6M': 132, '1Y': 260 })[range] || 120;
+      return ({ '1W': 5, '1M': 24, '3M': 66, '6M': 132, '1Y': 260 })[range] || 120;
     }
 
     function toast(msg) {
@@ -852,7 +852,7 @@
       const signal = getSignal(stock, totals.market);
       const q = r.q;
       const title = `${q?.name || stock.name || stock.code} · ${normalizeCode(stock.code)}`;
-      const rangeTabs = ['1D', '1M', '3M', '6M', '1Y'].map(item => `<button class="range-tab ${item === range ? 'active' : ''}" data-range="${item}">${item}</button>`).join('');
+      const rangeTabs = ['1D', '1W', '1M', '3M', '6M', '1Y'].map(item => `<button class="range-tab ${item === range ? 'active' : ''}" data-range="${item}">${item}</button>`).join('');
       el('detailTitle').textContent = title;
       el('detailContent').innerHTML = `
         <div class="stock-modal">
