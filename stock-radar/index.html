@@ -774,8 +774,9 @@
       if (cached && Date.now() - cached.t < 60_000) return cached.data;
 
       let data;
-      if (range === '1D') {
-        const url = `https://push2his.eastmoney.com/api/qt/stock/trends2/get?secid=${secid}&fields1=f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13&fields2=f51,f52,f53,f54,f55,f56,f57,f58&iscr=0&iscca=0&ndays=1`;
+      if (range === '1D' || range === '1W') {
+        const days = range === '1W' ? 5 : 1;
+        const url = `https://push2his.eastmoney.com/api/qt/stock/trends2/get?secid=${secid}&fields1=f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13&fields2=f51,f52,f53,f54,f55,f56,f57,f58&iscr=0&iscca=0&ndays=${days}`;
         const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
         if (!res.ok) throw new Error(`分时接口 HTTP ${res.status}`);
         const json = await res.json();
@@ -783,7 +784,7 @@
         data = rows.map(row => {
           const [time, open, close, high, low, volume, amount, avg] = String(row).split(',');
           return { time, open: Number(open), close: Number(close), high: Number(high), low: Number(low), volume: Number(volume), amount: Number(amount), avg: Number(avg), price: Number(close) };
-        }).filter(p => Number.isFinite(p.price));
+        }).filter(p => Number.isFinite(p.price) && p.price > 0);
       } else {
         const url = `https://push2his.eastmoney.com/api/qt/stock/kline/get?secid=${secid}&fields1=f1,f2,f3,f4,f5,f6&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61&klt=101&fqt=1&beg=20200101&end=20500101&lmt=320`;
         const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -841,6 +842,10 @@
       if (!value) return '--';
       const text = String(value);
       if (range === '1D') return text.slice(11, 16) || text;
+      if (range === '1W' && text.includes(' ')) {
+        const [, month, day] = text.slice(0, 10).split('-');
+        return `${Number(month)}/${Number(day)}`;
+      }
       const parts = text.split('-');
       return parts.length >= 3 ? `${Number(parts[1])}/${Number(parts[2])}` : text;
     }
@@ -849,6 +854,7 @@
       if (!value) return '--';
       const text = String(value);
       if (range === '1D') return text.replace(/-/g, '/').slice(5, 16);
+      if (range === '1W' && text.includes(' ')) return text.replace(/-/g, '/').slice(5, 16);
       return text.replace(/-/g, '/');
     }
 
@@ -1025,7 +1031,10 @@
       const values = activeChartPoints.map(p => p.price);
       const min = Math.min(...values);
       const max = Math.max(...values);
-      const yRatio = max === min ? .5 : (max - point.price) / (max - min);
+      const padding = Math.max((max - min) * 0.08, max * 0.002, 0.02);
+      const minY = min - padding;
+      const maxY = max + padding;
+      const yRatio = maxY === minY ? .5 : (maxY - point.price) / (maxY - minY);
       const y = Math.min(Math.max(plotTop + yRatio * (plotBottom - plotTop), plotTop), plotBottom);
       const top = Math.min(Math.max(y, 58), rect.height - 18);
       tip.style.left = `${left}px`;
