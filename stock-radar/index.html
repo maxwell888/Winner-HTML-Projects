@@ -117,6 +117,8 @@
     .field.tiny { grid-column: span 2; }
     .field.full { grid-column: 1 / -1; }
     input, select, textarea {
+      position: relative;
+      z-index: 2;
       width: 100%;
       color: var(--text);
       border: 1px solid var(--line);
@@ -124,11 +126,16 @@
       border-radius: 13px;
       padding: 10px 11px;
       background: rgba(2, 6, 23, .42);
+      pointer-events: auto;
+      user-select: text;
+      -webkit-user-select: text;
+      touch-action: manipulation;
     }
     input:focus, select:focus, textarea:focus { border-color: rgba(6,182,212,.62); box-shadow: 0 0 0 4px rgba(6,182,212,.1); }
     textarea { min-height: 84px; resize: vertical; }
     .form-actions { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .side-form form { grid-template-columns: repeat(6, 1fr); }
+    .side-form { position: relative; z-index: 3; }
     .side-form .field,
     .side-form .field.mid,
     .side-form .field.tiny { grid-column: span 3; }
@@ -460,7 +467,7 @@
             <div class="rule-row"><span>亏损超过该比例：提示“止损/复盘风险”。</span><input id="ruleStop" type="number" min="0" max="80" step="0.5" /></div>
             <div class="rule-row"><span>单只股票仓位超过目标仓位这么多：提示“仓位偏重”。</span><input id="ruleOverWeight" type="number" min="0" max="50" step="0.5" /></div>
             <div class="rule-row"><span>自动刷新间隔（秒）。过低可能被行情接口限流。</span><input id="ruleRefresh" type="number" min="15" max="600" step="5" /></div>
-            <button class="btn" id="saveRulesBtn">保存策略参数</button>
+            <button class="btn" type="button" id="saveRulesBtn">保存策略参数</button>
           </div>
         </div>
       </aside>
