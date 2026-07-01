@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -7,8 +7,8 @@
   <style>
     :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; color: #1f2937; }
     body { margin: 0; min-height: 100vh; background: linear-gradient(135deg,#f6f2ff,#eef9ff); }
-    .wrap { max-width: 1040px; margin: 0 auto; padding: 48px 20px; }
-    h1 { font-size: 40px; margin: 0 0 12px; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 20px; }
+    h1 { font-size: clamp(34px, 5vw, 48px); margin: 0 0 12px; letter-spacing: -0.04em; }
     .sub { color: #667085; margin-bottom: 28px; line-height: 1.7; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 18px; }
     .card { background: rgba(255,255,255,.88); border: 1px solid rgba(120,120,160,.18); border-radius: 20px; padding: 22px; box-shadow: 0 14px 35px rgba(31,41,55,.08); }
@@ -17,6 +17,7 @@
     a.btn { display: inline-block; margin: 10px 8px 0 0; padding: 11px 16px; border-radius: 999px; background: #4f46e5; color: white; text-decoration: none; font-weight: 700; }
     a.btn.alt { background: #0ea5e9; }
     a.btn.green { background: #15803d; }
+    a.btn.purple { background: linear-gradient(135deg,#7c3aed,#0891b2); }
     .note { margin-top: 28px; font-size: 14px; color: #667085; line-height: 1.7; }
     @media (prefers-color-scheme: dark) {
       body { background: linear-gradient(135deg,#111827,#0f172a); color: #f9fafb; }
@@ -28,28 +29,33 @@
 <body>
   <main class="wrap">
     <h1>Winner HTML Projects</h1>
-    <div class="sub">Max 鐨?HTML/Web 椤圭洰鍦ㄧ嚎棰勮鍏ュ彛銆傚叕寮€浠撳簱鍙斁鍙叕寮€璁块棶鐨勯潤鎬侀」鐩紝涓嶅寘鍚釜浜鸿蹇嗐€佸瘑閽ユ垨闅愮鏁版嵁銆?/div>
+    <div class="sub">Max 的 HTML/Web 项目在线预览入口。公开仓库只放可公开访问的静态项目，不包含个人记忆、密钥或隐私数据。</div>
     <section class="grid">
       <article class="card">
-        <h2>涓ゅ疂瀹跺涵濂界墿瀹為獙瀹?V2</h2>
-        <p>AI杩愯惀绯荤粺锛氬晢鍝佸€欓€夋睜銆佹牱鍝佹祴璇曘€佸唴瀹圭瓥鍒掋€佽鍗曟瘺鍒┿€佸懆澶嶇洏鍜?AI 宸ヤ綔鍙般€傛暟鎹繚瀛樺湪褰撳墠娴忚鍣ㄦ湰鍦帮紝鍙鍏?瀵煎嚭澶囦唤銆?/p>
-        <a class="btn green" href="./liangbao-goodies-system/index.html">鎵撳紑绯荤粺</a>
+        <h2>股票雷达 stock-radar</h2>
+        <p>A 股行情监控与仓位纪律辅助工具。可本地保存股票池、成本、数量、目标仓位和加减仓规则，并拉取公开行情生成观察/加仓/减仓/风险提示。</p>
+        <a class="btn purple" href="./stock-radar/index.html">打开股票雷达</a>
       </article>
       <article class="card">
-        <h2>鏁板鍐掗櫓 math-adventure</h2>
-        <p>鍎跨鏁板鍐掗櫓瀛︿範娓告垙銆傜函鍓嶇 HTML/CSS/JS锛屽彲鐩存帴鍦?GitHub Pages 涓婅繍琛屻€?/p>
-        <a class="btn" href="./math-adventure/index.html">鎵撳紑椤圭洰</a>
-        <a class="btn alt" href="./math-adventure/standalone.html">鎵撳紑鍗曟枃浠剁増</a>
+        <h2>两宝家庭好物实验室 V2</h2>
+        <p>AI 运营系统：商品候选池、样品测试、内容策划、订单毛利、周复盘和 AI 工作台。数据保存在当前浏览器本地，可导入/导出备份。</p>
+        <a class="btn green" href="./liangbao-goodies-system/index.html">打开系统</a>
       </article>
       <article class="card">
-        <h2>灏忕孩涔﹀伐鍏?xiaohongshu-tools</h2>
-        <p>灏忕孩涔﹀唴瀹圭敓浜у伐浣滃彴銆傝繖閲屾槸闈欐€佸墠绔瑙堢増锛涘畬鏁?AI/TTS/鍚庣鑳藉姏闇€瑕?Node 鏈嶅姟閮ㄧ讲銆?/p>
-        <a class="btn" href="./xiaohongshu-tools/index.html">鎵撳紑闈欐€侀瑙?/a>
+        <h2>数学冒险 math-adventure</h2>
+        <p>儿童数学冒险学习游戏。纯前端 HTML/CSS/JS，可直接在 GitHub Pages 上运行。</p>
+        <a class="btn" href="./math-adventure/index.html">打开项目</a>
+        <a class="btn alt" href="./math-adventure/standalone.html">打开单文件版</a>
+      </article>
+      <article class="card">
+        <h2>小红书工具 xiaohongshu-tools</h2>
+        <p>小红书内容生产工作台。这里是静态前端预览版；完整 AI/TTS/后端能力需要 Node 服务部署。</p>
+        <a class="btn" href="./xiaohongshu-tools/index.html">打开静态预览</a>
       </article>
     </section>
     <div class="note">
-      璇存槑锛欸itHub Pages 閫傚悎闈欐€佺綉椤甸瑙堛€傛秹鍙?API key銆丄I 璋冪敤銆佽处鍙风櫥褰曟垨绉佸瘑鏁版嵁鐨勮兘鍔涳紝搴旈€氳繃鍚庣鏈嶅姟鍜岀幆澧冨彉閲忓崟鐙儴缃层€?    </div>
+      说明：GitHub Pages 适合静态网页预览。涉及 API key、AI 调用、账号登录或私密数据的能力，应通过后端服务和环境变量单独部署。股票雷达的个人持仓数据默认保存在浏览器 localStorage，公开仓库不包含 Max 的私人配置。
+    </div>
   </main>
 </body>
 </html>
-

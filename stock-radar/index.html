@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Winner 股票雷达｜实时监控与仓位建议</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: rgba(15, 23, 42, 0.82);
+      --panel-2: rgba(30, 41, 59, 0.72);
+      --line: rgba(148, 163, 184, 0.22);
+      --text: #e5edf7;
+      --muted: #94a3b8;
+      --muted-2: #64748b;
+      --brand: #8b5cf6;
+      --brand-2: #06b6d4;
+      --red: #ef4444;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --blue: #3b82f6;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(139, 92, 246, 0.34), transparent 32%),
+        radial-gradient(circle at 86% 16%, rgba(6, 182, 212, 0.24), transparent 30%),
+        linear-gradient(145deg, #050816 0%, #081426 48%, #0f172a 100%);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .wrap { width: min(1440px, calc(100vw - 28px)); margin: 0 auto; padding: 22px 0 46px; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 8px);
+      padding: 26px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.62));
+      box-shadow: var(--shadow);
+    }
+    .hero:before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(120deg, rgba(139, 92, 246, 0.18), transparent 34%, rgba(6, 182, 212, 0.18));
+      pointer-events: none;
+    }
+    .hero > * { position: relative; }
+
+    .topline { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(139, 92, 246, 0.38);
+      border-radius: 999px;
+      color: #ddd6fe;
+      background: rgba(139, 92, 246, 0.12);
+      font-size: 13px;
+    }
+    h1 { margin: 14px 0 8px; font-size: clamp(30px, 4vw, 52px); line-height: 1.03; letter-spacing: -0.04em; }
+    .subtitle { max-width: 920px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.75; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    .btn {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.65);
+      padding: 10px 14px;
+      border-radius: 14px;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(226, 232, 240, 0.42); background: rgba(30, 41, 59, 0.8); }
+    .btn.primary { border: none; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 12px 28px rgba(6, 182, 212, .18); }
+    .btn.danger { border-color: rgba(239, 68, 68, .36); color: #fecaca; }
+    .btn.ghost { background: transparent; }
+    .btn.small { padding: 7px 10px; border-radius: 11px; font-size: 13px; }
+    .btn:disabled { opacity: .56; cursor: not-allowed; transform: none; }
+
+    .grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; margin-top: 18px; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 16px 50px rgba(0,0,0,.2);
+      backdrop-filter: blur(16px);
+    }
+    .card-header { padding: 18px 18px 0; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .card-title { margin: 0; font-size: 18px; letter-spacing: -0.01em; }
+    .card-desc { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .card-body { padding: 18px; }
+
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-top: 18px; }
+    .kpi { padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: rgba(15, 23, 42, .56); }
+    .kpi-label { color: var(--muted); font-size: 12px; }
+    .kpi-value { margin-top: 8px; font-size: 22px; font-weight: 780; letter-spacing: -0.03em; }
+    .kpi-note { margin-top: 4px; color: var(--muted-2); font-size: 12px; }
+
+    form { display: grid; grid-template-columns: repeat(12, 1fr); gap: 10px; }
+    label { display: block; color: var(--muted); font-size: 12px; margin: 0 0 6px; }
+    .field { grid-column: span 3; }
+    .field.wide { grid-column: span 5; }
+    .field.mid { grid-column: span 4; }
+    .field.tiny { grid-column: span 2; }
+    .field.full { grid-column: 1 / -1; }
+    input, select, textarea {
+      width: 100%;
+      color: var(--text);
+      border: 1px solid var(--line);
+      outline: none;
+      border-radius: 13px;
+      padding: 10px 11px;
+      background: rgba(2, 6, 23, .42);
+    }
+    input:focus, select:focus, textarea:focus { border-color: rgba(6,182,212,.62); box-shadow: 0 0 0 4px rgba(6,182,212,.1); }
+    textarea { min-height: 84px; resize: vertical; }
+    .form-actions { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    .toolbar { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 12px; }
+    .toolbar-left, .toolbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .search { min-width: min(360px, 100%); }
+
+    .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 18px; }
+    table { width: 100%; border-collapse: collapse; min-width: 1120px; }
+    th, td { padding: 12px 12px; border-bottom: 1px solid rgba(148, 163, 184, 0.14); text-align: left; vertical-align: top; }
+    th { position: sticky; top: 0; z-index: 1; background: rgba(15, 23, 42, .96); color: var(--muted); font-size: 12px; font-weight: 650; white-space: nowrap; }
+    tr:hover td { background: rgba(148, 163, 184, 0.045); }
+    .stock-name { font-weight: 760; }
+    .code { display: inline-block; margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .pos { color: #f87171; }
+    .neg { color: #4ade80; }
+    .flat { color: var(--muted); }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+      border: 1px solid var(--line);
+    }
+    .tag.buy { color: #bbf7d0; background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.28); }
+    .tag.sell { color: #fecaca; background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.28); }
+    .tag.watch { color: #bfdbfe; background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.28); }
+    .tag.warn { color: #fde68a; background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.28); }
+    .tag.neutral { color: #cbd5e1; background: rgba(148,163,184,.1); }
+    .advice { max-width: 330px; color: #cbd5e1; font-size: 13px; line-height: 1.55; }
+    .ops { display: flex; gap: 7px; flex-wrap: wrap; }
+
+    .notice {
+      border: 1px solid rgba(245, 158, 11, .28);
+      border-radius: 18px;
+      background: rgba(245, 158, 11, .08);
+      color: #fde68a;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .rules { display: grid; gap: 12px; }
+    .rule-row { display: grid; grid-template-columns: 1fr 110px; gap: 10px; align-items: center; }
+    .rule-row span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { border: 1px solid var(--line); border-radius: 999px; padding: 7px 10px; color: var(--muted); font-size: 12px; background: rgba(15, 23, 42, .52); }
+
+    .sparkline { width: 118px; height: 32px; display: block; }
+    .footer { margin-top: 18px; color: var(--muted-2); font-size: 12px; line-height: 1.7; text-align: center; }
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 10;
+      max-width: min(460px, calc(100vw - 36px));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: var(--text);
+      background: rgba(15, 23, 42, .94);
+      box-shadow: var(--shadow);
+      transform: translateY(18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all .2s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    dialog {
+      width: min(720px, calc(100vw - 28px));
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #0f172a;
+      box-shadow: var(--shadow);
+    }
+    dialog::backdrop { background: rgba(2, 6, 23, .72); backdrop-filter: blur(5px); }
+    .dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .dialog-head h3 { margin: 0; }
+
+    @media (max-width: 1120px) {
+      .grid { grid-template-columns: 1fr; }
+      .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 760px) {
+      .wrap { width: min(100vw - 18px, 1440px); padding-top: 10px; }
+      .hero { padding: 18px; }
+      .kpis { grid-template-columns: 1fr; }
+      .field, .field.wide, .field.mid, .field.tiny { grid-column: 1 / -1; }
+      .rule-row { grid-template-columns: 1fr; }
+      .toolbar { align-items: stretch; }
+      .toolbar-left, .toolbar-right, .search { width: 100%; }
+      .btn { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="topline">
+        <div>
+          <div class="badge">🌸💫 Winner Stock Radar · A 股实时监控</div>
+          <h1>不到 10 只股票，也可以像驾驶舱一样盯盘</h1>
+          <p class="subtitle">输入你的持仓成本、数量、目标仓位和风控规则，应用会自动拉取东方财富公开行情，计算盈亏、仓位偏离和触发信号，给出加仓/减仓/观察建议。数据保存在本机浏览器，不上传服务器。</p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn primary" id="refreshBtn">立即刷新</button>
+          <button class="btn" id="demoBtn">载入示例</button>
+          <button class="btn ghost" id="exportBtn">导出配置</button>
+          <label class="btn ghost" for="importFile">导入配置</label>
+          <input id="importFile" type="file" accept="application/json" style="display:none" />
+        </div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-label">持仓市值</div><div class="kpi-value" id="kpiMarket">--</div><div class="kpi-note">按最新价估算</div></div>
+        <div class="kpi"><div class="kpi-label">浮动盈亏</div><div class="kpi-value" id="kpiPnl">--</div><div class="kpi-note" id="kpiPnlRate">--</div></div>
+        <div class="kpi"><div class="kpi-label">今日变动</div><div class="kpi-value" id="kpiDay">--</div><div class="kpi-note">按持仓数量估算</div></div>
+        <div class="kpi"><div class="kpi-label">最新刷新</div><div class="kpi-value" id="kpiTime">--</div><div class="kpi-note" id="statusText">等待刷新</div></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">持仓与关注列表</h2>
+            <p class="card-desc">代码格式示例：600519、000001、300750。沪市 6 开头，深市 0/3 开头会自动识别。</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <input class="search" id="searchInput" placeholder="搜索股票名称/代码/建议" />
+            </div>
+            <div class="toolbar-right">
+              <select id="filterSelect" title="筛选建议">
+                <option value="all">全部</option>
+                <option value="buy">加仓信号</option>
+                <option value="sell">减仓信号</option>
+                <option value="warn">风险信号</option>
+                <option value="watch">观察</option>
+              </select>
+              <button class="btn small" id="sortBtn">按信号排序</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>股票</th>
+                  <th>最新价</th>
+                  <th>涨跌幅</th>
+                  <th>持仓/成本</th>
+                  <th>市值</th>
+                  <th>浮盈亏</th>
+                  <th>目标仓位</th>
+                  <th>趋势</th>
+                  <th>建议</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="stockBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">添加 / 修改股票</h2>
+            <p class="card-desc">建议先录入真实成本与计划仓位，策略提示会更贴近你的交易纪律。</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <form id="stockForm">
+            <input type="hidden" id="editId" />
+            <div class="field mid"><label>股票代码</label><input id="code" required placeholder="如 600519" maxlength="12" /></div>
+            <div class="field mid"><label>股票名称（可空）</label><input id="name" placeholder="刷新后自动补全" /></div>
+            <div class="field tiny"><label>市场</label><select id="market"><option value="auto">自动</option><option value="1">沪市</option><option value="0">深市/北交</option></select></div>
+            <div class="field tiny"><label>数量/股</label><input id="shares" type="number" min="0" step="100" placeholder="0" /></div>
+            <div class="field tiny"><label>成本价</label><input id="cost" type="number" min="0" step="0.001" placeholder="0" /></div>
+            <div class="field tiny"><label>计划仓位%</label><input id="targetWeight" type="number" min="0" max="100" step="0.5" placeholder="10" /></div>
+            <div class="field tiny"><label>加仓价</label><input id="buyBelow" type="number" min="0" step="0.001" placeholder="可空" /></div>
+            <div class="field tiny"><label>减仓价</label><input id="sellAbove" type="number" min="0" step="0.001" placeholder="可空" /></div>
+            <div class="field full"><label>备注 / 投资逻辑</label><textarea id="note" placeholder="例如：长期观察；只在回踩年线附近考虑；业绩不及预期则退出"></textarea></div>
+            <div class="form-actions">
+              <button class="btn primary" type="submit" id="saveBtn">保存股票</button>
+              <button class="btn" type="button" id="resetFormBtn">清空表单</button>
+            </div>
+          </form>
+
+          <div style="height:14px"></div>
+          <div class="notice">⚠️ 本应用只根据你设置的规则和公开行情做机械化提示，不构成投资建议。真正买卖前，请结合基本面、市场环境、仓位承受力和自己的交易计划。</div>
+
+          <div style="height:16px"></div>
+          <h3 class="card-title" style="font-size:16px">全局策略参数</h3>
+          <p class="card-desc">这些阈值决定“加仓/减仓/风险”提示的灵敏度。</p>
+          <div class="rules" style="margin-top:12px">
+            <div class="rule-row"><span>成本下方跌幅达到该比例，且未触及止损时：提示“可考虑分批加仓”。</span><input id="ruleDip" type="number" min="0" max="50" step="0.5" /></div>
+            <div class="rule-row"><span>成本上方盈利达到该比例：提示“可考虑减仓/兑现”。</span><input id="ruleProfit" type="number" min="0" max="200" step="1" /></div>
+            <div class="rule-row"><span>亏损超过该比例：提示“止损/复盘风险”。</span><input id="ruleStop" type="number" min="0" max="80" step="0.5" /></div>
+            <div class="rule-row"><span>单只股票仓位超过目标仓位这么多：提示“仓位偏重”。</span><input id="ruleOverWeight" type="number" min="0" max="50" step="0.5" /></div>
+            <div class="rule-row"><span>自动刷新间隔（秒）。过低可能被行情接口限流。</span><input id="ruleRefresh" type="number" min="15" max="600" step="5" /></div>
+            <button class="btn" id="saveRulesBtn">保存策略参数</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card" style="margin-top:18px">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">信号解释</h2>
+          <p class="card-desc">我把建议做成“条件触发”，避免情绪化追涨杀跌。</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="chips">
+          <span class="chip">🟢 加仓：价格低于你设置的加仓价，或相对成本回撤达到阈值，且未触发止损。</span>
+          <span class="chip">🔴 减仓：价格高于减仓价、盈利达到阈值，或仓位明显超过计划。</span>
+          <span class="chip">🟡 风险：亏损超过止损阈值，需要复盘买入逻辑是否失效。</span>
+          <span class="chip">🔵 观察：没有触发交易纪律时，少动比乱动更重要。</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">行情源：东方财富公开接口。A 股行情通常为实时或准实时，具体延迟以接口返回为准。页面数据保存在 localStorage。</div>
+  </div>
+
+  <dialog id="detailDialog">
+    <div class="dialog-head">
+      <h3 id="detailTitle">详情</h3>
+      <button class="btn small" id="closeDialogBtn">关闭</button>
+    </div>
+    <div id="detailContent"></div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'winner-stock-radar-v1';
+    const RULE_KEY = 'winner-stock-radar-rules-v1';
+    const HISTORY_KEY = 'winner-stock-radar-history-v1';
+
+    const defaultRules = {
+      dipPercent: 5,
+      profitPercent: 15,
+      stopLossPercent: 8,
+      overWeightPercent: 3,
+      refreshSeconds: 60
+    };
+
+    let stocks = load(STORAGE_KEY, []);
+    let rules = { ...defaultRules, ...load(RULE_KEY, {}) };
+    let priceHistory = load(HISTORY_KEY, {});
+    let quotes = new Map();
+    let refreshTimer = null;
+    let sortBySignal = false;
+
+    const el = id => document.getElementById(id);
+    const fmt = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 2 });
+    const moneyFmt = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', maximumFractionDigits: 0 });
+
+    function load(key, fallback) {
+      try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+    }
+    function save(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+    function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
+    function n(value, fallback = 0) { const x = Number(value); return Number.isFinite(x) ? x : fallback; }
+    function pct(value) { if (!Number.isFinite(value)) return '--'; return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`; }
+    function cls(value) { return value > 0 ? 'pos' : value < 0 ? 'neg' : 'flat'; }
+    function codeKey(stock) { return `${stock.marketResolved ?? resolveMarket(stock.code, stock.market)}.${normalizeCode(stock.code)}`; }
+    function normalizeCode(code) { return String(code || '').trim().replace(/\D/g, '').padStart(6, '0').slice(-6); }
+    function resolveMarket(code, market = 'auto') {
+      if (market === '0' || market === '1') return market;
+      const c = normalizeCode(code);
+      if (c.startsWith('6') || c.startsWith('9')) return '1';
+      return '0';
+    }
+    function marketLabel(m) { return String(m) === '1' ? '沪市' : '深市/北交'; }
+
+    function toast(msg) {
+      const t = el('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function fillRules() {
+      el('ruleDip').value = rules.dipPercent;
+      el('ruleProfit').value = rules.profitPercent;
+      el('ruleStop').value = rules.stopLossPercent;
+      el('ruleOverWeight').value = rules.overWeightPercent;
+      el('ruleRefresh').value = rules.refreshSeconds;
+    }
+
+    function readRules() {
+      rules = {
+        dipPercent: n(el('ruleDip').value, defaultRules.dipPercent),
+        profitPercent: n(el('ruleProfit').value, defaultRules.profitPercent),
+        stopLossPercent: n(el('ruleStop').value, defaultRules.stopLossPercent),
+        overWeightPercent: n(el('ruleOverWeight').value, defaultRules.overWeightPercent),
+        refreshSeconds: Math.max(15, n(el('ruleRefresh').value, defaultRules.refreshSeconds))
+      };
+      save(RULE_KEY, rules);
+      scheduleRefresh();
+      render();
+      toast('策略参数已保存');
+    }
+
+    async function fetchQuotes() {
+      if (!stocks.length) {
+        quotes.clear();
+        render();
+        setStatus('请先添加股票');
+        return;
+      }
+      setStatus('正在刷新行情...');
+      el('refreshBtn').disabled = true;
+      try {
+        const secids = stocks.map(s => `${resolveMarket(s.code, s.market)}.${normalizeCode(s.code)}`).join(',');
+        const fields = 'f12,f13,f14,f2,f3,f4,f5,f6,f8,f9,f10,f15,f16,f17,f18,f20,f21,f23';
+        const url = `https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&secids=${encodeURIComponent(secids)}&fields=${fields}`;
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(`行情接口 HTTP ${res.status}`);
+        const data = await res.json();
+        const list = data?.data?.diff || [];
+        quotes = new Map();
+        list.forEach(q => {
+          const key = `${q.f13}.${q.f12}`;
+          quotes.set(key, normalizeQuote(q));
+          const historyKey = key;
+          const arr = priceHistory[historyKey] || [];
+          if (Number.isFinite(Number(q.f2)) && Number(q.f2) > 0) {
+            arr.push({ t: Date.now(), p: Number(q.f2) });
+            priceHistory[historyKey] = arr.slice(-40);
+          }
+        });
+        stocks = stocks.map(s => {
+          const key = `${resolveMarket(s.code, s.market)}.${normalizeCode(s.code)}`;
+          const q = quotes.get(key);
+          return q ? { ...s, code: q.code, name: s.name || q.name, marketResolved: String(q.market) } : s;
+        });
+        save(STORAGE_KEY, stocks);
+        save(HISTORY_KEY, priceHistory);
+        el('kpiTime').textContent = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+        setStatus(`已刷新 ${list.length}/${stocks.length} 只`);
+      } catch (err) {
+        console.error(err);
+        setStatus('行情刷新失败');
+        toast(`行情刷新失败：${err.message || err}`);
+      } finally {
+        el('refreshBtn').disabled = false;
+        render();
+      }
+    }
+
+    function normalizeQuote(q) {
+      return {
+        code: q.f12,
+        market: String(q.f13),
+        name: q.f14,
+        price: Number(q.f2),
+        changePct: Number(q.f3),
+        change: Number(q.f4),
+        volume: Number(q.f5),
+        amount: Number(q.f6),
+        turnover: Number(q.f8),
+        pe: Number(q.f9),
+        volumeRatio: Number(q.f10),
+        high: Number(q.f15),
+        low: Number(q.f16),
+        open: Number(q.f17),
+        prevClose: Number(q.f18),
+        totalMarketCap: Number(q.f20),
+        floatMarketCap: Number(q.f21),
+        pb: Number(q.f23)
+      };
+    }
+
+    function setStatus(text) { el('statusText').textContent = text; }
+
+    function calc(stock) {
+      const key = `${resolveMarket(stock.code, stock.market)}.${normalizeCode(stock.code)}`;
+      const q = quotes.get(key);
+      const shares = n(stock.shares);
+      const cost = n(stock.cost);
+      const price = q?.price > 0 ? q.price : cost || 0;
+      const marketValue = shares * price;
+      const costValue = shares * cost;
+      const pnl = costValue ? marketValue - costValue : 0;
+      const pnlPct = cost ? (price - cost) / cost * 100 : 0;
+      const dayPnl = q?.change ? shares * q.change : 0;
+      return { q, key, shares, cost, price, marketValue, costValue, pnl, pnlPct, dayPnl };
+    }
+
+    function portfolioTotals() {
+      const rows = stocks.map(calc);
+      const market = rows.reduce((a, r) => a + r.marketValue, 0);
+      const cost = rows.reduce((a, r) => a + r.costValue, 0);
+      const pnl = rows.reduce((a, r) => a + r.pnl, 0);
+      const day = rows.reduce((a, r) => a + r.dayPnl, 0);
+      return { rows, market, cost, pnl, pnlRate: cost ? pnl / cost * 100 : 0, day };
+    }
+
+    function getSignal(stock, totalMarket) {
+      const r = calc(stock);
+      const q = r.q;
+      const price = r.price;
+      const target = n(stock.targetWeight);
+      const weight = totalMarket ? r.marketValue / totalMarket * 100 : 0;
+      const buyBelow = n(stock.buyBelow, NaN);
+      const sellAbove = n(stock.sellAbove, NaN);
+      const reasons = [];
+      let type = 'watch';
+      let label = '观察';
+      let score = 1;
+
+      if (!q) {
+        return { type: 'neutral', label: '待行情', score: 0, reasons: ['暂未取得行情，检查代码或网络。'], weight };
+      }
+      if (r.cost > 0 && r.pnlPct <= -Math.abs(rules.stopLossPercent)) {
+        type = 'warn'; label = '风险复盘'; score = 4;
+        reasons.push(`相对成本亏损 ${r.pnlPct.toFixed(2)}%，超过止损阈值 ${rules.stopLossPercent}%。先复盘逻辑是否失效，不要机械补仓。`);
+      }
+      if (Number.isFinite(buyBelow) && buyBelow > 0 && price <= buyBelow && type !== 'warn') {
+        type = 'buy'; label = '可考虑加仓'; score = Math.max(score, 3);
+        reasons.push(`现价 ${price.toFixed(2)} 已低于你的加仓价 ${buyBelow.toFixed(2)}。`);
+      }
+      if (r.cost > 0 && r.pnlPct <= -Math.abs(rules.dipPercent) && type !== 'warn') {
+        type = 'buy'; label = '可考虑加仓'; score = Math.max(score, 3);
+        reasons.push(`相对成本回撤 ${Math.abs(r.pnlPct).toFixed(2)}%，达到加仓观察阈值 ${rules.dipPercent}%。`);
+      }
+      if (Number.isFinite(sellAbove) && sellAbove > 0 && price >= sellAbove) {
+        type = 'sell'; label = '可考虑减仓'; score = Math.max(score, 3);
+        reasons.push(`现价 ${price.toFixed(2)} 已高于你的减仓价 ${sellAbove.toFixed(2)}。`);
+      }
+      if (r.cost > 0 && r.pnlPct >= Math.abs(rules.profitPercent)) {
+        type = 'sell'; label = '可考虑减仓'; score = Math.max(score, 3);
+        reasons.push(`相对成本盈利 ${r.pnlPct.toFixed(2)}%，达到止盈/兑现阈值 ${rules.profitPercent}%。`);
+      }
+      if (target > 0 && weight > target + Math.abs(rules.overWeightPercent)) {
+        type = 'sell'; label = '仓位偏重'; score = Math.max(score, 3);
+        reasons.push(`当前仓位约 ${weight.toFixed(1)}%，高于计划 ${target}% + 容忍 ${rules.overWeightPercent}%。`);
+      }
+      if (!reasons.length) {
+        reasons.push('未触发你设置的交易纪律，建议继续观察，避免因为短线波动频繁操作。');
+      }
+      return { type, label, score, reasons, weight };
+    }
+
+    function render() {
+      const totals = portfolioTotals();
+      el('kpiMarket').textContent = totals.market ? moneyFmt.format(totals.market) : '--';
+      el('kpiPnl').textContent = totals.cost ? moneyFmt.format(totals.pnl) : '--';
+      el('kpiPnl').className = 'kpi-value ' + cls(totals.pnl);
+      el('kpiPnlRate').textContent = totals.cost ? pct(totals.pnlRate) : '录入成本后计算';
+      el('kpiDay').textContent = totals.market ? moneyFmt.format(totals.day) : '--';
+      el('kpiDay').className = 'kpi-value ' + cls(totals.day);
+
+      const query = el('searchInput').value.trim().toLowerCase();
+      const filter = el('filterSelect').value;
+      let rows = stocks.map(stock => ({ stock, calc: calc(stock), signal: getSignal(stock, totals.market) }));
+      if (sortBySignal) rows.sort((a, b) => b.signal.score - a.signal.score || Math.abs(b.calc.pnl) - Math.abs(a.calc.pnl));
+      rows = rows.filter(row => {
+        const hay = `${row.stock.code} ${row.stock.name || ''} ${row.signal.label} ${row.signal.reasons.join(' ')}`.toLowerCase();
+        const passQuery = !query || hay.includes(query);
+        const passFilter = filter === 'all' || row.signal.type === filter;
+        return passQuery && passFilter;
+      });
+
+      const tbody = el('stockBody');
+      tbody.innerHTML = '';
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:28px">暂无股票。先在右侧添加，或点击“载入示例”。</td></tr>`;
+        return;
+      }
+      rows.forEach(({ stock, calc: r, signal }) => {
+        const q = r.q;
+        const tr = document.createElement('tr');
+        const history = priceHistory[r.key] || [];
+        tr.innerHTML = `
+          <td><div class="stock-name">${escapeHtml(q?.name || stock.name || '未命名')}</div><span class="code">${normalizeCode(stock.code)} · ${marketLabel(resolveMarket(stock.code, stock.market))}</span></td>
+          <td class="num">${q ? r.price.toFixed(2) : '--'}</td>
+          <td class="num ${cls(q?.changePct || 0)}">${q ? pct(q.changePct) : '--'}<br><span class="code">${q ? (q.change >= 0 ? '+' : '') + q.change.toFixed(2) : ''}</span></td>
+          <td class="num">${fmt.format(r.shares)} 股<br><span class="code">成本 ${r.cost ? r.cost.toFixed(3) : '--'}</span></td>
+          <td class="num">${r.marketValue ? moneyFmt.format(r.marketValue) : '--'}<br><span class="code">仓位 ${signal.weight ? signal.weight.toFixed(1) + '%' : '--'}</span></td>
+          <td class="num ${cls(r.pnl)}">${r.costValue ? moneyFmt.format(r.pnl) : '--'}<br><span class="code ${cls(r.pnlPct)}">${r.cost ? pct(r.pnlPct) : '缺成本'}</span></td>
+          <td class="num">${stock.targetWeight ? stock.targetWeight + '%' : '--'}<br><span class="code">加 ${stock.buyBelow || '--'} / 减 ${stock.sellAbove || '--'}</span></td>
+          <td>${sparkline(history, q?.changePct || 0)}</td>
+          <td><span class="tag ${signal.type}">${signalIcon(signal.type)} ${signal.label}</span><div class="advice">${escapeHtml(signal.reasons[0])}</div></td>
+          <td><div class="ops"><button class="btn small" data-action="detail" data-id="${stock.id}">详情</button><button class="btn small" data-action="edit" data-id="${stock.id}">编辑</button><button class="btn small danger" data-action="delete" data-id="${stock.id}">删除</button></div></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function sparkline(points, changePct) {
+      if (!points || points.length < 2) return '<span class="code">刷新后生成</span>';
+      const w = 118, h = 32, pad = 3;
+      const vals = points.map(p => p.p);
+      const min = Math.min(...vals), max = Math.max(...vals);
+      const range = max - min || 1;
+      const d = points.map((p, i) => {
+        const x = pad + i * (w - pad * 2) / (points.length - 1);
+        const y = h - pad - (p.p - min) * (h - pad * 2) / range;
+        return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+      const color = changePct >= 0 ? '#f87171' : '#4ade80';
+      return `<svg class="sparkline" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round"/><line x1="0" y1="${h-1}" x2="${w}" y2="${h-1}" stroke="rgba(148,163,184,.18)"/></svg>`;
+    }
+
+    function signalIcon(type) {
+      return ({ buy: '🟢', sell: '🔴', warn: '🟡', watch: '🔵', neutral: '⚪' })[type] || '⚪';
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '').replace(/[&<>'"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[s]));
+    }
+
+    function readForm() {
+      const code = normalizeCode(el('code').value);
+      if (!code || code.length !== 6) throw new Error('请输入 6 位股票代码');
+      return {
+        id: el('editId').value || uid(),
+        code,
+        name: el('name').value.trim(),
+        market: el('market').value,
+        shares: n(el('shares').value),
+        cost: n(el('cost').value),
+        targetWeight: n(el('targetWeight').value),
+        buyBelow: el('buyBelow').value === '' ? '' : n(el('buyBelow').value),
+        sellAbove: el('sellAbove').value === '' ? '' : n(el('sellAbove').value),
+        note: el('note').value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function fillForm(stock) {
+      el('editId').value = stock.id || '';
+      el('code').value = stock.code || '';
+      el('name').value = stock.name || '';
+      el('market').value = stock.market || 'auto';
+      el('shares').value = stock.shares || '';
+      el('cost').value = stock.cost || '';
+      el('targetWeight').value = stock.targetWeight || '';
+      el('buyBelow').value = stock.buyBelow || '';
+      el('sellAbove').value = stock.sellAbove || '';
+      el('note').value = stock.note || '';
+      el('saveBtn').textContent = stock.id ? '保存修改' : '保存股票';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+      fillForm({ market: 'auto' });
+      el('saveBtn').textContent = '保存股票';
+    }
+
+    function saveStock(stock) {
+      const idx = stocks.findIndex(s => s.id === stock.id);
+      if (idx >= 0) stocks[idx] = stock;
+      else if (stocks.some(s => normalizeCode(s.code) === stock.code && resolveMarket(s.code, s.market) === resolveMarket(stock.code, stock.market))) {
+        throw new Error('这只股票已经在列表里了');
+      } else stocks.push(stock);
+      save(STORAGE_KEY, stocks);
+      resetForm();
+      render();
+      fetchQuotes();
+      toast('股票已保存');
+    }
+
+    function deleteStock(id) {
+      const stock = stocks.find(s => s.id === id);
+      if (!stock) return;
+      if (!confirm(`确定删除 ${stock.name || stock.code} 吗？`)) return;
+      stocks = stocks.filter(s => s.id !== id);
+      save(STORAGE_KEY, stocks);
+      render();
+      toast('已删除');
+    }
+
+    function showDetail(id) {
+      const stock = stocks.find(s => s.id === id);
+      if (!stock) return;
+      const totals = portfolioTotals();
+      const r = calc(stock);
+      const signal = getSignal(stock, totals.market);
+      const q = r.q;
+      el('detailTitle').textContent = `${q?.name || stock.name || stock.code} · ${normalizeCode(stock.code)}`;
+      el('detailContent').innerHTML = `
+        <div class="notice" style="margin-bottom:12px">${signalIcon(signal.type)} ${escapeHtml(signal.reasons.join(' '))}</div>
+        <div class="chips">
+          <span class="chip">现价：${q ? r.price.toFixed(2) : '--'}</span>
+          <span class="chip">今日：${q ? pct(q.changePct) : '--'}</span>
+          <span class="chip">高/低：${q ? q.high.toFixed(2) + ' / ' + q.low.toFixed(2) : '--'}</span>
+          <span class="chip">PE：${q && Number.isFinite(q.pe) ? q.pe.toFixed(2) : '--'}</span>
+          <span class="chip">PB：${q && Number.isFinite(q.pb) ? q.pb.toFixed(2) : '--'}</span>
+          <span class="chip">换手率：${q && Number.isFinite(q.turnover) ? q.turnover.toFixed(2) + '%' : '--'}</span>
+          <span class="chip">量比：${q && Number.isFinite(q.volumeRatio) ? q.volumeRatio.toFixed(2) : '--'}</span>
+          <span class="chip">流通市值：${q?.floatMarketCap ? moneyFmt.format(q.floatMarketCap) : '--'}</span>
+        </div>
+        <p style="color:var(--muted);line-height:1.8;margin-top:14px"><b style="color:var(--text)">投资逻辑/备注：</b>${escapeHtml(stock.note || '暂无备注。建议写下买入理由、退出条件和观察指标。')}</p>
+      `;
+      el('detailDialog').showModal();
+    }
+
+    function exportConfig() {
+      const blob = new Blob([JSON.stringify({ stocks, rules, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `winner-stock-radar-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importConfig(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          if (!Array.isArray(data.stocks)) throw new Error('配置文件缺少 stocks 数组');
+          stocks = data.stocks;
+          rules = { ...defaultRules, ...(data.rules || {}) };
+          save(STORAGE_KEY, stocks);
+          save(RULE_KEY, rules);
+          fillRules();
+          render();
+          fetchQuotes();
+          toast('配置已导入');
+        } catch (err) { toast(`导入失败：${err.message}`); }
+      };
+      reader.readAsText(file, 'utf-8');
+    }
+
+    function loadDemo() {
+      if (stocks.length && !confirm('载入示例会覆盖当前列表，确定吗？')) return;
+      stocks = [
+        { id: uid(), code: '600519', name: '贵州茅台', market: '1', shares: 100, cost: 1250, targetWeight: 20, buyBelow: 1160, sellAbove: 1380, note: '示例：白酒龙头，观察消费复苏和估值修复。' },
+        { id: uid(), code: '000001', name: '平安银行', market: '0', shares: 2000, cost: 10.6, targetWeight: 10, buyBelow: 9.8, sellAbove: 12.2, note: '示例：银行股，更多看分红和低估修复，不追高。' },
+        { id: uid(), code: '300750', name: '宁德时代', market: '0', shares: 100, cost: 260, targetWeight: 15, buyBelow: 235, sellAbove: 310, note: '示例：新能源核心资产，关注产业链价格和海外业务。' }
+      ];
+      save(STORAGE_KEY, stocks);
+      render();
+      fetchQuotes();
+      toast('已载入示例，可直接编辑成你的真实持仓');
+    }
+
+    function scheduleRefresh() {
+      clearInterval(refreshTimer);
+      refreshTimer = setInterval(fetchQuotes, Math.max(15, rules.refreshSeconds) * 1000);
+    }
+
+    el('stockForm').addEventListener('submit', e => {
+      e.preventDefault();
+      try { saveStock(readForm()); } catch (err) { toast(err.message); }
+    });
+    el('resetFormBtn').addEventListener('click', resetForm);
+    el('saveRulesBtn').addEventListener('click', readRules);
+    el('refreshBtn').addEventListener('click', fetchQuotes);
+    el('demoBtn').addEventListener('click', loadDemo);
+    el('exportBtn').addEventListener('click', exportConfig);
+    el('importFile').addEventListener('change', e => e.target.files[0] && importConfig(e.target.files[0]));
+    el('searchInput').addEventListener('input', render);
+    el('filterSelect').addEventListener('change', render);
+    el('sortBtn').addEventListener('click', () => { sortBySignal = !sortBySignal; el('sortBtn').textContent = sortBySignal ? '恢复原顺序' : '按信号排序'; render(); });
+    el('stockBody').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'edit') fillForm(stocks.find(s => s.id === id));
+      if (action === 'delete') deleteStock(id);
+      if (action === 'detail') showDetail(id);
+    });
+    el('closeDialogBtn').addEventListener('click', () => el('detailDialog').close());
+
+    fillRules();
+    render();
+    scheduleRefresh();
+    fetchQuotes();
+  </script>
+</body>
+</html>
