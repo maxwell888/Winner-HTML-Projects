@@ -90,7 +90,7 @@
     .btn.small { padding: 7px 10px; border-radius: 11px; font-size: 13px; }
     .btn:disabled { opacity: .56; cursor: not-allowed; transform: none; }
 
-    .grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; margin-top: 18px; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr); gap: 18px; margin-top: 18px; }
     .card {
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -128,6 +128,13 @@
     input:focus, select:focus, textarea:focus { border-color: rgba(6,182,212,.62); box-shadow: 0 0 0 4px rgba(6,182,212,.1); }
     textarea { min-height: 84px; resize: vertical; }
     .form-actions { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .side-form form { grid-template-columns: repeat(6, 1fr); }
+    .side-form .field,
+    .side-form .field.mid,
+    .side-form .field.tiny { grid-column: span 3; }
+    .side-form .field.full { grid-column: 1 / -1; }
+    .side-form textarea { min-height: 74px; }
+    .side-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(148, 163, 184, .16); }
 
     .toolbar { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 12px; }
     .toolbar-left, .toolbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -216,7 +223,7 @@
     .stock-modal { display: grid; gap: 14px; }
     .detail-hero {
       display: grid;
-      grid-template-columns: 1.08fr .92fr;
+      grid-template-columns: minmax(0, 1.12fr) minmax(330px, .88fr);
       gap: 14px;
       align-items: stretch;
     }
@@ -288,10 +295,14 @@
     .metric { border: 1px solid rgba(148, 163, 184, .16); border-radius: 16px; padding: 12px; background: rgba(15, 23, 42, .36); }
     .metric-label { color: var(--muted); font-size: 12px; }
     .metric-value { margin-top: 6px; font-weight: 780; font-size: 16px; }
-    .discipline-panel { display: grid; gap: 10px; }
+    .discipline-panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
     .discipline-title { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
     .discipline-title h4 { margin: 0; font-size: 16px; }
     .discipline-list { margin: 0; padding-left: 18px; color: #cbd5e1; line-height: 1.75; font-size: 13px; }
+    .position-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .position-chip { border: 1px solid rgba(148, 163, 184, .16); border-radius: 14px; padding: 10px; background: rgba(15, 23, 42, .36); }
+    .position-chip small { display: block; color: var(--muted); font-size: 11px; margin-bottom: 5px; }
+    .position-chip b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .note-box { color: var(--muted); line-height: 1.8; font-size: 13px; }
     .loading-line { color: var(--muted); text-align: center; padding: 36px 0; }
 
@@ -304,12 +315,17 @@
       .hero { padding: 18px; }
       .kpis { grid-template-columns: 1fr; }
       .field, .field.wide, .field.mid, .field.tiny { grid-column: 1 / -1; }
+      .side-form form { grid-template-columns: 1fr; }
+      .side-form .field,
+      .side-form .field.mid,
+      .side-form .field.tiny { grid-column: 1 / -1; }
       .rule-row { grid-template-columns: 1fr; }
       .toolbar { align-items: stretch; }
       .toolbar-left, .toolbar-right, .search { width: 100%; }
       .btn { flex: 1; }
       .detail-hero { grid-template-columns: 1fr; }
       .metric-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .position-chips { grid-template-columns: 1fr; }
       .chart-box, .chart-wrap, .big-chart { min-height: 280px; height: 280px; }
     }
   </style>
@@ -385,7 +401,7 @@
         </div>
       </section>
 
-      <aside class="card">
+      <aside class="card side-form">
         <div class="card-header">
           <div>
             <h2 class="card-title">添加 / 修改股票</h2>
@@ -410,12 +426,14 @@
             </div>
           </form>
 
-          <div style="height:14px"></div>
-          <div class="notice">⚠️ 本应用只根据你设置的规则和公开行情做机械化提示，不构成投资建议。真正买卖前，请结合基本面、市场环境、仓位承受力和自己的交易计划。</div>
+          <div class="side-section">
+            <div class="notice">⚠️ 本应用只根据你设置的规则和公开行情做机械化提示，不构成投资建议。真正买卖前，请结合基本面、市场环境、仓位承受力和自己的交易计划。</div>
+          </div>
 
-          <div style="height:16px"></div>
-          <h3 class="card-title" style="font-size:16px">全局策略参数</h3>
-          <p class="card-desc">这些阈值决定“加仓/减仓/风险”提示的灵敏度。</p>
+          <div class="side-section">
+            <h3 class="card-title" style="font-size:16px">全局策略参数</h3>
+            <p class="card-desc">这些阈值决定“加仓/减仓/风险”提示的灵敏度。</p>
+          </div>
           <div class="rules" style="margin-top:12px">
             <div class="rule-row"><span>成本下方跌幅达到该比例，且未触及止损时：提示“可考虑分批加仓”。</span><input id="ruleDip" type="number" min="0" max="50" step="0.5" /></div>
             <div class="rule-row"><span>成本上方盈利达到该比例：提示“可考虑减仓/兑现”。</span><input id="ruleProfit" type="number" min="0" max="200" step="1" /></div>
@@ -947,11 +965,11 @@
             <section class="discipline-panel">
               <div class="discipline-title"><h4>交易纪律建议</h4><span class="tag ${signal.type}">${signalIcon(signal.type)} ${signal.label}</span></div>
               <ul class="discipline-list">${signal.reasons.map(reason => `<li>${escapeHtml(reason)}</li>`).join('')}</ul>
-              <div class="chips">
-                <span class="chip">持仓 ${fmt.format(r.shares)} 股</span>
-                <span class="chip">成本 ${r.cost ? fmtNum(r.cost, 3) : '--'}</span>
-                <span class="chip">浮盈亏 ${r.costValue ? moneyFmt.format(r.pnl) : '--'}</span>
-                <span class="chip">仓位 ${signal.weight ? signal.weight.toFixed(1) + '%' : '--'}</span>
+              <div class="position-chips">
+                <div class="position-chip"><small>持仓</small><b>${fmt.format(r.shares)} 股</b></div>
+                <div class="position-chip"><small>成本价</small><b>${r.cost ? fmtNum(r.cost, 3) : '--'}</b></div>
+                <div class="position-chip"><small>浮盈亏</small><b class="${cls(r.pnl)}">${r.costValue ? moneyFmt.format(r.pnl) : '--'}</b></div>
+                <div class="position-chip"><small>当前仓位</small><b>${signal.weight ? signal.weight.toFixed(1) + '%' : '--'}</b></div>
               </div>
             </section>
           </div>
